@@ -1,29 +1,34 @@
-import java.time.LocalDate;
-import java.util.List;
+package book.library.java.model;
 
-/**
- * Created by AsusIT on 08.11.2017.
- */
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+
+@Entity
+@Table(name="books")
 public class Book {
 
-    private int isbn;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id")
+    private String id;
+
+    @Column(name = "name", nullable = false, length = 36)
     private String name;
+
+    @Column(name = "year_published", nullable = false, length = 36)
     private int yearPublished;
+
+    @Column(name = "publisher", nullable = false, length = 36)
     private String publisher;
+
+    @Column(name = "create_date", nullable = false, length = 36)
     private LocalDate createDate;
-    private Author author;
-    private List<Review> reviewList;
-    private List<Author> authors;
 
     public Book() {}
 
-    public int getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(int isbn) {
-        this.isbn = isbn;
-    }
 
     public String getName() {
         return name;
@@ -39,14 +44,6 @@ public class Book {
 
     public void setYearPublished(int yearPublished) {
         this.yearPublished = yearPublished;
-    }
-
-    public Author getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Author author) {
-        this.author = author;
     }
 
     public LocalDate getCreateDate() {
@@ -65,19 +62,12 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public List<Review> getReviewList() {
-        return reviewList;
+    public String getId() {
+        return id;
     }
 
-    public void setReviewList(List<Review> reviewList) {
-        this.reviewList = reviewList;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public List<Author> getAuthors() {
-        return authors;
-    }
-
-    public void setAuthors(List<Author> authors) {
-        this.authors = authors;
-    }
 }

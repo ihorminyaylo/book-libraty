@@ -1,22 +1,42 @@
+package book.library.java.model;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
+
 import java.time.LocalDate;
 import java.util.List;
 
-/**
- * Created by AsusIT on 08.11.2017.
- */
+@Entity
+@Table(name="authors")
 public class Author {
 
-    private int id;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id")
+    private String id;
+
+    @Column(name = "first_name", nullable = false, length = 36)
     private String firstName;
+
+    @Column(name = "second_name", nullable = false, length = 36)
     private String secondName;
+
+    @Column(name = "create_date")
     private LocalDate createDate;
+
+    @ManyToMany
+    @JoinTable(name ="author_book_keys",
+            joinColumns = {@JoinColumn(name = "author_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
     private List<Book> books;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

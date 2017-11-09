@@ -1,22 +1,41 @@
+package book.library.java.model;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 
-/**
- * Created by AsusIT on 08.11.2017.
- */
+@Entity
+@Table(name="reviews")
 public class Review {
 
-    private int id;
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "id")
+    private String id;
+
+    @Column(name = "commenter_name", nullable = false, length = 36)
     private String commenterName;
+
+    @Column(name = "comment", nullable = false, length = 36)
     private String comment;
+
+    @Column(name = "rating", nullable = false)
     private double rating;
+
+    @Column(name = "create_date", nullable = false)
     private LocalDate createDate;
+
+    @ManyToOne
+    @JoinColumn(name = "book_id")
     private Book book;
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
