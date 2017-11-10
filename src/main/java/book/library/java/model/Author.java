@@ -4,12 +4,13 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
 @Entity
 @Table(name="authors")
-public class Author {
+public class Author implements Serializable {
 
     @Id
     @GeneratedValue(generator = "UUID")

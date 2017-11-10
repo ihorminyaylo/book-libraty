@@ -3,11 +3,12 @@ package book.library.java.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name="books")
-public class Book {
+public class Book implements Serializable {
 
     @Id
     @GeneratedValue(generator = "UUID")
