@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface BookDao extends InterfaceDao<Book> {
     List<Book> getByAuthor(String authorId);
+    List<Book> getByRating(Double rating);
 }

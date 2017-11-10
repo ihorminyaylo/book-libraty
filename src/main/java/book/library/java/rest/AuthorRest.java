@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/author")
@@ -26,8 +28,12 @@ public class AuthorRest {
     }
 
     @GetMapping(value = "/find")
-    public  ResponseEntity<List<AuthorDto>> read() {
-        return ResponseEntity.ok(authorService.read());
+    public  ResponseEntity<List<AuthorDto>> read(
+            @RequestParam(value = "averageRating", required = false) String answer
+    ) {
+        Map<String, String> params = new HashMap<>();
+        params.put("answer", answer);
+        return ResponseEntity.ok(authorService.read(params));
     }
 
     @PutMapping(value = "/event")

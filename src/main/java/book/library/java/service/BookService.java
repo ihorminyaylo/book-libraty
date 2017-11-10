@@ -9,5 +9,5 @@ public interface BookService {
     void create(BookDto bookDto);
     List<BookDto> read(Map<String, String> params) throws Exception;
     void update(BookDto bookDto);
-    void delete(String idBookDto);
+    void delete(List<String> listIdBooks);
 }
