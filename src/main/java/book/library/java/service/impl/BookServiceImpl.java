@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> read() {
+    public List<BookDto> read(Map<String, String> params) throws Exception {
+        if (params.get("authorId") != null) {
+            return bookDao.getByAuthor(params.get("authorId")).stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
+        }
         return bookDao.getAll().stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
     }
 
