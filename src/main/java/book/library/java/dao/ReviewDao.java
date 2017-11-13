@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ReviewDao extends InterfaceDao<Review> {
     List<Review> getByBookId(String id);
+    List<Review> getReviewByAuthorId(String id);
 }

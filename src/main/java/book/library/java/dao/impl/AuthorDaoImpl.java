@@ -12,7 +12,7 @@ import java.util.List;
 public class AuthorDaoImpl extends AbstractDao <Author> implements AuthorDao {
     @Override
     public List<Author> getByAverageRating() {
-        StringBuilder query = new StringBuilder("SELECT * FROM authors as a JOIN author_book_keys ab ON ab.author_id = a.id JOIN reviews r ON r.book_id = ab.book_id WHERE r.rating = (SELECT AVG(rating) FROM reviews)");
+        StringBuilder query = new StringBuilder("SELECT * FROM authors INNER JOIN author_book_keys ON authors.id = author_book_keys.author_id INNER JOIN reviews ON author_book_keys.book_id = reviews.book_id");
         return entityManager.createNativeQuery(query.toString(), Author.class).getResultList();
     }
 }

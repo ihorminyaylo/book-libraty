@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
+@EntityListeners(Review.class)
 @Table(name="authors")
 public class Author implements Serializable {
 
@@ -27,11 +28,15 @@ public class Author implements Serializable {
     @Column(name = "create_date")
     private LocalDate createDate;
 
+    @Column(name = "average_rating", length = 36)
+    private Double averageRating;
+
     @ManyToMany
     @JoinTable(name ="author_book_keys",
             joinColumns = {@JoinColumn(name = "author_id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
     private List<Book> books;
+
 
     public String getId() {
         return id;
@@ -71,5 +76,13 @@ public class Author implements Serializable {
 
     public void setBooks(List<Book> books) {
         this.books = books;
+    }
+
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
     }
 }

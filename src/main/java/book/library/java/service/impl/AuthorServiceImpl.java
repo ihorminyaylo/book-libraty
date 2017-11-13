@@ -1,14 +1,16 @@
 package book.library.java.service.impl;
 
 import book.library.java.dao.AuthorDao;
+import book.library.java.dao.ReviewDao;
 import book.library.java.dto.AuthorDto;
 import book.library.java.mapper.AuthorMapper;
-import book.library.java.mapper.BookMapper;
+import book.library.java.model.Author;
 import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -18,10 +20,12 @@ import java.util.stream.Collectors;
 public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorDao authorDao;
+    private final ReviewDao reviewDao;
 
     @Autowired
-    public AuthorServiceImpl(AuthorDao authorDao) {
+    public AuthorServiceImpl(AuthorDao authorDao, ReviewDao reviewDao) {
         this.authorDao = authorDao;
+        this.reviewDao = reviewDao;
     }
 
     @Override
@@ -31,8 +35,8 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public List<AuthorDto> read(Map<String, String> params) {
-        if (params.get("answer").equals("yes")) {
-            return authorDao.getByAverageRating().stream().map(AuthorMapper.MAPPER :: toDto).collect(Collectors.toList());
+        if (params.get("answer") != null && params.get("answer").equals("search")) {
+            return authorDao.getByAverageRating().stream().map(AuthorMapper.MAPPER::toDto).collect(Collectors.toList());
         }
         return authorDao.getAll().stream().map(AuthorMapper.MAPPER :: toDto).collect(Collectors.toList());
     }

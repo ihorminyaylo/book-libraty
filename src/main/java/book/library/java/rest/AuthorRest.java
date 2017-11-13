@@ -29,7 +29,7 @@ public class AuthorRest {
 
     @GetMapping(value = "/find")
     public  ResponseEntity<List<AuthorDto>> read(
-            @RequestParam(value = "averageRating", required = false) String answer
+            @RequestParam(value = "byAverageRating", required = false) String answer
     ) {
         Map<String, String> params = new HashMap<>();
         params.put("answer", answer);

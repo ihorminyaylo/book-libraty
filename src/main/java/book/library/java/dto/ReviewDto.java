@@ -7,6 +7,7 @@ public class ReviewDto {
     private String comment;
     private String rating;
     private String createDate;
+    private String bookId;
 
     public ReviewDto() { }
 
@@ -48,5 +49,13 @@ public class ReviewDto {
 
     public void setCreateDate(String createDate) {
         this.createDate = createDate;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 }
