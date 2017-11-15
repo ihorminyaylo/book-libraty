@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="reviews")
+@Table(name="review")
 public class Review implements Serializable {
 
     @Id
@@ -16,14 +16,14 @@ public class Review implements Serializable {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "commenter_name", nullable = false, length = 36)
+    @Column(name = "commenter_name", nullable = false, length = 256)
     private String commenterName;
 
-    @Column(name = "comment", nullable = false, length = 36)
+    @Column(name = "comment", nullable = false, length = 256)
     private String comment;
 
     @Column(name = "rating", nullable = false)
-    private double rating;
+    private Integer rating;
 
     @Column(name = "create_date", nullable = false)
     private LocalDate createDate;
@@ -56,14 +56,6 @@ public class Review implements Serializable {
         this.comment = comment;
     }
 
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
     public LocalDate getCreateDate() {
         return createDate;
     }
@@ -78,5 +70,13 @@ public class Review implements Serializable {
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }

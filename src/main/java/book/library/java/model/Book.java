@@ -7,26 +7,27 @@ import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="books")
+@Table(name="book")
 public class Book implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
     private String id;
 
-    @Column(name = "name", nullable = false, length = 36)
+    @Column(name = "name")
     private String name;
 
-    @Column(name = "year_published", nullable = false, length = 36)
+    @Column(name = "year_published")
     private int yearPublished;
 
-    @Column(name = "publisher", nullable = false, length = 36)
+    @Column(name = "publisher")
     private String publisher;
 
-    @Column(name = "create_date", nullable = false, length = 36)
+    @Column(name = "create_date")
     private LocalDate createDate;
+
+    @Column(name = "average_rating")
+    private Double averageRating;
 
     public Book() {}
 
@@ -71,4 +72,11 @@ public class Book implements Serializable {
         this.id = id;
     }
 
+    public Double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(Double averageRating) {
+        this.averageRating = averageRating;
+    }
 }

@@ -10,29 +10,27 @@ import java.util.List;
 
 @Entity
 @EntityListeners(Review.class)
-@Table(name="authors")
+@Table(name="author")
 public class Author implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "id")
     private String id;
 
-    @Column(name = "first_name", nullable = false, length = 36)
+    @Column(name = "first_name", nullable = false, length = 256)
     private String firstName;
 
-    @Column(name = "second_name", nullable = false, length = 36)
+    @Column(name = "second_name", nullable = false, length = 256)
     private String secondName;
 
     @Column(name = "create_date")
     private LocalDate createDate;
 
-    @Column(name = "average_rating", length = 36)
+    @Column(name = "average_rating", length = 256)
     private Double averageRating;
 
     @ManyToMany
-    @JoinTable(name ="author_book_keys",
+    @JoinTable(name ="author_book",
             joinColumns = {@JoinColumn(name = "author_id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
     private List<Book> books;
