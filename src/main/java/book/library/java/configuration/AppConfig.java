@@ -16,11 +16,4 @@ import java.util.List;
 @EnableWebMvc
 @ComponentScan(basePackages = "book.library")
 public class AppConfig extends WebMvcConfigurerAdapter {
-    @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        GsonHttpMessageConverter msgConverter = new GsonHttpMessageConverter();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        msgConverter.setGson(gson);
-        converters.add(msgConverter);
-    }
 }
