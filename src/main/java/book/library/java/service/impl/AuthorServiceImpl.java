@@ -4,13 +4,11 @@ import book.library.java.dao.AuthorDao;
 import book.library.java.dao.ReviewDao;
 import book.library.java.dto.AuthorDto;
 import book.library.java.mapper.AuthorMapper;
-import book.library.java.model.Author;
 import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,7 +36,7 @@ public class AuthorServiceImpl implements AuthorService {
         if (params.get("answer") != null && params.get("answer").equals("search")) {
             return authorDao.getByAverageRating().stream().map(AuthorMapper.MAPPER::toDto).collect(Collectors.toList());
         }
-        return authorDao.getAll().stream().map(AuthorMapper.MAPPER :: toDto).collect(Collectors.toList());
+        return authorDao.find().stream().map(AuthorMapper.MAPPER :: toDto).collect(Collectors.toList());
     }
 
     @Override

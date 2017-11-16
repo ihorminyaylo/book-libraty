@@ -24,27 +24,4 @@ public class ReviewDaoImpl extends AbstractDao<Review> implements ReviewDao {
         query.append(id).append("'");
         return entityManager.createNativeQuery(query.toString(), Review.class).getResultList();
     }
-
-    @Override
-    public void add(Review entity) {
-        entityManager.persist(entity);
-    }
-
-    @Override
-    public void set(Review entity) {
-        entityManager.merge(entity);
-    }
-
-    @Override
-    public void delete(String entityId) {
-        Review entity = get(entityId);
-        entityManager.remove(entity);
-    }
-
-    @PostPersist
-    public void process(Author author) {
-        List<Review> reviewList = getReviewByAuthorId(author.getId());
-        Double averageRatingByAuthor = reviewList.stream().mapToDouble(Review::getRating).average().getAsDouble();
-        author.setAverageRating(averageRatingByAuthor);
-    }
 }

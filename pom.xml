@@ -82,6 +82,12 @@
                 <version>2.2</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <!--<webResources>
+                    <resource>
+                        <directory>**/src/main/java/webapp/ui/*</directory>
+                        <exclude>**/src/main/java/webapp/ui/node_modules/*</exclude>
+                    </resource>
+                    </webResources>-->
                 </configuration>
             </plugin>
             <plugin>

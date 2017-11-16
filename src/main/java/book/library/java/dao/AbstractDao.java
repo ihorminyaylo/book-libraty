@@ -25,7 +25,7 @@ public class AbstractDao<T> implements InterfaceDao<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<T> getAll() {
+    public List<T> find() {
         return entityManager.createQuery("FROM " + entityType.getName()).getResultList();
     }
 

@@ -46,7 +46,7 @@ public class BookServiceImpl implements BookService {
                 return bookDao.getByRating(rating).stream().map(BookMapper.MAPPER::toDto).collect(Collectors.toList());
             }
         }
-        return bookDao.getAll().stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
+        return bookDao.find().stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
     }
 
     @Override

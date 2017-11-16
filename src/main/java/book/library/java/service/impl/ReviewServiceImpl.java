@@ -27,7 +27,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public List<ReviewDto> read() {
-        return reviewDao.getAll().stream().map(ReviewMapper.MAPPER :: toDto).collect(Collectors.toList());
+        return reviewDao.find().stream().map(ReviewMapper.MAPPER :: toDto).collect(Collectors.toList());
     }
 
     @Override
