@@ -6,6 +6,8 @@ import book.library.java.model.Author;
 import book.library.java.model.Book;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Query;
+import java.math.BigInteger;
 import java.util.List;
 
 @Repository
@@ -14,5 +16,12 @@ public class AuthorDaoImpl extends AbstractDao <Author> implements AuthorDao {
     public List<Author> getByAverageRating() {
         StringBuilder query = new StringBuilder("SELECT * FROM authors INNER JOIN author_book_keys ON authors.id = author_book_keys.author_id INNER JOIN reviews ON author_book_keys.book_id = reviews.book_id");
         return entityManager.createNativeQuery(query.toString(), Author.class).getResultList();
+    }
+
+    @Override
+    public BigInteger totalRecords() {
+        String queryString = "SELECT Count(*) FROM author";
+        Query query = entityManager.createNativeQuery(queryString);
+        return (BigInteger) query.getSingleResult();
     }
 }

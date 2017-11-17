@@ -4,6 +4,7 @@ import book.library.java.dao.AuthorDao;
 import book.library.java.dao.BookDao;
 import book.library.java.dao.ReviewDao;
 import book.library.java.dto.BookDto;
+import book.library.java.exception.DaoException;
 import book.library.java.mapper.BookMapper;
 import book.library.java.model.Review;
 import book.library.java.service.BookService;
@@ -30,7 +31,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void create(BookDto bookDto) {
+    public void create(BookDto bookDto) throws DaoException {
         bookDao.create(BookMapper.MAPPER.fromDto(bookDto));
     }
 
@@ -38,7 +39,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public List<BookDto> read(Map<String, String> params) throws Exception {
         if (params.get("authorId") != null) {
-            return bookDao.getByAuthor(params.get("authorId")).stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
+            return bookDao.getByAuthor(Integer.parseInt(params.get("authorId"))).stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
         }
         if (params.get("rating") != null) {
             Double rating = Double.parseDouble(params.get("rating"));
@@ -50,16 +51,22 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void update(BookDto bookDto) {
+    public void update(BookDto bookDto) throws DaoException {
         bookDao.update(BookMapper.MAPPER.fromDto(bookDto));
     }
 
     @Override
-    public void delete(List<String> listIdBooks) {
-        for (String idBook : listIdBooks) {
+    public void delete(List<Integer> listIdBooks) throws DaoException {
+        for (Integer idBook : listIdBooks) {
             List<Review> reviewList = reviewDao.getByBookId(idBook);
             if (!reviewList.isEmpty()) {
-                reviewList.stream().forEach(review -> reviewDao.delete(review.getId()));
+                reviewList.stream().forEach(review -> {
+                    try {
+                        reviewDao.delete(review.getId());
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                });
             }
             bookDao.delete(idBook);
         }

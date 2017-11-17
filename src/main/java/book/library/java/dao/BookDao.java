@@ -5,6 +5,6 @@ import book.library.java.model.Book;
 import java.util.List;
 
 public interface BookDao extends InterfaceDao<Book> {
-    List<Book> getByAuthor(String authorId);
+    List<Book> getByAuthor(Integer authorId);
     List<Book> getByRating(Double rating);
 }

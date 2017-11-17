@@ -1,5 +1,7 @@
 package book.library.java.dao;
 
+import book.library.java.exception.DaoException;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.Serializable;
@@ -19,12 +21,13 @@ public class AbstractDao<T> implements InterfaceDao<T> {
     }
 
     @Override
-    public T get(String id) {
+    public T get(Integer id) {
         return entityManager.find(entityType, id);
     }
 
     @Override
     public <P> List<T> find(P pattern) {
+
         return null;
     }
 
@@ -35,17 +38,32 @@ public class AbstractDao<T> implements InterfaceDao<T> {
     }
 
     @Override
-    public void create(T entity) { entityManager.persist(entity);
+    public void create(T entity) throws DaoException {
+        if (entity == null) {
+            throw new DaoException("Entity can't be null");
+        }
+        entityManager.persist(entity);
     }
 
     @Override
-    public void update(T entity) {
+    public void update(T entity) throws DaoException {
+        if (entity == null) {
+            throw new DaoException("Entity can't be null");
+        }
         entityManager.merge(entity);
     }
 
     @Override
-    public void delete(String entityId) {
+    public void delete(Integer entityId) throws DaoException {
+        if (entityId == null) {
+            throw new DaoException("Entity id can't be null");
+        }
         T entity = get(entityId);
         entityManager.remove(entity);
+    }
+
+    @Override
+    public List<T> findWithPagination(Integer page, Integer totalView) {
+        return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult((page-1) * totalView).setMaxResults(totalView).getResultList();
     }
 }

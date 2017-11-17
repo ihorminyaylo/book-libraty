@@ -1,5 +1,6 @@
 package book.library.java.model;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;

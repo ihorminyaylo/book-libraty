@@ -1,6 +1,7 @@
 package book.library.java.controller;
 
 import book.library.java.dto.BookDto;
+import book.library.java.exception.DaoException;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class BookController {
     }
 
     @PostMapping
-    public void create(@RequestBody BookDto bookDto) {
+    public void create(@RequestBody BookDto bookDto) throws DaoException {
         bookService.create(bookDto);
     }
 
@@ -37,12 +38,12 @@ public class BookController {
     }
 
     @PutMapping(value = "/event")
-    public void update(@RequestBody BookDto bookDto) {
+    public void update(@RequestBody BookDto bookDto) throws DaoException {
         bookService.update(bookDto);
     }
 
     @PutMapping(value = "/delete")
-    public void delete(@RequestBody List<String> listIdBooks) {
+    public void delete(@RequestBody List<Integer> listIdBooks) throws DaoException {
         bookService.delete(listIdBooks);
     }
 }

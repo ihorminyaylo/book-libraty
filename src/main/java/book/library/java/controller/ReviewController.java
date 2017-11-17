@@ -1,6 +1,7 @@
 package book.library.java.controller;
 
 import book.library.java.dto.ReviewDto;
+import book.library.java.exception.DaoException;
 import book.library.java.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class ReviewController {
     }
 
     @PostMapping
-    public void create(@RequestBody ReviewDto reviewDto) {
+    public void create(@RequestBody ReviewDto reviewDto) throws DaoException {
         reviewService.create(reviewDto);
     }
 
@@ -30,12 +31,12 @@ public class ReviewController {
     }
 
     @PutMapping(value = "/event")
-    public void update(@RequestBody ReviewDto reviewDto) {
+    public void update(@RequestBody ReviewDto reviewDto) throws DaoException {
         reviewService.update(reviewDto);
     }
 
     @PutMapping(value = "/delete")
-    public void delete(@RequestBody String idReview) {
+    public void delete(@RequestBody Integer idReview) throws DaoException {
         reviewService.delete(idReview);
     }
 }

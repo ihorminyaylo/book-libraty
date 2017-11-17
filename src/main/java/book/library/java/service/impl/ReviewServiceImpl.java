@@ -2,11 +2,14 @@ package book.library.java.service.impl;
 
 import book.library.java.dao.ReviewDao;
 import book.library.java.dto.ReviewDto;
+import book.library.java.exception.DaoException;
 import book.library.java.mapper.ReviewMapper;
+import book.library.java.model.Review;
 import book.library.java.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,8 +23,9 @@ public class ReviewServiceImpl implements ReviewService {
         this.reviewDao = reviewDao;
     }
 
+    @Transactional
     @Override
-    public void create(ReviewDto reviewDto) {
+    public void create(ReviewDto reviewDto) throws DaoException {
         reviewDao.create(ReviewMapper.MAPPER.fromDto(reviewDto));
     }
 
@@ -31,12 +35,12 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void update(ReviewDto reviewDto) {
+    public void update(ReviewDto reviewDto) throws DaoException {
         reviewDao.update(ReviewMapper.MAPPER.fromDto(reviewDto));
     }
 
     @Override
-    public void delete(String idReviewDto) {
+    public void delete(Integer idReviewDto) throws DaoException {
         reviewDao.delete(idReviewDto);
     }
 }

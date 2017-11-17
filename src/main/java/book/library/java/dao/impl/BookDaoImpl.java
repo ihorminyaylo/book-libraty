@@ -12,7 +12,7 @@ import java.util.Map;
 public class BookDaoImpl extends AbstractDao<Book> implements BookDao {
 
     @Override
-    public List<Book> getByAuthor(String authorId) {
+    public List<Book> getByAuthor(Integer authorId) {
         StringBuilder query = new StringBuilder("SELECT * FROM books as b JOIN author_book_keys as a ON a.book_id = b.id WHERE a.author_id = '");
         query.append(authorId).append("'");
         return entityManager.createNativeQuery(query.toString(), Book.class).getResultList();
