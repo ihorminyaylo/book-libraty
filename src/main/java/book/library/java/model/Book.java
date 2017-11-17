@@ -5,32 +5,40 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name="book")
 public class Book implements Serializable {
 
     @Id
-    @Column(name = "id")
-    private String id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-    @Column(name = "name")
+    @Column(name = "name", nullable = false, length = 256)
     private String name;
 
-    @Column(name = "year_published")
+    @Column(name = "year_published", nullable = false, length = 256)
     private int yearPublished;
 
-    @Column(name = "publisher")
+    @Column(name = "publisher", nullable = false, length = 256)
     private String publisher;
 
+    // todo: I don't know if we need to @Temporal(TemporalType.TIMESTAMP), because TIMESTAMP in database auto generated
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
-    private LocalDate createDate;
+    private Date createDate;
 
-    @Column(name = "average_rating")
-    private Double averageRating;
+    @Column(name = "average_rating", nullable = false)
+    private Float averageRating;
 
     public Book() {}
 
+    // todo: I don't know if we need to @PrePersist annotation with method onCreate()
+    @PrePersist
+    protected void onCreate() { createDate = new Date();}
 
     public String getName() {
         return name;
@@ -48,13 +56,6 @@ public class Book implements Serializable {
         this.yearPublished = yearPublished;
     }
 
-    public LocalDate getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDate createDate) {
-        this.createDate = createDate;
-    }
 
     public String getPublisher() {
         return publisher;
@@ -64,19 +65,27 @@ public class Book implements Serializable {
         this.publisher = publisher;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Double getAverageRating() {
+    public Float getAverageRating() {
         return averageRating;
     }
 
-    public void setAverageRating(Double averageRating) {
+    public void setAverageRating(Float averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

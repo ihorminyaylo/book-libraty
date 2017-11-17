@@ -1,4 +1,4 @@
-package book.library.java.rest;
+package book.library.java.controller;
 
 import book.library.java.dto.AuthorDto;
 import book.library.java.model.Author;
@@ -13,18 +13,23 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/author")
-public class AuthorRest {
+public class AuthorController {
 
     private final AuthorService authorService;
 
     @Autowired
-    public AuthorRest(AuthorService authorService) {
+    public AuthorController(AuthorService authorService) {
         this.authorService = authorService;
     }
 
     @PostMapping
     public void create(@RequestBody AuthorDto authorDto) {
         authorService.create(authorDto);
+    }
+
+    @GetMapping(value = "/{id}")
+    public  ResponseEntity<List<AuthorDto>> get(){
+        return null;
     }
 
     @GetMapping(value = "/find")

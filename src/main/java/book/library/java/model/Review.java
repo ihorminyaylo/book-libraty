@@ -5,40 +5,40 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name="review")
 public class Review implements Serializable {
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "id")
-    private String id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
     @Column(name = "commenter_name", nullable = false, length = 256)
     private String commenterName;
 
-    @Column(name = "comment", nullable = false, length = 256)
+    @Column(name = "comment", nullable = false)
     private String comment;
 
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Column(name = "create_date", nullable = false)
-    private LocalDate createDate;
+    // todo: I don't know if we need to @Temporal(TemporalType.TIMESTAMP), because TIMESTAMP in database auto generated
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date")
+    private Date createDate;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public String getId() {
-        return id;
-    }
+    public Review() {}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    // todo: I don't know if we need to @PrePersist annotation with method onCreate()
+    @PrePersist
+    protected void onCreate() { createDate = new Date();}
 
     public String getCommenterName() {
         return commenterName;
@@ -56,14 +56,6 @@ public class Review implements Serializable {
         this.comment = comment;
     }
 
-    public LocalDate getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDate createDate) {
-        this.createDate = createDate;
-    }
-
     public Book getBook() {
         return book;
     }
@@ -78,5 +70,21 @@ public class Review implements Serializable {
 
     public void setRating(Integer rating) {
         this.rating = rating;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

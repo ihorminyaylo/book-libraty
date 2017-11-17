@@ -23,19 +23,23 @@ public class AbstractDao<T> implements InterfaceDao<T> {
         return entityManager.find(entityType, id);
     }
 
+    @Override
+    public <P> List<T> find(P pattern) {
+        return null;
+    }
+
     @SuppressWarnings("unchecked")
     @Override
-    public List<T> find() {
+    public List<T> findAll() {
         return entityManager.createQuery("FROM " + entityType.getName()).getResultList();
     }
 
     @Override
-    public void add(T entity) {
-        entityManager.persist(entity);
+    public void create(T entity) { entityManager.persist(entity);
     }
 
     @Override
-    public void set(T entity) {
+    public void update(T entity) {
         entityManager.merge(entity);
     }
 

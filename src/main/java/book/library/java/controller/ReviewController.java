@@ -1,4 +1,4 @@
-package book.library.java.rest;
+package book.library.java.controller;
 
 import book.library.java.dto.ReviewDto;
 import book.library.java.service.ReviewService;
@@ -10,12 +10,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/review")
-public class ReviewRest {
+public class ReviewController {
 
     private final ReviewService reviewService;
 
     @Autowired
-    public ReviewRest(ReviewService reviewService) {
+    public ReviewController(ReviewService reviewService) {
         this.reviewService = reviewService;
     }
 

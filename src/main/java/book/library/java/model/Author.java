@@ -6,16 +6,20 @@ import javax.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@EntityListeners(Review.class)
 @Table(name="author")
 public class Author implements Serializable {
 
     @Id
-    @Column(name = "id")
-    private String id;
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
     @Column(name = "first_name", nullable = false, length = 256)
     private String firstName;
@@ -23,26 +27,23 @@ public class Author implements Serializable {
     @Column(name = "second_name", nullable = false, length = 256)
     private String secondName;
 
+    // todo: I don't know if we need to @Temporal(TemporalType.TIMESTAMP), because TIMESTAMP in database auto generated
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
-    private LocalDate createDate;
+    private Date createDate;
 
-    @Column(name = "average_rating", length = 256)
-    private Double averageRating;
+    @Column(name = "average_rating", nullable = false)
+    private Float averageRating;
 
     @ManyToMany
     @JoinTable(name ="author_book",
             joinColumns = {@JoinColumn(name = "author_id", nullable = false)},
             inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
-    private List<Book> books;
+    private List<Book> books = new ArrayList<>();
 
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
+    // todo: I don't know if we need to @PrePersist annotation with method onCreate()
+    @PrePersist
+    protected void onCreate() { createDate = new Date();}
 
     public String getFirstName() {
         return firstName;
@@ -60,14 +61,6 @@ public class Author implements Serializable {
         this.secondName = secondName;
     }
 
-    public LocalDate getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDate createDate) {
-        this.createDate = createDate;
-    }
-
     public List<Book> getBooks() {
         return books;
     }
@@ -76,11 +69,27 @@ public class Author implements Serializable {
         this.books = books;
     }
 
-    public Double getAverageRating() {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Float getAverageRating() {
         return averageRating;
     }
 
-    public void setAverageRating(Double averageRating) {
+    public void setAverageRating(Float averageRating) {
         this.averageRating = averageRating;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

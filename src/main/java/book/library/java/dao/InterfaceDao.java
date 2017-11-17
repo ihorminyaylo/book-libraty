@@ -4,10 +4,13 @@ import java.util.List;
 
 public interface InterfaceDao<T> {
 
-    T get(String id);
-    List<T> find();
-    void add(T entity);
-    void set(T entity);
+    //todo: Remove, because we will use find with pattern
+    List<T> findAll();
+
+    void create(T entity);
+    T get(String entityId);
+    <P> List<T> find(P pattern);
+    void update(T entity);
     void delete(String entityId);
 
 }

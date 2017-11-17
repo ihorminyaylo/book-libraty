@@ -22,17 +22,17 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public void create(ReviewDto reviewDto) {
-        reviewDao.add(ReviewMapper.MAPPER.fromDto(reviewDto));
+        reviewDao.create(ReviewMapper.MAPPER.fromDto(reviewDto));
     }
 
     @Override
     public List<ReviewDto> read() {
-        return reviewDao.find().stream().map(ReviewMapper.MAPPER :: toDto).collect(Collectors.toList());
+        return reviewDao.findAll().stream().map(ReviewMapper.MAPPER :: toDto).collect(Collectors.toList());
     }
 
     @Override
     public void update(ReviewDto reviewDto) {
-        reviewDao.set(ReviewMapper.MAPPER.fromDto(reviewDto));
+        reviewDao.update(ReviewMapper.MAPPER.fromDto(reviewDto));
     }
 
     @Override

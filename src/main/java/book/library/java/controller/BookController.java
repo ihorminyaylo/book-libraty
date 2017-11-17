@@ -1,4 +1,4 @@
-package book.library.java.rest;
+package book.library.java.controller;
 
 import book.library.java.dto.BookDto;
 import book.library.java.service.BookService;
@@ -12,12 +12,12 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/book")
-public class BookRest {
+public class BookController {
 
     private final BookService bookService;
 
     @Autowired
-    public BookRest(BookService bookService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 

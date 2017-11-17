@@ -28,7 +28,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public void create(AuthorDto authorDto) {
-        this.authorDao.add(AuthorMapper.MAPPER.fromDto(authorDto));
+        this.authorDao.create(AuthorMapper.MAPPER.fromDto(authorDto));
     }
 
     @Override
@@ -36,12 +36,12 @@ public class AuthorServiceImpl implements AuthorService {
         if (params.get("answer") != null && params.get("answer").equals("search")) {
             return authorDao.getByAverageRating().stream().map(AuthorMapper.MAPPER::toDto).collect(Collectors.toList());
         }
-        return authorDao.find().stream().map(AuthorMapper.MAPPER :: toDto).collect(Collectors.toList());
+        return authorDao.findAll().stream().map(AuthorMapper.MAPPER :: toDto).collect(Collectors.toList());
     }
 
     @Override
     public void update(AuthorDto authorDto) {
-        authorDao.set(AuthorMapper.MAPPER.fromDto(authorDto));
+        authorDao.update(AuthorMapper.MAPPER.fromDto(authorDto));
     }
 
     @Override

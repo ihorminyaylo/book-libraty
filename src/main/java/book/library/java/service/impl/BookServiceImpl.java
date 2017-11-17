@@ -31,7 +31,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void create(BookDto bookDto) {
-        bookDao.add(BookMapper.MAPPER.fromDto(bookDto));
+        bookDao.create(BookMapper.MAPPER.fromDto(bookDto));
     }
 
     @Override
@@ -46,12 +46,12 @@ public class BookServiceImpl implements BookService {
                 return bookDao.getByRating(rating).stream().map(BookMapper.MAPPER::toDto).collect(Collectors.toList());
             }
         }
-        return bookDao.find().stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
+        return bookDao.findAll().stream().map(BookMapper.MAPPER :: toDto).collect(Collectors.toList());
     }
 
     @Override
     public void update(BookDto bookDto) {
-        bookDao.set(BookMapper.MAPPER.fromDto(bookDto));
+        bookDao.update(BookMapper.MAPPER.fromDto(bookDto));
     }
 
     @Override
