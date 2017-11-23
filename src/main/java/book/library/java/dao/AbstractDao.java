@@ -63,7 +63,7 @@ public class AbstractDao<T> implements InterfaceDao<T> {
     }
 
     @Override
-    public List<T> findWithPagination(Integer page, Integer totalView) {
-        return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult((page-1) * totalView).setMaxResults(totalView).getResultList();
+    public List<T> findWithPagination(Integer startIndex, Integer pageSize) {
+        return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult(startIndex-1).setMaxResults(pageSize).getResultList();
     }
 }

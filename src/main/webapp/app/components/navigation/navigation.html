@@ -1,0 +1,18 @@
+<div class="ui inverted menu">
+  <div class="header item">
+    BookLibrary
+  </div>
+  
+  <a class="item teal" ng-class="{active: $ctrl.isActive('^/$')}" href="#!/">
+    Home
+  </a>
+
+  <a class="item teal" ng-class="{active: $ctrl.isActive('^/authors')}" href="#!/authors/1">
+    Authors
+  </a>
+
+  <a class="item teal" ng-class="{active: $ctrl.isActive('^/books')}" href="#!/books">
+    Books
+  </a>
+  
+</div>

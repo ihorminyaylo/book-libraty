@@ -1,0 +1,65 @@
+<h1 class="ui header" align="center">List of books</h1>
+<table class="ui selectable celled table">
+  <thead>
+  <tr>
+    <th></th>
+    <th colspan="7">
+      <div class="ui right floated small primary labeled icon button">
+        <i class="user icon"></i> Add Book
+      </div>
+    </th>
+  </tr>
+  <tr><th>#</th>
+    <th>Book name</th>
+    <th>Publisher</th>
+    <th>Year publisher</th>
+    <th>Create date</th>
+    <th>Rating</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody ng-repeat="book in $ctrl.books">
+  <tr>
+    <td>
+      {{ $index + 1 }}
+    </td>
+    <td class="single line">
+      {{book.name}}
+    </td>
+    <td>
+      {{book.publisher}}
+    </td>
+    <td>
+      {{book.yearPublished}}
+    </td>
+    <td>
+      {{book.createDate}}
+    </td>
+    <td>
+      <a ng-if="book.rating == null">This book dosen't have review</a>
+      <a>{{book.rating}}</a>
+    </td>
+    <td>
+      <button class="ui orange button">
+        EDIT
+      </button>
+      <button class="ui red button">
+        DELETE
+      </button>
+    </td>
+  </tr>
+  </tbody>
+  <tfoot class="full-width">
+  <tr>
+    <th></th>
+    <th colspan="7">
+      <a ng-controller="AuthorsIndex as a">
+        <div class="ui right floated small primary labeled icon button" ng-click="a.openModal()">
+          <i class="user icon"></i> Add Book
+        </div>
+      </a>
+    </th>
+  </tr>
+  </tfoot>
+</table>
+

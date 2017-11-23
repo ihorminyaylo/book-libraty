@@ -15,5 +15,5 @@ public interface InterfaceDao<T> {
     void update(T entity) throws DaoException;
     void delete(Integer entityId) throws DaoException;
 
-    List<T> findWithPagination(Integer page, Integer totalView);
+    List<T> findWithPagination(Integer page, Integer pageSize);
 }

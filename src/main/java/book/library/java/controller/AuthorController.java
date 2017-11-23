@@ -2,9 +2,11 @@ package book.library.java.controller;
 
 import book.library.java.dto.AuthorsAndPageDto;
 import book.library.java.dto.AuthorDto;
+import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +34,16 @@ public class AuthorController {
     }
 
     @GetMapping(value = "/find")
-    public  ResponseEntity<AuthorsAndPageDto> read(
+    public  ResponseEntity<?> read(
             @RequestParam int page,
             @RequestParam int pageSize,
             @RequestParam(value = "byAverageRating", required = false) String answer
-    ) {
-        return ResponseEntity.ok(authorService.read(page, pageSize));
+    ) throws BusinessException {
+        try {
+            return ResponseEntity.ok(authorService.read(page, pageSize));
+        } catch (BusinessException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
         //Map<String, String> params = new HashMap<>();
         //params.put("answer", answer);
         //return ResponseEntity.ok(authorService.read(params));

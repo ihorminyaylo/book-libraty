@@ -16,19 +16,18 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @ComponentScan(basePackages = "book.library")
 public class WebConfiguration extends WebMvcConfigurerAdapter {
 
-    @Override
+    @Override //systemjs/dist
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/ui/**").addResourceLocations("/ui/");
-        registry.addResourceHandler("*.css").addResourceLocations("/ui/");
-        registry.addResourceHandler("*.js").addResourceLocations("/ui/");
-        registry.addResourceHandler("/ui/assets/*.css").addResourceLocations("/ui/assets/");
+        registry.addResourceHandler("/**").addResourceLocations("/");
+        registry.addResourceHandler("*.css").addResourceLocations("/");
+        registry.addResourceHandler("*.js").addResourceLocations("/");
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     @Bean
     public ViewResolver viewResolver() {
         InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-        viewResolver.setPrefix("/ui/");
+        viewResolver.setPrefix("/");
         viewResolver.setSuffix(".html");
         return viewResolver;
     }

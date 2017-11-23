@@ -1,0 +1,91 @@
+<h1 class="ui header" align="center">List of authors</h1>
+<table class="ui selectable celled table">
+    <div class="ui pagination menu">
+        <a ng-if="$ctrl.$routeParams.isbn != 1" class="icon item" href="#!/authors/{{$ctrl.$routeParams.isbn - 1}}">
+            <i class="left arrow icon"></i>
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn != 1" class="item" href="#!/authors/1">
+            1
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn > 3" class="disabled item">
+            ...
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn == 3" class="item" href="#!/authors/2">
+            2
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn == $ctrl.authorsAndCountPages.pageCount && $ctrl.authorsAndCountPages.pageCount != 3" class="item" href="#!/authors/{{$ctrl.authorsAndCountPages.pageCount - 1}}">
+            {{$ctrl.authorsAndCountPages.pageCount - 1}}
+        </a>
+        <a class="active item">
+            {{$ctrl.$routeParams.isbn}}
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn == 1 && $ctrl.authorsAndCountPages.pageCount != 3" class="item" href="#!/authors/2">
+            2
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn < $ctrl.authorsAndCountPages.pageCount - 2" class="disabled item">
+            ...
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn == $ctrl.authorsAndCountPages.pageCount - 2" class="item" href="#!/authors/{{$ctrl.authorsAndCountPages.pageCount - 1}}">
+            {{$ctrl.authorsAndCountPages.pageCount - 1}}
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn != $ctrl.authorsAndCountPages.pageCount" class="item" href="#!/authors/{{$ctrl.authorsAndCountPages.pageCount}}">
+            {{$ctrl.authorsAndCountPages.pageCount}}
+        </a>
+        <a ng-if="$ctrl.$routeParams.isbn != $ctrl.authorsAndCountPages.pageCount" class="icon item" href="#!/authors/{{$ctrl.nextPage}}">
+            <i class="right arrow icon"></i>
+        </a>
+    </div>
+
+
+    <thead>
+    <tr>
+        <th></th>
+        <th colspan="6">
+            <div class="ui right floated small primary labeled icon button">
+                <i class="user icon"></i> Add Author
+            </div>
+        </th>
+    </tr>
+    <tr><th class="single line">#</th>
+        <th>Full name</th>
+        <th>Create date</th>
+        <th>Action</th>
+    </tr></thead>
+    <tbody ng-repeat="author in $ctrl.authorsAndCountPages.authorDtoList">
+    <tr>
+        <td>
+            {{$index + ($ctrl.currentPage-1)*$ctrl.perPage + 1}}
+        </td>
+        <td class="single line">
+            {{author.secondName}} {{author.firstName}}
+        </td>
+        <td>
+            {{author.createDate}}
+        </td>
+        <td>
+            <div ng-if="author.rating == null">This author dosen't have review</div>
+            <div>{{author.rating}}</div>
+        </td>
+        <td>
+            <button class="ui orange button">
+                EDIT
+            </button>
+            <button class="ui red button">
+                DELETE
+            </button>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot class="full-width">
+    <tr>
+        <th></th>
+        <th colspan="6">
+            <a ng-controller="AuthorsIndex as a">
+                <div class="ui right floated small primary labeled icon button" ng-click="a.openModal()">
+                    <i class="user icon"></i> Add Author
+                </div>
+            </a>
+        </th>
+    </tr>
+    </tfoot>
+</table>

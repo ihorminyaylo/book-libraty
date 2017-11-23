@@ -4,6 +4,7 @@ import book.library.java.dao.AuthorDao;
 import book.library.java.dao.ReviewDao;
 import book.library.java.dto.AuthorsAndPageDto;
 import book.library.java.dto.AuthorDto;
+import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.mapper.AuthorMapper;
 import book.library.java.service.AuthorService;
@@ -53,13 +54,17 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorsAndPageDto read(Integer page, Integer pageSize) {
+    public AuthorsAndPageDto read(Integer page, Integer pageSize) throws BusinessException {
+        BigInteger totalRecords = authorDao.totalRecords();
+        BigInteger pages = (totalRecords.add(BigInteger.valueOf(pageSize)).subtract(BigInteger.valueOf(1))).divide(BigInteger.valueOf(pageSize));
+        int correctPage = BigInteger.valueOf(page).compareTo(pages);
+        if (page < 0 || correctPage == 1) {
+            throw new BusinessException("Page can't be less 0 and more '"+pages+"'");
+        }
         if (page != 1) {
             page = (page - 1)* pageSize + 1;
         }
         List<AuthorDto> authorDtoList = authorDao.findWithPagination(page, pageSize).stream().map(AuthorMapper.MAPPER :: toDto).collect(Collectors.toList());
-        BigInteger totalRecords = authorDao.totalRecords();
-        BigInteger pages = (totalRecords.add(BigInteger.valueOf(pageSize)).subtract(BigInteger.valueOf(1))).divide(BigInteger.valueOf(pageSize));
         return new AuthorsAndPageDto(authorDtoList, pages);
     }
 }

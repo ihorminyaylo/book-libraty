@@ -1,0 +1,35 @@
+<!doctype html>
+<head>
+  <title>Book Library</title>
+  
+  <style>
+    body > .ui.container {
+      margin-top: 3em;
+    }
+  </style>
+  
+  <link rel="stylesheet" href="node_modules/semantic-ui-css/semantic.css">
+
+  <!--bootstrap-->
+  <!-- Latest compiled and minified CSS -->
+  </head>
+<body ng-app="myApp">
+  <div class="ui container">
+    <navigation></navigation>
+    <div class="ui segment">
+      <ng-view></ng-view>
+    </div>
+  </div>
+  
+  <script src="node_modules/systemjs/dist/system.js"></script>
+
+  <script src="config.js"></script>
+
+
+
+  <!--material design-->
+
+  <script>
+    System.import('built/app/app');
+  </script>
+</body>
