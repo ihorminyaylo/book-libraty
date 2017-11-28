@@ -1,40 +1,26 @@
 package book.library.java.dao;
 
+import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.DaoException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigInteger;
 import java.util.List;
 
-public class AbstractDao<T> implements InterfaceDao<T> {
+@SuppressWarnings("unchecked")
+public abstract class AbstractDao<T> implements InterfaceDao<T> {
 
     @PersistenceContext
     protected EntityManager entityManager;
 
     private Class<T> entityType;
 
-    @SuppressWarnings("unchecked")
     public  AbstractDao() {
         this.entityType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-    }
-
-    @Override
-    public T get(Integer id) {
-        return entityManager.find(entityType, id);
-    }
-
-    @Override
-    public <P> List<T> find(P pattern) {
-
-        return null;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<T> findAll() {
-        return entityManager.createQuery("FROM " + entityType.getName()).getResultList();
     }
 
     @Override
@@ -43,6 +29,21 @@ public class AbstractDao<T> implements InterfaceDao<T> {
             throw new DaoException("Entity can't be null");
         }
         entityManager.persist(entity);
+    }
+
+    @Override
+    public T get(Integer id) {
+        return entityManager.find(entityType, id);
+    }
+
+    @Override
+    public List<T> findAll() {
+        return entityManager.createQuery("FROM " + entityType.getName()).getResultList();
+    }
+
+    @Override
+    public List<T> find(ReadParamsDto readParamsDto) {
+        return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult(readParamsDto.getOffset()).setMaxResults(readParamsDto.getLimit()).getResultList();
     }
 
     @Override
@@ -63,7 +64,9 @@ public class AbstractDao<T> implements InterfaceDao<T> {
     }
 
     @Override
-    public List<T> findWithPagination(Integer startIndex, Integer pageSize) {
-        return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult(startIndex-1).setMaxResults(pageSize).getResultList();
+    public Integer totalRecords() {
+        String queryString = "SELECT Count(*) FROM " + entityType.getName();
+        Query query = entityManager.createQuery(queryString);
+        return (int) (long) query.getSingleResult();
     }
 }

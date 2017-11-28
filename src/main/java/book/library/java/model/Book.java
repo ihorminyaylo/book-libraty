@@ -27,7 +27,6 @@ public class Book implements Serializable {
     @Column(name = "publisher", nullable = false, length = 256)
     private String publisher;
 
-    // todo: I don't know if we need to @Temporal(TemporalType.TIMESTAMP), because TIMESTAMP in database auto generated
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
     private Date createDate;
@@ -37,7 +36,6 @@ public class Book implements Serializable {
 
     public Book() {}
 
-    // todo: I don't know if we need to @PrePersist annotation with method onCreate()
     @PrePersist
     protected void onCreate() { createDate = new Date();}
 

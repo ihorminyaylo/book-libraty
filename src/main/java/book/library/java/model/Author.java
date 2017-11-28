@@ -27,12 +27,11 @@ public class Author implements Serializable {
     @Column(name = "second_name", nullable = false, length = 256)
     private String secondName;
 
-    // todo: I don't know if we need to @Temporal(TemporalType.TIMESTAMP), because TIMESTAMP in database auto generated
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
     private Date createDate;
 
-    @Column(name = "average_rating", nullable = false)
+    @Column(name = "average_rating")
     private Float averageRating;
 
     @ManyToMany
@@ -41,7 +40,6 @@ public class Author implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
     private List<Book> books = new ArrayList<>();
 
-    // todo: I don't know if we need to @PrePersist annotation with method onCreate()
     @PrePersist
     protected void onCreate() { createDate = new Date();}
 

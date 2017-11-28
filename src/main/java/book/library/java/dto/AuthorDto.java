@@ -2,18 +2,18 @@ package book.library.java.dto;
 
 public class AuthorDto {
 
-    private String id;
+    private Integer id;
     private String firstName;
     private String secondName;
     private String createDate;
 
     public AuthorDto() {}
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

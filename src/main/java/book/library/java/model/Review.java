@@ -26,7 +26,6 @@ public class Review implements Serializable {
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    // todo: I don't know if we need to @Temporal(TemporalType.TIMESTAMP), because TIMESTAMP in database auto generated
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date")
     private Date createDate;
@@ -37,7 +36,6 @@ public class Review implements Serializable {
 
     public Review() {}
 
-    // todo: I don't know if we need to @PrePersist annotation with method onCreate()
     @PrePersist
     protected void onCreate() { createDate = new Date();}
 

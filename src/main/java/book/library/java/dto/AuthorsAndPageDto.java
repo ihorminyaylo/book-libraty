@@ -5,20 +5,13 @@ import java.util.List;
 
 public class AuthorsAndPageDto {
     private List<AuthorDto> authorDtoList;
-    private BigInteger pageCount;
+    private Integer totalItems;
 
-    public AuthorsAndPageDto(List<AuthorDto> authorDtoList, BigInteger pageCount) {
+    public AuthorsAndPageDto(List<AuthorDto> authorDtoList, Integer totalItems) {
         this.authorDtoList = authorDtoList;
-        this.pageCount = pageCount;
+        this.totalItems = totalItems;
     }
 
-    public BigInteger getPageCount() {
-        return pageCount;
-    }
-
-    public void setPageCount(BigInteger pageCount) {
-        this.pageCount = pageCount;
-    }
 
     public List<AuthorDto> getAuthorDtoList() {
         return authorDtoList;
@@ -26,5 +19,13 @@ public class AuthorsAndPageDto {
 
     public void setAuthorDtoList(List<AuthorDto> authorDtoList) {
         this.authorDtoList = authorDtoList;
+    }
+
+    public Integer getTotalItems() {
+        return totalItems;
+    }
+
+    public void setTotalItems(Integer totalItems) {
+        this.totalItems = totalItems;
     }
 }
