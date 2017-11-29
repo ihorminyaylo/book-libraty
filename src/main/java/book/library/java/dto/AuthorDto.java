@@ -1,6 +1,8 @@
 package book.library.java.dto;
 
-public class AuthorDto {
+import book.library.java.model.Author;
+
+public class AuthorDto extends AbstractDto<Author> {
 
     private Integer id;
     private String firstName;

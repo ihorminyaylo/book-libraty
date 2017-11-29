@@ -1,15 +1,20 @@
 package book.library.java.dao.impl;
 
-import book.library.java.dao.AbstractDao;
 import book.library.java.dao.BookDao;
 import book.library.java.model.Book;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Map;
 
 @Repository
-public class BookDaoImpl extends AbstractDao<Book> implements BookDao {
+public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
+
+    @Override
+    public Integer countBooksByAuthorId(Integer authorId) {
+        return (int) (long) entityManager.
+                createNativeQuery("SELECT Count(*) FROM book as b JOIN author_book as ab ON b.id = ab.book_id WHERE ab.author_id =: authorId").
+                setParameter("authorId", authorId).getSingleResult();
+    }
 
     @Override
     public List<Book> getByAuthor(Integer authorId) {

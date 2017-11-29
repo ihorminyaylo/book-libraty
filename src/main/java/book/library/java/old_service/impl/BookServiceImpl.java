@@ -71,7 +71,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void delete(List<Integer> listIdBooks) throws DaoException {
-        for (Integer idBook : listIdBooks) {
+        /*for (Integer idBook : listIdBooks) {
             List<Review> reviewList = reviewDao.getByBookId(idBook);
             if (!reviewList.isEmpty()) {
                 reviewList.stream().forEach(review -> {
@@ -83,7 +83,7 @@ public class BookServiceImpl implements BookService {
                 });
             }
             bookDao.delete(idBook);
-        }
+        }*/
     }
 
 

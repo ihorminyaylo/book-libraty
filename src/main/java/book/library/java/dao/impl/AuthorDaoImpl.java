@@ -1,17 +1,39 @@
 package book.library.java.dao.impl;
 
-import book.library.java.dao.AbstractDao;
 import book.library.java.dao.AuthorDao;
+import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
-import book.library.java.model.Book;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.Query;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class AuthorDaoImpl extends AbstractDao <Author> implements AuthorDao {
+public class AuthorDaoImpl extends AbstractDaoImpl<Author> implements AuthorDao {
+
+    @Override
+    public List<Author> delete(List<Integer> idEntities) throws DaoException {
+        List<Author> notRemove = new ArrayList<>();
+        for (Integer entityId : idEntities) {
+            if (entityId == null) {
+                throw new DaoException("Entity id can't be null");
+            }
+            Author entity = get(entityId);
+            try {
+                entityManager.remove(entity);
+            } catch (Exception e) {
+                notRemove.add(entity);
+            }
+        }
+        return notRemove;
+    }
+
+
+
+
+
+
+
 
     //todo: not work
     @Override

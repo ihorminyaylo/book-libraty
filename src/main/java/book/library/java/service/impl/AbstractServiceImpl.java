@@ -1,15 +1,15 @@
 package book.library.java.service.impl;
 
-import book.library.java.dao.AbstractDao;
+import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.EntitiesAndPageDto;
 import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
-import book.library.java.exception.DaoException;
+import book.library.java.model.Author;
 import book.library.java.service.AbstractService;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -18,9 +18,9 @@ import java.util.List;
 @Transactional
 public class AbstractServiceImpl<T> implements AbstractService<T> {
 
-    private AbstractDao<T> entityDaoType;
+    private AbstractDaoImpl<T> entityDaoType;
 
-    public  AbstractServiceImpl(AbstractDao<T> entityDaoType) {
+    public  AbstractServiceImpl(AbstractDaoImpl<T> entityDaoType) {
         this.entityDaoType = entityDaoType;
     }
 
@@ -28,10 +28,13 @@ public class AbstractServiceImpl<T> implements AbstractService<T> {
 
     @Override
     public void create(T t) throws BusinessException {
-
+        try {
+            entityDaoType.create(t);
+        } catch (Exception e) {
+            throw new BusinessException();
+        }
     }
 
-    @Transactional
     @Override
     public <P> EntitiesAndPageDto<T> read(ReadParamsDto<P> readParamsDto) throws BusinessException {
         List<T> listEntity;
@@ -42,20 +45,27 @@ public class AbstractServiceImpl<T> implements AbstractService<T> {
         else {
             listEntity = entityDaoType.findAll();
         }
-        for (T entity: listEntity) {
-            Hibernate.initialize(entity);
-        }
         return new EntitiesAndPageDto<T>(listEntity, totalItems) ;
     }
 
 
     @Override
-    public void update(T t) throws DaoException {
-
+    public void update(T t) throws BusinessException {
+        try {
+            entityDaoType.update(t);
+        } catch (Exception e) {
+            throw new BusinessException();
+        }
     }
 
     @Override
-    public void delete(Integer id) throws DaoException {
-
+    public List<T> delete(List<Integer> idEntities) throws BusinessException {
+        List<T> notRemove = new ArrayList<>();
+        try {
+            notRemove = entityDaoType.delete(idEntities);
+        } catch (Exception e) {
+            throw new BusinessException();
+        }
+        return notRemove;
     }
 }
