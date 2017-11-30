@@ -34,21 +34,6 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
     }
 
     @Override
-    public void update(Author author) throws BusinessException {
-        if (author.getFirstName() == null || author.getFirstName().equals("")) {
-            throw new BusinessException("First name isn't correct");
-        }
-        if (author.getFirstName() == null || author.getFirstName().equals("")) {
-            throw new BusinessException("Last name isn't correct");
-        }
-        try {
-            authorDao.update(author);
-        } catch (DaoException e) {
-            throw new BusinessException(e.getMessage());
-        }
-    }
-
-    @Override
     public void create(Author author) throws BusinessException {
         if (author.getFirstName() == null || author.getFirstName().equals("")) {
             throw new BusinessException("First name isn't correct");
@@ -71,8 +56,24 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
     }
 
     @Override
+    public void update(Author author) throws BusinessException {
+        if (author.getFirstName() == null || author.getFirstName().equals("")) {
+            throw new BusinessException("First name isn't correct");
+        }
+        if (author.getFirstName() == null || author.getFirstName().equals("")) {
+            throw new BusinessException("Last name isn't correct");
+        }
+        try {
+            authorDao.update(author);
+        } catch (DaoException e) {
+            throw new BusinessException(e.getMessage());
+        }
+    }
+
+    @Override
     public List<Author> delete(List<Integer> idEntities) throws BusinessException {
-        List<Author> notRemove = new ArrayList<>();
+        return super.delete(idEntities);
+        /*List<Author> notRemove = new ArrayList<>();
         List<Integer> authorWithBooks = new ArrayList<>();
         for (Integer idEntity : idEntities) {
             if (bookDao.countBooksByAuthorId(idEntity) > 0) {
@@ -84,6 +85,6 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
         } catch (Exception e) {
             throw new BusinessException();
         }
-        return notRemove;
+        return notRemove;*/
     }
 }

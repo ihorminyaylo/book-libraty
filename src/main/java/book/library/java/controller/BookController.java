@@ -4,7 +4,11 @@ import book.library.java.dto.BookDto;
 import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
-import book.library.java.old_service.BookService;
+/*
+import book.library.java.old_service.BookServiceOld;
+*/
+import book.library.java.model.Book;
+import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +29,9 @@ public class BookController {
     }
 
     @PostMapping
-    public void create(@RequestBody BookDto bookDto) throws DaoException {
-        bookService.create(bookDto);
+    public ResponseEntity create(@RequestBody Book book) throws DaoException, BusinessException {
+        bookService.create(book);
+        return ResponseEntity.ok(book);
     }
 
     @PostMapping(value = "/find")
@@ -39,33 +44,14 @@ public class BookController {
     }
 
     @PutMapping(value = "/event")
-    public void update(@RequestBody BookDto bookDto) throws DaoException {
-        bookService.update(bookDto);
+    public ResponseEntity update(@RequestBody Book book) throws DaoException, BusinessException {
+        bookService.update(book);
+        return ResponseEntity.ok(book);
     }
 
     @PutMapping(value = "/delete")
-    public void delete(@RequestBody List<Integer> listIdBooks) throws DaoException {
+    public ResponseEntity delete(@RequestBody List<Integer> listIdBooks) throws DaoException, BusinessException {
         bookService.delete(listIdBooks);
-    }
-
-
-
-
-
-
-
-
-
-
-    //todo: remove
-
-    @GetMapping(value = "/find")
-    public  ResponseEntity<List<BookDto>> read(
-            @RequestParam(value = "byAuthor", required = false) String authorId,
-            @RequestParam(value = "byRating", required = false) String rating) throws Exception {
-        Map<String, String> params = new HashMap<>();
-        params.put("authorId", authorId);
-        params.put("rating", rating);
-        return ResponseEntity.ok(bookService.readOld(params));
+        return ResponseEntity.ok(listIdBooks);
     }
 }

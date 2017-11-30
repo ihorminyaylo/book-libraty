@@ -56,7 +56,7 @@ public class AuthorController {
     }
 
 
-    //todo: in progress
+    //todo: in progre
     //delete
     @PutMapping(value = "/delete")
     public ResponseEntity delete(@RequestBody List<Integer> idEntities) throws BusinessException {

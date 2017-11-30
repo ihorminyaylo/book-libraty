@@ -45,7 +45,7 @@ public class AbstractServiceImpl<T> implements AbstractService<T> {
         else {
             listEntity = entityDaoType.findAll();
         }
-        return new EntitiesAndPageDto<T>(listEntity, totalItems) ;
+        return new EntitiesAndPageDto<>(listEntity, totalItems) ;
     }
 
 
@@ -60,12 +60,10 @@ public class AbstractServiceImpl<T> implements AbstractService<T> {
 
     @Override
     public List<T> delete(List<Integer> idEntities) throws BusinessException {
-        List<T> notRemove = new ArrayList<>();
         try {
-            notRemove = entityDaoType.delete(idEntities);
+            return entityDaoType.delete(idEntities);
         } catch (Exception e) {
             throw new BusinessException();
         }
-        return notRemove;
     }
 }

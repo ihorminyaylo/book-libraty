@@ -1,8 +1,11 @@
 package book.library.java.controller;
 
+import book.library.java.dto.ReadParamsDto;
 import book.library.java.dto.ReviewDto;
+import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
-import book.library.java.old_service.ReviewService;
+import book.library.java.model.Review;
+import book.library.java.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,22 +24,25 @@ public class ReviewController {
     }
 
     @PostMapping
-    public void create(@RequestBody ReviewDto reviewDto) throws DaoException {
-        reviewService.create(reviewDto);
+    public ResponseEntity create(@RequestBody Review review) throws DaoException, BusinessException {
+        reviewService.create(review);
+        return ResponseEntity.ok(review);
     }
 
-    @GetMapping(value = "/find")
-    public ResponseEntity<List<ReviewDto>> read() {
-        return ResponseEntity.ok(reviewService.read());
+    @PostMapping(value = "/find")
+    public ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) throws BusinessException {
+        return ResponseEntity.ok(reviewService.read(readParamsDto));
     }
 
     @PutMapping(value = "/event")
-    public void update(@RequestBody ReviewDto reviewDto) throws DaoException {
-        reviewService.update(reviewDto);
+    public ResponseEntity update(@RequestBody Review review) throws DaoException, BusinessException {
+        reviewService.update(review);
+        return ResponseEntity.ok(review);
     }
 
     @PutMapping(value = "/delete")
-    public void delete(@RequestBody Integer idReview) throws DaoException {
-        reviewService.delete(idReview);
+    public ResponseEntity delete(@RequestBody List<Integer> listIdReviews) throws DaoException, BusinessException {
+        reviewService.delete(listIdReviews);
+        return ResponseEntity.ok(listIdReviews);
     }
 }
