@@ -1,6 +1,5 @@
 package book.library.java.controller;
 
-import book.library.java.dto.BookDto;
 import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
@@ -13,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "/api/book")
@@ -35,7 +32,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/find")
-    public  ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) {
+    public ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) {
         try {
             return ResponseEntity.ok(bookService.read(readParamsDto));
         } catch (BusinessException e) {

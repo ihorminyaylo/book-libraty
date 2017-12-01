@@ -29,12 +29,6 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author> implements AuthorDao 
     }
 
 
-
-
-
-
-
-
     //todo: not work
     @Override
     public List<Author> getByAverageRating() {

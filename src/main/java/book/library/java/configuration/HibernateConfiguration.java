@@ -22,7 +22,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan({"book.library.java.dao"})
-@PropertySource(value = { "classpath:application.properties" })
+@PropertySource(value = {"classpath:application.properties"})
 public class HibernateConfiguration {
 
     private final Environment environment;

@@ -17,7 +17,7 @@ public class ReviewServiceImpl extends AbstractServiceImpl<Review> implements Re
     private final ReviewDao reviewDao;
 
     @Autowired
-    public ReviewServiceImpl(@Qualifier("bookDaoImpl") AbstractDaoImpl<Review> entityDaoType) {
+    public ReviewServiceImpl(@Qualifier("reviewDaoImpl") AbstractDaoImpl<Review> entityDaoType) {
         super(entityDaoType);
         reviewDao = (ReviewDao) entityDaoType;
     }

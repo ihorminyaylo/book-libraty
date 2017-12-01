@@ -5,16 +5,17 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
-@Table(name="book")
+@Table(name = "book")
 public class Book implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -28,16 +29,19 @@ public class Book implements Serializable {
     private String publisher;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date")
+    @Column(name = "create_date", updatable = false)
     private Date createDate;
 
     @Column(name = "average_rating", nullable = false)
-    private Float averageRating;
+    private BigDecimal averageRating;
 
-    public Book() {}
+    public Book() {
+    }
 
     @PrePersist
-    protected void onCreate() { createDate = new Date();}
+    protected void onCreate() {
+        createDate = new Date();
+    }
 
     public String getName() {
         return name;
@@ -72,19 +76,19 @@ public class Book implements Serializable {
         this.id = id;
     }
 
-    public Float getAverageRating() {
-        return averageRating;
-    }
-
-    public void setAverageRating(Float averageRating) {
-        this.averageRating = averageRating;
-    }
-
     public Date getCreateDate() {
         return createDate;
     }
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public BigDecimal getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(BigDecimal averageRating) {
+        this.averageRating = averageRating;
     }
 }

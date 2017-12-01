@@ -1,7 +1,6 @@
 package book.library.java.controller;
 
 import book.library.java.dto.ReadParamsDto;
-import book.library.java.dto.ReviewDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Review;

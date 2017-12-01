@@ -12,8 +12,8 @@ public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
     @Override
     public Integer countBooksByAuthorId(Integer authorId) {
         return (int) (long) entityManager.
-                createNativeQuery("SELECT Count(*) FROM book as b JOIN author_book as ab ON b.id = ab.book_id WHERE ab.author_id =: authorId").
-                setParameter("authorId", authorId).getSingleResult();
+            createNativeQuery("SELECT Count(*) FROM book as b JOIN author_book as ab ON b.id = ab.book_id WHERE ab.author_id =: authorId").
+            setParameter("authorId", authorId).getSingleResult();
     }
 
     @Override

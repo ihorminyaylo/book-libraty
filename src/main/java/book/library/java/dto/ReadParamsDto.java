@@ -5,7 +5,8 @@ public class ReadParamsDto<P> {
     private Integer limit;
     private P pattern;
 
-    public ReadParamsDto() {}
+    public ReadParamsDto() {
+    }
 
     public Integer getOffset() {
         return offset;

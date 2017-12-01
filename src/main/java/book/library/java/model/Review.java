@@ -9,11 +9,11 @@ import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
-@Table(name="review")
+@Table(name = "review")
 public class Review implements Serializable {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -27,17 +27,20 @@ public class Review implements Serializable {
     private Integer rating;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date")
+    @Column(name = "create_date", updatable = false)
     private Date createDate;
 
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
 
-    public Review() {}
+    public Review() {
+    }
 
     @PrePersist
-    protected void onCreate() { createDate = new Date();}
+    protected void onCreate() {
+        createDate = new Date();
+    }
 
     public String getCommenterName() {
         return commenterName;

@@ -13,18 +13,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Service
 @Transactional
 public class AbstractServiceImpl<T> implements AbstractService<T> {
 
     private AbstractDaoImpl<T> entityDaoType;
 
-    public  AbstractServiceImpl(AbstractDaoImpl<T> entityDaoType) {
+    public AbstractServiceImpl(AbstractDaoImpl<T> entityDaoType) {
         this.entityDaoType = entityDaoType;
     }
 
-    public AbstractServiceImpl() {}
+    public AbstractServiceImpl() {
+    }
 
     @Override
     public void create(T t) throws BusinessException {
@@ -41,11 +41,10 @@ public class AbstractServiceImpl<T> implements AbstractService<T> {
         Integer totalItems = entityDaoType.totalRecords();
         if (readParamsDto.getLimit() == null || readParamsDto.getOffset() != null) {
             listEntity = entityDaoType.find(readParamsDto);
-        }
-        else {
+        } else {
             listEntity = entityDaoType.findAll();
         }
-        return new EntitiesAndPageDto<>(listEntity, totalItems) ;
+        return new EntitiesAndPageDto<>(listEntity, totalItems);
     }
 
 

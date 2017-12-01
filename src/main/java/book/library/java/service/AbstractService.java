@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface AbstractService<T> {
     void create(T t) throws BusinessException;
+
     <P> EntitiesAndPageDto<T> read(ReadParamsDto<P> readParamsDto) throws BusinessException;
+
     void update(T t) throws BusinessException;
-    List<T> delete(List<Integer> idEntities)throws BusinessException;
+
+    List<T> delete(List<Integer> idEntities) throws BusinessException;
 }

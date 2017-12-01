@@ -64,8 +64,7 @@ public abstract class AbstractDaoImpl<T> implements AbstractDao<T> {
             T entity = get(entityId);
             try {
                 entityManager.remove(entity);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new DaoException();
             }
         }

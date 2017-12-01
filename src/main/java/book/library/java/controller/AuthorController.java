@@ -22,21 +22,18 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    //create
     @PostMapping
     public ResponseEntity create(@RequestBody Author author) throws DaoException, BusinessException {
         try {
             authorService.create(author);
             return ResponseEntity.ok(author);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    //read
     @PostMapping(value = "/find")
-    public  ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) {
+    public ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) {
         try {
             return ResponseEntity.ok(authorService.read(readParamsDto));
         } catch (BusinessException e) {
@@ -44,7 +41,6 @@ public class AuthorController {
         }
     }
 
-    //update
     @PutMapping(value = "/event")
     public ResponseEntity update(@RequestBody Author author) throws BusinessException {
         try {
@@ -56,8 +52,7 @@ public class AuthorController {
     }
 
 
-    //todo: in progre
-    //delete
+    //todo: in progress
     @PutMapping(value = "/delete")
     public ResponseEntity delete(@RequestBody List<Integer> idEntities) throws BusinessException {
         try {
