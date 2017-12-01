@@ -1,0 +1,212 @@
+<div ng-controller="AuthorsIndex as a">
+    <ul uib-pagination total-items="a.totalItems" ng-model="a.currentPage" ng-change="a.pageChanged(a.currentPage)"></ul>
+<h1 class="ui header" align="center">List of authors</h1>
+    <div align="right">
+        <button ng-if="a.activeDeleteSelected" type="button" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+        <button type="button" class="btn btn-primary" ng-click="a.add()">Author <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+    </div>
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th><input type="checkbox" ng-click="a.checkAllAuthor()" ng-checked="a.checkAll" /></th>
+        <th class="single line">#</th>
+        <th>Full name</th>
+        <th>Create date</th>
+        <th>Rating</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody ng-repeat="author in a.authorsAndCountPages.list">
+    <tr>
+        <td><input type="checkbox" ng-click="a.check(author.id)" ng-checked="author.removeStatus"></td>
+        <td>
+            {{$index + (a.currentPage-1)*a.maxSize + 1}}
+        </td>
+        <td class="single line">
+            {{author.secondName}} {{author.firstName}}
+        </td>
+        <td>
+            {{author.createDate}}
+        </td>
+        <td>
+            <div ng-if="author.rating == null">This author dosen't have review</div>
+            <div>{{author.rating}}</div>
+        </td>
+        <td>
+            <button type="button" class="btn btn-warning" ng-click="a.edit(author)">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-danger" ng-click="a.delete(author)">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
+        </td>
+    </tr>
+    </tbody>
+    <tfoot>
+    </tfoot>
+</table>
+</div>
+
+
+<!--Dialog Add author-->
+<script type="text/ng-template" id="add-author.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Add new author</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- FORM ============ -->
+
+                <form name="authorForm" novalidate>
+
+                    <!-- First name -->
+                    <div class="modal-body">
+                    <div class="form-group" ng-class="{ 'has-error' : authorForm.firstName.$invalid && !authorForm.firstName.$pristine }">
+                        <label>First name</label>
+                        <input type="text" name="firstName" class="form-control" ng-model="secondName" ng-maxlength="30" required>
+                        <p ng-show="authorForm.firstName.$error.maxlength" class="help-block">First name is too long.</p>
+                        <p ng-show="authorForm.firstName.$error.required && !authorForm.firstName.$pristine" class="help-block">You first name is required.</p>
+                    </div>
+
+                    <!-- Second name -->
+                    <div class="form-group" ng-class="{ 'has-error' : authorForm.secondName.$invalid && !authorForm.secondName.$pristine }">
+                        <label>Second Name</label>
+                        <input type="text" name="secondName" class="form-control" ng-model="firstName" ng-maxlength="30" required>
+                        <p ng-show="authorForm.secondName.$error.maxlength" class="help-block">Second name is too long.</p>
+                        <p ng-show="authorForm.secondName.$error.required && !authorForm.secondName.$pristine" class="help-block">You second name is required.</p>
+                    </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-disabled="authorForm.$invalid" ng-click="add.ok(firstName, secondName)">Save</button>
+                        <button class="btn btn-warning" type="button" ng-click="add.cancel()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!--Dialog Edit author-->
+<script type="text/ng-template" id="edit-author.html">
+    <div class="modal-header">
+        <h3 class="modal-title">{{edit.modalOptions.headerText}}</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <!-- FORM ============ -->
+
+                <form name="authorForm" novalidate>
+
+                    <!-- First name -->
+                    <div class="modal-body">
+                        <div class="form-group" ng-class="{ 'has-error' : edit.firstNameRequired }">
+                            <label>First name</label>
+                            <input type="text" name="firstName" class="form-control" ng-model="firstName" ng-maxlength="30" ng-value="edit.author.firstName">
+                            <p ng-show="edit.firstNameRequired" class="help-block">You first name is required.</p>
+                        </div>
+
+                        <!-- Second name -->
+                        <div class="form-group" ng-class="{ 'has-error' : edit.secondNameRequired}">
+                            <label>Second Name</label>
+                            <input type="text" name="secondName" class="form-control" ng-model="secondName" ng-maxlength="30" ng-value="edit.author.secondName">
+                            <p ng-show="edit.secondNameRequired" class="help-block">You second name is required.</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" ng-click="edit.ok(firstName, secondName)">{{edit.modalOptions.actionButtonText}}</button>
+                        <button class="btn btn-warning" type="button" ng-click="edit.cancel()">{{edit.modalOptions.closeButtonText}}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!--Delete Dialog-->
+<script type="text/ng-template" id="delete-author.html">
+
+
+    <div class="modal-header">
+        <label><h3>{{delete.modalOptions.headerText}}</h3></label>
+    </div>
+    <div class="modal-body">
+        <div class="form-row">
+            <div class="col" align="center">
+                <h4>{{delete.modalOptions.bodyText}}</h4>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                data-ng-click="delete.ok();">{{delete.modalOptions.actionButtonText}}</button>
+        <button type="button" class="btn btn-warning"
+        data-ng-click="delete.close()">{{delete.modalOptions.closeButtonText}}</button>
+    </div>
+</script>
+
+<!--Bulk Delete Dialog-->
+<script type="text/ng-template" id="bulk-delete-author.html">
+
+
+    <div class="modal-header">
+        <label><h3>{{bulkDelete.modalOptions.headerText}}</h3></label>
+    </div>
+    <div class="modal-body">
+        <div class="form-row">
+            <div class="col" align="center">
+                <h4>{{bulkDelete.modalOptions.bodyText}}</h4>
+            </div>
+        </div>
+        <table class="table">
+            <thead>
+            <thead>
+            <tr>
+                <th class="single line">#</th>
+                <th>Full name</th>
+            </tr>
+            </thead>
+            </thead>
+            <tbody ng-repeat="author in bulkDelete.authorsRemove">
+                <tr>
+                    <td>
+                        {{$index + 1}}
+                    </td>
+                    <td>
+                        {{author.secondName}} {{author.firstName}}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+                data-ng-click="bulkDelete.ok();">{{bulkDelete.modalOptions.actionButtonText}}</button>
+        <button type="button" class="btn btn-warning"
+                data-ng-click="bulkDelete.close()">{{bulkDelete.modalOptions.closeButtonText}}</button>
+    </div>
+</script>
+
+<!--Error Dialog-->
+<script type="text/ng-template" id="error.html">
+    <div draggable=".modal-header">
+        <div class="modal-header">
+            <h3 class="modal-title">Warning!</h3>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-row">
+                    <div class="col" align="center">
+                        <label>Error</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div align="center" class="modal-footer">
+            <button class="btn btn-danger" type="button" ng-click="errorDialog.close()">CLOSE</button>
+        </div>
+    </div>
+</script>
+
+
