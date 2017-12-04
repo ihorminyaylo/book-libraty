@@ -14,7 +14,7 @@ export interface IApi<T> {
 }
 
 export class HttpApi<T> implements IApi<T> {
-    BASE_URL: string = 'http://localhost:8080';
+    BASE_URL: string = 'http://localhost:9090';
     API_URL: string;
     AUTHOR_URL: string = '/api/author';
     BOOK_URL: string = '/api/book';
