@@ -1,3 +1,5 @@
+CREATE USER library_user WITH password 'root';
+GRANT ALL ON DATABASE library TO library_user;
 CREATE TABLE author (id SERIAL PRIMARY KEY,
                      first_name VARCHAR(256) NOT NULL,
                      second_name VARCHAR(256) NOT NULL,
