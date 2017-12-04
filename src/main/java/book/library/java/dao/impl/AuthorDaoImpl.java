@@ -12,7 +12,7 @@ import java.util.List;
 public class AuthorDaoImpl extends AbstractDaoImpl<Author> implements AuthorDao {
 
     @Override
-    public List<Author> delete(List<Integer> idEntities) throws DaoException {
+    public List<Author> bulkDeleteAuthors(List<Integer> idEntities) throws DaoException {
         List<Author> notRemove = new ArrayList<>();
         for (Integer entityId : idEntities) {
             if (entityId == null) {

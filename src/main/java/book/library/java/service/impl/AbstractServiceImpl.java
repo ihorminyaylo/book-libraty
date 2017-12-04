@@ -4,12 +4,10 @@ import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.EntitiesAndPageDto;
 import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
-import book.library.java.model.Author;
 import book.library.java.service.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -58,9 +56,9 @@ public class AbstractServiceImpl<T> implements AbstractService<T> {
     }
 
     @Override
-    public List<T> delete(List<Integer> idEntities) throws BusinessException {
+    public void bulkDelete(List<Integer> idEntities) throws BusinessException {
         try {
-            return entityDaoType.delete(idEntities);
+            entityDaoType.bulkDelete(idEntities);
         } catch (Exception e) {
             throw new BusinessException();
         }

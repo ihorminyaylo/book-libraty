@@ -62,7 +62,7 @@ class BooksIndex {
             backdrop: false,
             controller: DeleteBook,
             controllerAs: 'delete',
-            templateUrl: 'delete-book.html',
+            templateUrl: 'bulkDelete-book.html',
             resolve: {
                 book: () => book
             }
@@ -77,7 +77,7 @@ class BooksIndex {
             backdrop: false,
             controller: BulkDelete,
             controllerAs: 'bulkDelete',
-            templateUrl: 'bulk-delete-book.html',
+            templateUrl: 'bulk-bulkDelete-book.html',
             resolve: {
                 idEntities: () => idEntities,
                 booksRemove: () => booksRemove,

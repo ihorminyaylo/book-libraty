@@ -29,10 +29,10 @@ public class Author implements Serializable {
     private String secondName;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date", updatable = false)
+    @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating")
+    @Column(name = "average_rating", updatable = false, insertable = false)
     private BigDecimal averageRating;
 
     @ManyToMany
@@ -40,11 +40,6 @@ public class Author implements Serializable {
         joinColumns = {@JoinColumn(name = "author_id", nullable = false)},
         inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
     private List<Book> books = new ArrayList<>();
-
-    @PrePersist
-    protected void onCreate() {
-        createDate = new Date();
-    }
 
     public String getFirstName() {
         return firstName;

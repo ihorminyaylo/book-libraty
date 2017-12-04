@@ -40,8 +40,8 @@ public class ReviewController {
     }
 
     @PutMapping(value = "/delete")
-    public ResponseEntity delete(@RequestBody List<Integer> listIdReviews) throws DaoException, BusinessException {
-        reviewService.delete(listIdReviews);
+    public ResponseEntity bulkDelete(@RequestBody List<Integer> listIdReviews) throws DaoException, BusinessException {
+        reviewService.bulkDelete(listIdReviews);
         return ResponseEntity.ok(listIdReviews);
     }
 }

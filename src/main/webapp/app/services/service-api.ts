@@ -36,7 +36,7 @@ export class HttpApi<T> implements IApi<T> {
         return this.$http.put(this.BASE_URL + this.API_URL + '/event', entity);
     }
     public delete(idEntities: number[]) {
-        return this.$http.put(this.BASE_URL + this.API_URL + '/delete', idEntities );
+        return this.$http.put(this.BASE_URL + this.API_URL + '/bulkDelete', idEntities );
     }
 }
 

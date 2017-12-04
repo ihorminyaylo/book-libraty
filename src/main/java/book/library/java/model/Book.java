@@ -8,7 +8,9 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "book")
@@ -29,10 +31,10 @@ public class Book implements Serializable {
     private String publisher;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date", updatable = false)
+    @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", nullable = false)
+    @Column(name = "average_rating", updatable = false, insertable = false)
     private BigDecimal averageRating;
 
     public Book() {
@@ -91,4 +93,5 @@ public class Book implements Serializable {
     public void setAverageRating(BigDecimal averageRating) {
         this.averageRating = averageRating;
     }
+
 }

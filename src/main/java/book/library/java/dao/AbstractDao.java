@@ -16,7 +16,9 @@ public interface AbstractDao<T> {
 
     void update(T entity) throws DaoException;
 
-    List<T> delete(List<Integer> idEntities) throws DaoException;
+    void delete(Integer idEntity) throws DaoException;
+
+    void bulkDelete(List<Integer> idEntities) throws DaoException;
 
     Integer totalRecords();
 }

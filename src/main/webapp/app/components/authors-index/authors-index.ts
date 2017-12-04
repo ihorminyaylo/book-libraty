@@ -61,7 +61,7 @@ class AuthorsIndex {
             backdrop: false,
             controller: DeleteAuthor,
             controllerAs: 'delete',
-            templateUrl: 'delete-author.html',
+            templateUrl: 'bulkDelete-author.html',
             resolve: {
                 author: () => author
             }
@@ -76,7 +76,7 @@ class AuthorsIndex {
             backdrop: false,
             controller: BulkDelete,
             controllerAs: 'bulkDelete',
-            templateUrl: 'bulk-delete-author.html',
+            templateUrl: 'bulk-bulkDelete-author.html',
             resolve: {
                 authorsRemove: () => entitiesRemove,
                 idEntities: () => idEntities

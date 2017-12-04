@@ -15,9 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Service
@@ -71,8 +69,8 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
     }
 
     @Override
-    public List<Author> delete(List<Integer> idEntities) throws BusinessException {
-        return super.delete(idEntities);
+    public void bulkDelete(List<Integer> idEntities) throws BusinessException {
+        super.bulkDelete(idEntities);
         /*List<Author> notRemove = new ArrayList<>();
         List<Integer> authorWithBooks = new ArrayList<>();
         for (Integer idEntity : idEntities) {
@@ -81,7 +79,7 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
             }
         }
         try {
-            notRemove = authorDao.delete(authorWithBooks);
+            notRemove = authorDao.bulkDelete(authorWithBooks);
         } catch (Exception e) {
             throw new BusinessException();
         }

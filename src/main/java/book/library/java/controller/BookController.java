@@ -1,5 +1,6 @@
 package book.library.java.controller;
 
+import book.library.java.dto.BookWithAuthors;
 import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
@@ -26,9 +27,9 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody Book book) throws DaoException, BusinessException {
-        bookService.create(book);
-        return ResponseEntity.ok(book);
+    public ResponseEntity create(@RequestBody BookWithAuthors bookWithAuthors) throws DaoException, BusinessException {
+        bookService.create(bookWithAuthors);
+        return ResponseEntity.ok(bookWithAuthors);
     }
 
     @PostMapping(value = "/find")
@@ -47,8 +48,8 @@ public class BookController {
     }
 
     @PutMapping(value = "/delete")
-    public ResponseEntity delete(@RequestBody List<Integer> listIdBooks) throws DaoException, BusinessException {
-        bookService.delete(listIdBooks);
+    public ResponseEntity bulkDelete(@RequestBody List<Integer> listIdBooks) throws DaoException, BusinessException {
+        bookService.bulkDelete(listIdBooks);
         return ResponseEntity.ok(listIdBooks);
     }
 }

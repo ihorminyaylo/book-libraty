@@ -54,9 +54,10 @@ public class AuthorController {
 
     //todo: in progress
     @PutMapping(value = "/delete")
-    public ResponseEntity delete(@RequestBody List<Integer> idEntities) throws BusinessException {
+    public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException {
         try {
-            return ResponseEntity.ok(authorService.delete(idEntities));
+            authorService.bulkDelete(idEntities);
+            return ResponseEntity.ok(idEntities);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
