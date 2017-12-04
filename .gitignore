@@ -12,6 +12,5 @@ target/
 bin/
 # Web
 src/main/webapp/node_modules/
-src/main/webapp/typings/
 src/main/webapp/bower_components/
 src/main/webapp/.idea/
