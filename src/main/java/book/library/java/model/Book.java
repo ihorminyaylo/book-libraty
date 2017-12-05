@@ -34,7 +34,8 @@ public class Book implements Serializable {
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", updatable = false, insertable = false)
+    //@Formula("(select avg(review.rating) from review where review.book_id = id)")
+    @Column(name = "average_rating", insertable = false)
     private BigDecimal averageRating;
 
     public Book() {

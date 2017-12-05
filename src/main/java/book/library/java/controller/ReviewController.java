@@ -33,15 +33,15 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.read(readParamsDto));
     }
 
-    @PutMapping(value = "/event")
+    @PutMapping
     public ResponseEntity update(@RequestBody Review review) throws DaoException, BusinessException {
         reviewService.update(review);
         return ResponseEntity.ok(review);
     }
 
-    @PutMapping(value = "/delete")
+    /*@PutMapping(value = "/delete")
     public ResponseEntity bulkDelete(@RequestBody List<Integer> listIdReviews) throws DaoException, BusinessException {
         reviewService.bulkDelete(listIdReviews);
         return ResponseEntity.ok(listIdReviews);
-    }
+    }*/
 }

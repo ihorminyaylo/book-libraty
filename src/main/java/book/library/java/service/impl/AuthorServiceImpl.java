@@ -49,8 +49,17 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
     @Override
     public <P> EntitiesAndPageDto<Author> read(ReadParamsDto<P> readParamsDto) throws BusinessException {
         EntitiesAndPageDto<Author> list = super.read(readParamsDto);
-        list.getList().stream().forEach(author -> author.setBooks(new ArrayList<>()));
+        list.getList().forEach(author -> author.setBooks(new ArrayList<>()));
         return list;
+    }
+
+    @Override
+    public List<Author> readByBook(Integer idBook) throws BusinessException {
+        try {
+            return authorDao.readByBook(idBook);
+        } catch (DaoException e) {
+            throw new BusinessException();
+        }
     }
 
     @Override
@@ -68,10 +77,10 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
         }
     }
 
-    @Override
+    /*@Override
     public void bulkDelete(List<Integer> idEntities) throws BusinessException {
         super.bulkDelete(idEntities);
-        /*List<Author> notRemove = new ArrayList<>();
+        *//*List<Author> notRemove = new ArrayList<>();
         List<Integer> authorWithBooks = new ArrayList<>();
         for (Integer idEntity : idEntities) {
             if (bookDao.countBooksByAuthorId(idEntity) > 0) {
@@ -83,6 +92,6 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
         } catch (Exception e) {
             throw new BusinessException();
         }
-        return notRemove;*/
-    }
+        return notRemove;*//*
+    }*/
 }

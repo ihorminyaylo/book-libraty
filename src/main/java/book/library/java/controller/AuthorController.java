@@ -1,5 +1,6 @@
 package book.library.java.controller;
 
+import book.library.java.Param;
 import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
@@ -33,7 +34,7 @@ public class AuthorController {
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) {
+    public ResponseEntity<?> read(@RequestBody ReadParamsDto<?> readParamsDto) {
         try {
             return ResponseEntity.ok(authorService.read(readParamsDto));
         } catch (BusinessException e) {
@@ -41,7 +42,16 @@ public class AuthorController {
         }
     }
 
-    @PutMapping(value = "/event")
+    @PostMapping(value = "/byBook")
+    public ResponseEntity<?> readByBook(@RequestBody Param idBook) {
+        try {
+            return ResponseEntity.ok(authorService.readByBook(Integer.parseInt(idBook.getId())));
+        } catch (BusinessException e) {
+            return null;// ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping
     public ResponseEntity update(@RequestBody Author author) throws BusinessException {
         try {
             authorService.update(author);
@@ -52,7 +62,7 @@ public class AuthorController {
     }
 
 
-    //todo: in progress
+    /*//todo: in progress
     @PutMapping(value = "/delete")
     public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException {
         try {
@@ -61,5 +71,5 @@ public class AuthorController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }
+    }*/
 }

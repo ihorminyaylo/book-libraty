@@ -14,5 +14,9 @@ public interface AbstractService<T> {
 
     void update(T t) throws BusinessException;
 
+    void delete(Integer idEntities) throws BusinessException;
+
+/*
     void bulkDelete(List<Integer> idEntities) throws BusinessException;
+*/
 }

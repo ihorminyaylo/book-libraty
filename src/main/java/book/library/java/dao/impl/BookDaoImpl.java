@@ -2,9 +2,11 @@ package book.library.java.dao.impl;
 
 import book.library.java.dao.BookDao;
 import book.library.java.dto.BookWithAuthors;
+import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
+import org.hibernate.annotations.OrderBy;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,10 +24,31 @@ public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
         entityManager.persist(book);
         for (Author author: authors) {
             entityManager.createNativeQuery("INSERT INTO author_book VALUES (:authorId, :bookId)")
-                .setParameter("authorId", author.getId()).setParameter("bookId", book.getId());
+                .setParameter("authorId", author.getId()).setParameter("bookId", book.getId())
+                .executeUpdate();
         }
     }
 
+    @Override
+    public List<Book> find(ReadParamsDto readParamsDto) {
+        return entityManager
+            .createNativeQuery("SELECT * FROM  book ORDER BY average_rating, create_date LIMIT :limit OFFSET :offset", Book.class)
+            .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).getResultList();
+    }
+
+    @Override
+    public void delete(Integer idBook) throws DaoException {
+        if (idBook == null) {
+            throw new DaoException("Entity id can't be null");
+        }
+        Book book = get(idBook);
+        try {
+            entityManager.createNativeQuery("DELETE FROM author_book WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
+            entityManager.remove(book);
+        } catch (Exception e) {
+            throw new DaoException();
+        }
+    }
 
     @Override
     public void bulkDelete(List<Integer> idBooks) throws DaoException {
@@ -34,8 +57,8 @@ public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
                 throw new DaoException("Entity id can't be null");
             }
             Book book = get(idBook);
-            entityManager.createNativeQuery("DELETE FROM author_book WHERE book_id = :bookId").setParameter("bookId", book.getId());
             try {
+                entityManager.createNativeQuery("DELETE FROM author_book WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
                 entityManager.remove(book);
             } catch (Exception e) {
                 throw new DaoException();

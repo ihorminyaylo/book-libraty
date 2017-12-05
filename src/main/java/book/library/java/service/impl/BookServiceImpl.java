@@ -5,6 +5,7 @@ import book.library.java.dao.BookDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.BusinessException;
+import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.service.BookService;
@@ -32,6 +33,24 @@ public class BookServiceImpl extends AbstractServiceImpl<Book> implements BookSe
             bookDao.create(bookWithAuthors);
 
         } catch (Exception e) {
+            throw new BusinessException();
+        }
+    }
+
+    @Override
+    public void delete(Integer idBook) throws BusinessException {
+        try {
+            bookDao.delete(idBook);
+        } catch (DaoException e) {
+            throw new BusinessException();
+        }
+    }
+
+    @Override
+    public void bulkDelete(List<Integer> idBooks) throws BusinessException {
+        try {
+            bookDao.bulkDelete(idBooks);
+        } catch (DaoException e) {
             throw new BusinessException();
         }
     }

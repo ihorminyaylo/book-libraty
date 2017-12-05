@@ -41,10 +41,16 @@ public class BookController {
         }
     }
 
-    @PutMapping(value = "/event")
+    @PutMapping
     public ResponseEntity update(@RequestBody Book book) throws DaoException, BusinessException {
         bookService.update(book);
         return ResponseEntity.ok(book);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity delete(@PathVariable("id") Integer idBook) throws DaoException, BusinessException {
+        bookService.delete(idBook);
+        return ResponseEntity.ok(idBook);
     }
 
     @PutMapping(value = "/delete")
