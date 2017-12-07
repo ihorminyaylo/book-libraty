@@ -3,6 +3,7 @@ package book.library.java.dto;
 public class ReadParamsDto<P> {
     private Integer offset;
     private Integer limit;
+    private String filterBy;
     private P pattern;
 
     public ReadParamsDto() {
@@ -30,5 +31,13 @@ public class ReadParamsDto<P> {
 
     public void setPattern(P pattern) {
         this.pattern = pattern;
+    }
+
+    public String getFilterBy() {
+        return filterBy;
+    }
+
+    public void setFilterBy(String filterBy) {
+        this.filterBy = filterBy;
     }
 }

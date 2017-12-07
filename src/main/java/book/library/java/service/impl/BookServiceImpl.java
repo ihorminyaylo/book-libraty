@@ -4,9 +4,10 @@ import book.library.java.dao.AuthorDao;
 import book.library.java.dao.BookDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.BookWithAuthors;
+import book.library.java.dto.EntitiesAndPageDto;
+import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
-import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,13 @@ import java.util.List;
 @Transactional
 public class BookServiceImpl extends AbstractServiceImpl<Book> implements BookService {
     private final BookDao bookDao;
+    private final AuthorDao authorDao;
 
     @Autowired
-    public BookServiceImpl(@Qualifier("bookDaoImpl") AbstractDaoImpl<Book> entityDaoType) {
+    public BookServiceImpl(@Qualifier("bookDaoImpl") AbstractDaoImpl<Book> entityDaoType, AuthorDao authorDao) {
         super(entityDaoType);
         bookDao = (BookDao) entityDaoType;
+        this.authorDao = authorDao;
     }
 
     @Override

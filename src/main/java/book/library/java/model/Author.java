@@ -35,6 +35,7 @@ public class Author implements Serializable {
     @Column(name = "average_rating", updatable = false, insertable = false)
     private BigDecimal averageRating;
 
+    @Transient
     @ManyToMany
     @JoinTable(name = "author_book",
         joinColumns = {@JoinColumn(name = "author_id", nullable = false)},

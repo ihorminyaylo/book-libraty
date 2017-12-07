@@ -6,10 +6,11 @@ import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
-import org.hibernate.annotations.OrderBy;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Queue;
 
 @Repository
 public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
@@ -28,12 +29,31 @@ public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
                 .executeUpdate();
         }
     }
-
+/*WHERE name LIKE '%word1%'*/
     @Override
     public List<Book> find(ReadParamsDto readParamsDto) {
+        String filterBy = "";
+        if (readParamsDto.getFilterBy() != null) {
+            filterBy = readParamsDto.getFilterBy();
+        }
+        if (readParamsDto.getPattern() != null && readParamsDto.getPattern().toString().contains(("byAuthor"))) {
+            Integer authorId = Integer.parseInt(readParamsDto.getPattern().toString().substring(9));
+            return entityManager
+                .createNativeQuery("SELECT * FROM  book JOIN author_book ON book.id = author_book.book_id " +
+                    "WHERE author_book.author_id = :authorId AND name LIKE :search ORDER BY average_rating, create_date LIMIT :limit OFFSET :offset", Book.class)
+                .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).setParameter("authorId",authorId).setParameter("search", "%" + filterBy + "%").getResultList();
+        }
+        if (readParamsDto.getPattern() != null && readParamsDto.getPattern().toString().contains(("byRating"))) {
+            Integer rating = Integer.parseInt(readParamsDto.getPattern().toString().substring(9));
+            return entityManager
+                .createNativeQuery("SELECT * FROM  book WHERE average_rating = :rating AND name LIKE :search ORDER BY create_date LIMIT :limit OFFSET :offset", Book.class)
+                .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).setParameter("rating",rating).setParameter("search", "%" + filterBy + "%").getResultList();
+        }
         return entityManager
-            .createNativeQuery("SELECT * FROM  book ORDER BY average_rating, create_date LIMIT :limit OFFSET :offset", Book.class)
-            .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).getResultList();
+            .createNativeQuery("SELECT * FROM  book WHERE LOWER(name) LIKE LOWER(:search) ORDER BY average_rating, create_date LIMIT :limit OFFSET :offset", Book.class)
+            .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).setParameter("search", "%" + filterBy + "%").getResultList();
+
+
     }
 
     @Override

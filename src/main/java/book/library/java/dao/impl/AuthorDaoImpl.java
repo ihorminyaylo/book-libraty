@@ -1,6 +1,7 @@
 package book.library.java.dao.impl;
 
 import book.library.java.dao.AuthorDao;
+import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
@@ -11,6 +12,11 @@ import java.util.List;
 
 @Repository
 public class AuthorDaoImpl extends AbstractDaoImpl<Author> implements AuthorDao {
+
+    @Override
+    public List<Author> find(ReadParamsDto readParamsDto) {
+        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating, create_date", Author.class).setFirstResult(readParamsDto.getOffset()).setMaxResults(readParamsDto.getLimit()).getResultList();
+    }
 
     @Override
     public List<Author> bulkDeleteAuthors(List<Integer> idEntities) throws DaoException {
@@ -31,8 +37,7 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author> implements AuthorDao 
 
     @Override
     public List<Author> readByBook(Integer idBook) throws DaoException {
-        List<Author> list = entityManager.createNativeQuery("SELECT id, first_name, second_name, create_date, average_rating FROM author as a JOIN author_book as ab ON a.id = ab.author_id WHERE ab.book_id = :idBook").setParameter("idBook", idBook).getResultList();
-        return list;
+        return entityManager.createNativeQuery("SELECT id, first_name, second_name, create_date, average_rating FROM author as a JOIN author_book as ab ON a.id = ab.author_id WHERE ab.book_id = :idBook", Author.class).setParameter("idBook", idBook).getResultList();
     }
 
 

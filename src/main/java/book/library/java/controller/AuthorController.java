@@ -1,6 +1,5 @@
 package book.library.java.controller;
 
-import book.library.java.Param;
 import book.library.java.dto.ReadParamsDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
@@ -9,8 +8,6 @@ import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/author")
@@ -42,10 +39,10 @@ public class AuthorController {
         }
     }
 
-    @PostMapping(value = "/byBook")
-    public ResponseEntity<?> readByBook(@RequestBody Param idBook) {
+    @GetMapping(value = "/byBook")
+    public ResponseEntity<?> readByBook(@RequestParam Integer idBook) {
         try {
-            return ResponseEntity.ok(authorService.readByBook(Integer.parseInt(idBook.getId())));
+            return ResponseEntity.ok(authorService.readByBook(idBook));
         } catch (BusinessException e) {
             return null;// ResponseEntity.badRequest().body(e.getMessage());
         }

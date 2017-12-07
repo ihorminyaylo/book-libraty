@@ -33,6 +33,11 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.read(readParamsDto));
     }
 
+    @GetMapping(value = "/review_detail")
+    public ResponseEntity readDetail() {
+        return ResponseEntity.ok(reviewService.readDetail());
+    }
+
     @PutMapping
     public ResponseEntity update(@RequestBody Review review) throws DaoException, BusinessException {
         reviewService.update(review);

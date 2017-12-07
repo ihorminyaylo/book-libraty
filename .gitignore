@@ -8,6 +8,7 @@ target/
 /bin/
 # Maven
 log/
+ui_develop/
 target/
 bin/
 # Web

@@ -48,9 +48,21 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
 
     @Override
     public <P> EntitiesAndPageDto<Author> read(ReadParamsDto<P> readParamsDto) throws BusinessException {
-        EntitiesAndPageDto<Author> list = super.read(readParamsDto);
-        list.getList().forEach(author -> author.setBooks(new ArrayList<>()));
-        return list;
+        EntitiesAndPageDto<Author> entitiesAndPageDto;
+        if (readParamsDto.getFilterBy() == null && readParamsDto.getPattern() == null && readParamsDto.getOffset() == null && readParamsDto.getLimit() == null) {
+            return new EntitiesAndPageDto<>(authorDao.findAll(), authorDao.totalRecords());
+        }
+        if (readParamsDto.getPattern() != null && readParamsDto.getPattern().toString().contains("byId")) {
+            Author author = authorDao.get(Integer.parseInt(readParamsDto.getPattern().toString().substring(5)));
+            List<Author> authors = new ArrayList<>();
+            authors.add(author);
+            entitiesAndPageDto = new EntitiesAndPageDto<>(authors, authorDao.totalRecords());
+        }
+        else {
+            entitiesAndPageDto = super.read(readParamsDto);
+            entitiesAndPageDto.getList().forEach(author -> author.setBooks(new ArrayList<>()));
+        }
+        return entitiesAndPageDto;
     }
 
     @Override
