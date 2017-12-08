@@ -3,12 +3,12 @@ package book.library.java.dao.impl;
 import book.library.java.dao.ReviewDao;
 import book.library.java.dto.ReviewPageDto;
 import book.library.java.model.Review;
+import book.library.java.model.pattern.ReviewPattern;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.ColumnResult;
 import javax.persistence.ConstructorResult;
 import javax.persistence.SqlResultSetMapping;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -19,7 +19,7 @@ import java.util.List;
         columns = {
             @ColumnResult(name = "rating"),
             @ColumnResult(name = "count")}))
-public class ReviewDaoImpl extends AbstractDaoImpl<Review> implements ReviewDao {
+public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implements ReviewDao {
     @Override
     public List<ReviewPageDto> getCountOfTypeReview() {
         List<ReviewPageDto> reviewPageDtoList = (List<ReviewPageDto>) entityManager.createNativeQuery("SELECT average_rating as rating, count(average_rating) FROM book GROUP BY average_rating ORDER BY average_rating").getResultList();

@@ -3,10 +3,11 @@ package book.library.java.dao;
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Book;
+import book.library.java.model.pattern.BookPattern;
 
 import java.util.List;
 
-public interface BookDao extends AbstractDao<Book> {
+public interface BookDao extends AbstractDao<Book, BookPattern> {
     void create(BookWithAuthors bookWithAuthors) throws DaoException;
 
     Integer countBooksByAuthorId(Integer authorId);

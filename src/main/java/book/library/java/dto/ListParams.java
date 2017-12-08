@@ -1,12 +1,12 @@
 package book.library.java.dto;
 
-public class ReadParamsDto<P> {
+public class ListParams<P> {
     private Integer offset;
     private Integer limit;
-    private String filterBy;
     private P pattern;
+    private SortParams sortParams;
 
-    public ReadParamsDto() {
+    public ListParams() {
     }
 
     public Integer getOffset() {
@@ -33,11 +33,11 @@ public class ReadParamsDto<P> {
         this.pattern = pattern;
     }
 
-    public String getFilterBy() {
-        return filterBy;
+    public SortParams getSortParams() {
+        return sortParams;
     }
 
-    public void setFilterBy(String filterBy) {
-        this.filterBy = filterBy;
+    public void setSortParams(SortParams sortParams) {
+        this.sortParams = sortParams;
     }
 }

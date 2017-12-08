@@ -7,9 +7,10 @@ export interface IEntitiesAndCountPages<T> {
     totalItems: number;
 }
 
-export interface IApi<T> {
+export interface IApi<T, P> {
     create(entity: T);
     createReview(commenterName, comment, rating, book);
+    find(listParams: ListParams<P>);
     getAll();
     getByPage(maxSize, offset): angular.IPromise<IEntitiesAndCountPages<T>>;
     getById(id: number);
@@ -18,7 +19,18 @@ export interface IApi<T> {
     bulkDelete(idEntities: number[]);
 }
 
-export class HttpApi<T> implements IApi<T> {
+export interface ListParams<P> {
+    limit: number;
+    offset: number;
+    pattern: P;
+    sortParams: SortParams;
+}
+export interface SortParams {
+    parameter: string;
+    status: boolean;
+}
+
+export class HttpApi<T> implements IApi<T, P> {
     BASE_URL: string = 'http://localhost:9090';
     API_URL: string;
     AUTHOR_URL: string = '/api/author';
@@ -32,6 +44,11 @@ export class HttpApi<T> implements IApi<T> {
     public create(entity: T) {
         return this.$http.post(this.BASE_URL + this.API_URL, entity);
     }
+
+    public find(listParams: ListParams<P>)
+
+
+
     public getAll() {
         return this.$http.post<IEntitiesAndCountPages<T>>(this.BASE_URL + this.API_URL + '/find', {})
             .then(entitiesResponse => entitiesResponse.data);

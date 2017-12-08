@@ -1,21 +1,21 @@
 package book.library.java.dao.impl;
 
 import book.library.java.dao.AuthorDao;
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
-import book.library.java.model.Book;
+import book.library.java.model.pattern.AuthorPattern;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class AuthorDaoImpl extends AbstractDaoImpl<Author> implements AuthorDao {
+public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implements AuthorDao {
 
     @Override
-    public List<Author> find(ReadParamsDto readParamsDto) {
-        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating, create_date", Author.class).setFirstResult(readParamsDto.getOffset()).setMaxResults(readParamsDto.getLimit()).getResultList();
+    public List<Author> find(ListParams listParams) {
+        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating, create_date", Author.class).setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit()).getResultList();
     }
 
     @Override

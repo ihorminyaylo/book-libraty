@@ -1,6 +1,6 @@
 package book.library.java.controller;
 
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Review;
@@ -8,8 +8,6 @@ import book.library.java.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/review")
@@ -29,8 +27,8 @@ public class ReviewController {
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) throws BusinessException {
-        return ResponseEntity.ok(reviewService.read(readParamsDto));
+    public ResponseEntity<?> read(@RequestBody ListParams listParams) throws BusinessException {
+        return ResponseEntity.ok(reviewService.read(listParams));
     }
 
     @GetMapping(value = "/review_detail")

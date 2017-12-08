@@ -38,6 +38,12 @@ public class Book implements Serializable {
     @Column(name = "average_rating", insertable = false)
     private BigDecimal averageRating;
 
+    @ManyToMany
+    @JoinTable(name = "author_book",
+            joinColumns = {@JoinColumn(name = "book_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "author_id", nullable = false)})
+    private List<Author> authors;
+
     public Book() {
     }
 
@@ -95,4 +101,11 @@ public class Book implements Serializable {
         this.averageRating = averageRating;
     }
 
+    public List<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<Author> authors) {
+        this.authors = authors;
+    }
 }

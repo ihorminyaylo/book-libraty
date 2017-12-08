@@ -13,7 +13,6 @@ interface IRouteParams extends angular.route.IRouteParamsService {
 class BooksIndex {
     checkAll: boolean;
     activeDeleteSelected: boolean;
-    totalItems: number;
     currentPage = 1;
     maxSize: number = 10;
     offset: number = 0;
@@ -25,7 +24,6 @@ class BooksIndex {
     authors: IAuthor[] = [];
     showSelectedAuthors: boolean = true;
     constructor (private booksApi: IBooksApi, private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService, $routeParams: IRouteParams) {
-        console.log($routeParams);
         if (!isNaN(parseInt($routeParams.isbn))) {
             this.byAuthorId = parseInt($routeParams.isbn);
             this.showSelectedAuthors = false;
@@ -44,7 +42,6 @@ class BooksIndex {
     }
     search(filterBy) {
         this.filter = filterBy;
-        console.log(this.filter)
         this.pageChanged(this.currentPage);
     }
     pageChanged(page) {
@@ -52,22 +49,13 @@ class BooksIndex {
         this.offset = (this.currentPage-1)*this.maxSize;
         this.checkAll = false;
         if (this.byAuthorId != null) {
-            return this.booksApi.getByPageByAuthor(this.maxSize, this.offset, this.byAuthorId, this.filter).then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages;
-                this.totalItems = this.booksAndCountPages.totalItems;
-                console.log(booksAndCountPages);
-                this.booksAndCountPages.list.forEach(book => {this.booksApi.getByBook(book.id).then(authors => {book.authors = authors})});});
+            return this.booksApi.getByPageByAuthor(this.maxSize, this.offset, this.byAuthorId, this.filter).then(booksAndCountPages => this.booksAndCountPages = booksAndCountPages);
         }
         if (this.rating != null) {
-            return this.booksApi.getByRating(this.maxSize, this.offset, this.rating, this.filter).then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages;
-                this.totalItems = this.booksAndCountPages.totalItems;
-                console.log(booksAndCountPages);
-                this.booksAndCountPages.list.forEach(book => {this.booksApi.getByBook(book.id).then(authors => {book.authors = authors})});});
+            return this.booksApi.getByRating(this.maxSize, this.offset, this.rating, this.filter).then(booksAndCountPages => this.booksAndCountPages = booksAndCountPages);
         }
         else {
-            this.booksApi.getBookByPage(this.maxSize, this.offset, this.filter).then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages;
-                this.totalItems = this.booksAndCountPages.totalItems;
-                console.log(booksAndCountPages);
-                this.booksAndCountPages.list.forEach(book => {this.booksApi.getByBook(book.id).then(authors => {book.authors = authors})});});
+            this.booksApi.getBookByPage(this.maxSize, this.offset, this.filter).then(booksAndCountPages => this.booksAndCountPages = booksAndCountPages);
         }
     }
     check(bookId) {

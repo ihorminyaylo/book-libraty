@@ -1,13 +1,14 @@
 package book.library.java.controller;
 
 import book.library.java.dto.BookWithAuthors;
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 /*
 import book.library.java.old_service.BookServiceOld;
 */
 import book.library.java.model.Book;
+import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,9 @@ public class BookController {
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ReadParamsDto readParamsDto) {
+    public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams) {
         try {
-            return ResponseEntity.ok(bookService.read(readParamsDto));
+            return ResponseEntity.ok(bookService.read(listParams));
         } catch (BusinessException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -1,18 +1,17 @@
 package book.library.java.dao.impl;
 
 import book.library.java.dao.AbstractDao;
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.DaoException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public abstract class AbstractDaoImpl<T> implements AbstractDao<T> {
+public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
 
     @PersistenceContext
     protected EntityManager entityManager;
@@ -42,8 +41,8 @@ public abstract class AbstractDaoImpl<T> implements AbstractDao<T> {
     }
 
     @Override
-    public List<T> find(ReadParamsDto readParamsDto) {
-        return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult(readParamsDto.getOffset()).setMaxResults(readParamsDto.getLimit()).getResultList();
+    public List<T> find(ListParams<P> listParams) {
+        return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit()).getResultList();
     }
 
     @Override

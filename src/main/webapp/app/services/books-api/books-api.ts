@@ -3,6 +3,12 @@ import {HttpApi, IApi, IEntitiesAndCountPages} from "../service-api";
 import {IAuthor} from "../authors-api/authors-api";
 import {IReview} from "../reviews-api/reviews-api";
 
+interface BookPattern {
+    authorId: number;
+    search: string;
+    rating: string;
+}
+
 export interface IBooksAndCountPages extends IEntitiesAndCountPages<IBook>{}
 
 export class IBook {

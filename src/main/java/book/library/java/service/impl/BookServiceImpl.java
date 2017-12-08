@@ -5,10 +5,11 @@ import book.library.java.dao.BookDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.dto.EntitiesAndPageDto;
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Book;
+import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,12 +20,12 @@ import java.util.List;
 
 @Service
 @Transactional
-public class BookServiceImpl extends AbstractServiceImpl<Book> implements BookService {
+public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> implements BookService {
     private final BookDao bookDao;
     private final AuthorDao authorDao;
 
     @Autowired
-    public BookServiceImpl(@Qualifier("bookDaoImpl") AbstractDaoImpl<Book> entityDaoType, AuthorDao authorDao) {
+    public BookServiceImpl(@Qualifier("bookDaoImpl") AbstractDaoImpl<Book, BookPattern> entityDaoType, AuthorDao authorDao) {
         super(entityDaoType);
         bookDao = (BookDao) entityDaoType;
         this.authorDao = authorDao;
@@ -38,6 +39,14 @@ public class BookServiceImpl extends AbstractServiceImpl<Book> implements BookSe
         } catch (Exception e) {
             throw new BusinessException();
         }
+    }
+
+    @Override
+    public EntitiesAndPageDto<Book> read(ListParams listParams) throws BusinessException {
+        List<Book> listEntity;
+        Integer totalItems = bookDao.totalRecords();
+        listEntity = bookDao.find(listParams);
+        return new EntitiesAndPageDto<>(listEntity, totalItems);
     }
 
     @Override

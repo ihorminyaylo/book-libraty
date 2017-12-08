@@ -1,18 +1,18 @@
 package book.library.java.dao;
 
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.DaoException;
 
 import java.util.List;
 
-public interface AbstractDao<T> {
+public interface AbstractDao<T, P> {
     void create(T entity) throws DaoException;
 
     T get(Integer entityId);
 
     List<T> findAll();
 
-    List<T> find(ReadParamsDto readParamsDto);
+    List<T> find(ListParams<P> listParams);
 
     void update(T entity) throws DaoException;
 

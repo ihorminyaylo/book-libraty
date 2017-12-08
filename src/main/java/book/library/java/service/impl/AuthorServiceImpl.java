@@ -4,10 +4,11 @@ import book.library.java.dao.BookDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dao.AuthorDao;
 import book.library.java.dto.EntitiesAndPageDto;
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
+import book.library.java.model.pattern.AuthorPattern;
 import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,12 +21,12 @@ import java.util.List;
 
 @Service
 @Transactional
-public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements AuthorService {
+public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern> implements AuthorService {
     private final AuthorDao authorDao;
     private final BookDao bookDao;
 
     @Autowired
-    public AuthorServiceImpl(@Qualifier("authorDaoImpl") AbstractDaoImpl<Author> entityDaoType, BookDao bookDao) {
+    public AuthorServiceImpl(@Qualifier("authorDaoImpl") AbstractDaoImpl<Author, AuthorPattern> entityDaoType, BookDao bookDao) {
         super(entityDaoType);
         authorDao = (AuthorDao) entityDaoType;
         this.bookDao = bookDao;
@@ -47,22 +48,29 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author> implements Au
     }
 
     @Override
-    public <P> EntitiesAndPageDto<Author> read(ReadParamsDto<P> readParamsDto) throws BusinessException {
+    public EntitiesAndPageDto<Author> read(ListParams listParams) throws BusinessException {
         EntitiesAndPageDto<Author> entitiesAndPageDto;
-        if (readParamsDto.getFilterBy() == null && readParamsDto.getPattern() == null && readParamsDto.getOffset() == null && readParamsDto.getLimit() == null) {
+        /*if (listParams.getFilterBy() == null && listParams.getPattern() == null && listParams.getOffset() == null && listParams.getLimit() == null) {
             return new EntitiesAndPageDto<>(authorDao.findAll(), authorDao.totalRecords());
-        }
-        if (readParamsDto.getPattern() != null && readParamsDto.getPattern().toString().contains("byId")) {
-            Author author = authorDao.get(Integer.parseInt(readParamsDto.getPattern().toString().substring(5)));
+        }*/
+        if (listParams.getPattern() != null && listParams.getPattern().toString().contains("byId")) {
+            Author author = authorDao.get(Integer.parseInt(listParams.getPattern().toString().substring(5)));
             List<Author> authors = new ArrayList<>();
             authors.add(author);
             entitiesAndPageDto = new EntitiesAndPageDto<>(authors, authorDao.totalRecords());
         }
         else {
-            entitiesAndPageDto = super.read(readParamsDto);
+            entitiesAndPageDto = super.read(listParams);
+/*
             entitiesAndPageDto.getList().forEach(author -> author.setBooks(new ArrayList<>()));
+*/
         }
         return entitiesAndPageDto;
+    }
+
+    @Override
+    public List<Author> readAll() {
+        return authorDao.findAll();
     }
 
     @Override

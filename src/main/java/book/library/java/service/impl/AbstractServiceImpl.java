@@ -2,7 +2,7 @@ package book.library.java.service.impl;
 
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.EntitiesAndPageDto;
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.service.AbstractService;
 import org.springframework.stereotype.Service;
@@ -13,11 +13,11 @@ import java.util.List;
 
 @Service
 @Transactional
-public class AbstractServiceImpl<T> implements AbstractService<T> {
+public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
 
-    private AbstractDaoImpl<T> entityDaoType;
+    private AbstractDaoImpl<T, P> entityDaoType;
 
-    public AbstractServiceImpl(AbstractDaoImpl<T> entityDaoType) {
+    public AbstractServiceImpl(AbstractDaoImpl<T, P> entityDaoType) {
         this.entityDaoType = entityDaoType;
     }
 
@@ -34,11 +34,11 @@ public class AbstractServiceImpl<T> implements AbstractService<T> {
     }
 
     @Override
-    public <P> EntitiesAndPageDto<T> read(ReadParamsDto<P> readParamsDto) throws BusinessException {
+    public EntitiesAndPageDto<T> read(ListParams listParams) throws BusinessException {
         List<T> listEntity;
         Integer totalItems = entityDaoType.totalRecords();
-        if (readParamsDto.getLimit() == null || readParamsDto.getOffset() != null) {
-            listEntity = entityDaoType.find(readParamsDto);
+        if (listParams.getLimit() == null || listParams.getOffset() != null) {
+            listEntity = entityDaoType.find(listParams);
         } else {
             listEntity = entityDaoType.findAll();
         }

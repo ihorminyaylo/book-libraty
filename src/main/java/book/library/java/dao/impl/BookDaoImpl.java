@@ -2,18 +2,18 @@ package book.library.java.dao.impl;
 
 import book.library.java.dao.BookDao;
 import book.library.java.dto.BookWithAuthors;
-import book.library.java.dto.ReadParamsDto;
+import book.library.java.dto.ListParams;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
+import book.library.java.model.pattern.BookPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Queue;
 
 @Repository
-public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
+public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements BookDao {
 
     @Override
     public void create(BookWithAuthors bookWithAuthors) throws DaoException {
@@ -23,37 +23,62 @@ public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
             throw new DaoException("Entity can't be null");
         }
         entityManager.persist(book);
-        for (Author author: authors) {
+        for (Author author : authors) {
             entityManager.createNativeQuery("INSERT INTO author_book VALUES (:authorId, :bookId)")
                 .setParameter("authorId", author.getId()).setParameter("bookId", book.getId())
                 .executeUpdate();
         }
     }
-/*WHERE name LIKE '%word1%'*/
+
+
     @Override
-    public List<Book> find(ReadParamsDto readParamsDto) {
-        String filterBy = "";
-        if (readParamsDto.getFilterBy() != null) {
-            filterBy = readParamsDto.getFilterBy();
+    public List<Book> find(ListParams<BookPattern> listParams) {
+        BookPattern pattern = listParams != null ? listParams.getPattern() : null;
+        Query nativeQuery = (Query) entityManager.createNativeQuery(generateFindQuery(listParams).toString(), Book.class);
+        if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
+            nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
         }
-        if (readParamsDto.getPattern() != null && readParamsDto.getPattern().toString().contains(("byAuthor"))) {
-            Integer authorId = Integer.parseInt(readParamsDto.getPattern().toString().substring(9));
-            return entityManager
-                .createNativeQuery("SELECT * FROM  book JOIN author_book ON book.id = author_book.book_id " +
-                    "WHERE author_book.author_id = :authorId AND name LIKE :search ORDER BY average_rating, create_date LIMIT :limit OFFSET :offset", Book.class)
-                .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).setParameter("authorId",authorId).setParameter("search", "%" + filterBy + "%").getResultList();
+        if (pattern != null) {
+            if (pattern.getSearch() !=  null) {
+                nativeQuery.setParameter("search", "%" + pattern.getSearch() + "%");
+            }
+            if (pattern.getAuthorId() != null) {
+                nativeQuery.setParameter("authorId", listParams.getPattern().getAuthorId());
+            }
+            if (pattern.getRating() != null) {
+                nativeQuery.setParameter("rating", listParams.getPattern().getRating());
+            }
         }
-        if (readParamsDto.getPattern() != null && readParamsDto.getPattern().toString().contains(("byRating"))) {
-            Integer rating = Integer.parseInt(readParamsDto.getPattern().toString().substring(9));
-            return entityManager
-                .createNativeQuery("SELECT * FROM  book WHERE average_rating = :rating AND name LIKE :search ORDER BY create_date LIMIT :limit OFFSET :offset", Book.class)
-                .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).setParameter("rating",rating).setParameter("search", "%" + filterBy + "%").getResultList();
+        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getStatus() != null && listParams.getSortParams().getStatus()) {
+            nativeQuery.setParameter("parameter", listParams.getSortParams().getParameter());
         }
-        return entityManager
-            .createNativeQuery("SELECT * FROM  book WHERE LOWER(name) LIKE LOWER(:search) ORDER BY average_rating, create_date LIMIT :limit OFFSET :offset", Book.class)
-            .setParameter("limit",readParamsDto.getLimit()).setParameter("offset",readParamsDto.getOffset()).setParameter("search", "%" + filterBy + "%").getResultList();
+        List<Book> bookList = nativeQuery.getResultList();
+        bookList.forEach(book -> book.getAuthors().forEach(author -> author.getId()));
+        return bookList;
+    }
 
-
+    private StringBuilder generateFindQuery(ListParams<BookPattern> listParams) {
+        BookPattern pattern = listParams != null ? listParams.getPattern() : null;
+        StringBuilder query = new StringBuilder("SELECT * FROM  book");
+        if (pattern != null) {
+            if (pattern.getAuthorId() != null) {
+                query.append(" JOIN author_book ON book.id = author_book.book_id");
+            }
+            query.append(" WHERE LOWER(name) LIKE LOWER(:search)");
+            if (pattern.getAuthorId() != null) {
+                query.append(" AND author_book.author_id = :authorId");
+            }
+            if (pattern.getRating() != null) {
+                query.append(" AND book.average_rating = :rating");
+            }
+        }
+        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getStatus() != null && listParams.getSortParams().getStatus()) {
+            query.append(" ORDER BY :parameter, average_rating, create_date");
+        }
+        else {
+            query.append(" ORDER BY average_rating, create_date");
+        }
+        return query;
     }
 
     @Override
@@ -85,18 +110,6 @@ public class BookDaoImpl extends AbstractDaoImpl<Book> implements BookDao {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
