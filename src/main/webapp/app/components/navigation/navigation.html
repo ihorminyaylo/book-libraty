@@ -1,13 +1,8 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand">BookLibrary</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-    <div class="navbar-nav">
-      <a class="nav-item nav-link" ng-class="{active: $ctrl.isActive('^/$')}" href="#!/">Home <span class="sr-only">(current)</span></a>
-      <a class="nav-item nav-link" ng-class="{active: $ctrl.isActive('^/authors')}" href="#!/authors">Authors</a>
-      <a class="nav-item nav-link" ng-class="{active: $ctrl.isActive('^/books')}" href="#!/books">Books</a>
-    </div>
-  </div>
+    <ul class="nav nav-pills">
+        <li role="presentation" ng-class="{active: $ctrl.isActive('^/$')}"><a href="#!/">Home</a></li>
+        <li role="presentation" ng-class="{active: $ctrl.isActive('^/authors')}"><a href="#!/authors">Authors</a></li>
+        <li role="presentation" ng-class="{active: $ctrl.isActive('^/books')}"><a href="#!/books">Books</a></li>
+    </ul>
 </nav>

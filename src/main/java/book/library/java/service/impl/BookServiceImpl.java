@@ -9,6 +9,7 @@ import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Book;
+import book.library.java.model.Review;
 import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +44,9 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
 
     @Override
     public EntitiesAndPageDto<Book> read(ListParams listParams) throws BusinessException {
-        List<Book> listEntity;
         Integer totalItems = bookDao.totalRecords();
-        listEntity = bookDao.find(listParams);
+        List<Book> listEntity = bookDao.find(listParams);
+        listEntity.forEach(book -> book.setReviews(null));
         return new EntitiesAndPageDto<>(listEntity, totalItems);
     }
 

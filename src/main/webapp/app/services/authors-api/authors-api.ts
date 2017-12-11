@@ -15,6 +15,7 @@ export class IAuthor {
 }
 
 export interface IAuthorsApi  extends IApi<IAuthor> {
+    readAll();
     getByBook(idBook: number);
 }
 
@@ -23,6 +24,11 @@ class HttpAuthorsApi extends HttpApi<IAuthor> implements IAuthorsApi {
     constructor($http: angular.IHttpService) {
         super($http);
     }
+
+    public readAll() {
+        return this.$http.get(this.BASE_URL + this.API_URL + '/findAll');
+    }
+
     getByBook(idBook: number) {
         this.$http.get(this.BASE_URL + this.API_URL + `/byBook?idBook=${idBook}`)
     }

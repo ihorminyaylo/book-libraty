@@ -1,27 +1,40 @@
 <div ng-controller="BooksIndex as b">
-  <h1 class="ui header" align="center">List of books {{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}} <a ng-if="b.rating > 0">with rating: {{b.rating}} stars</a></h1>
-  <div align="right">
-    <div ng-if="b.showSelectedAuthors" class="btn-group" uib-dropdown is-open="status.isopen">
-      <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-        Select author
-      </button>
-      <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="author-button">
-        <li role="menuitem" ng-repeat="author in b.authors"><a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a></li>
-      </ul>
-    </div>
-    <button ng-if="b.activeDeleteSelected" type="button" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+
+  <h1 class="ui header" align="center">List of books<a ng-if="b.rating > 0">with rating: {{b.rating}} stars</a>
     <button type="button" class="btn btn-primary" ng-click="b.add()">Book <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+  </h1>
+  <br>
+  <div class="col-lg-1">
+    <h4>FILTERS: </h4>
   </div>
-  <table class="table table-striped">
+  <div class="col-lg-6">
+    <div class="input-group">
+      <input ng-model="filter" type="text" class="form-control" placeholder="Search ...">
+      <span class="input-group-btn">
+        <button class="btn btn-default" ng-click="b.searchBy(filter)" type="button">Go!</button>
+      </span>
+    </div>
+  </div>
+    <div class="col-lg-2">
+      <div class="btn-group" uib-dropdown is-open="status.isopen">
+        <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+          <div type="text" ng-if="b.authorWithBooks === null">SELECT AUTHOR</div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
+        </button>
+        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="author-button">
+          <li role="menuitem" ng-repeat="author in b.authors"><a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a></li>
+        </ul>
+      </div>
+    </div>
+  <div class="col-lg-1">
+    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.selectWithAuthor(null) || b.searchBy('')">CANCEL</button>
+  </div>
+    <table class="table table-striped">
     <thead>
     <tr>
-      <br>
-      <div class="input-group">
-        <input ng-model="filter" type="text" class="form-control" placeholder="Search ...">
-        <span class="input-group-btn">
-        <button class="btn btn-default" ng-click="b.search(filter)" type="button">Go!</button>
-      </span>
-      </div></tr>
+      <th>
+      <button ng-if="b.activeDeleteSelected" type="button" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+      </th>
+    </tr>
     <tr>
       <th><input type="checkbox" ng-click="b.checkAllBook()" ng-checked="b.checkAll" /></th>
       <th class="single line">#</th>
@@ -36,7 +49,7 @@
     <tr>
       <td><input type="checkbox" ng-click="b.check(book.id)" ng-checked="book.removeStatus"></td>
       <td>
-        {{$index + (b.currentPage-1)*b.maxSize + 1}}
+        {{$index + (b.currentPage-1)*b.limit + 1}}
       </td>
       <td class="single line">
         {{book.name}}
@@ -65,14 +78,14 @@
     <tfoot>
     </tfoot>
   </table>
-  <ul uib-pagination total-items="b.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)"></ul>
+  <ul uib-pagination total-items="b.booksAndCountPages.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)"></ul>
 </div>
 
 
 <!--Dialog Add book-->
 <script type="text/ng-template" id="add-book.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Add new book</h3>
+  <div class="modal-header" align="center">
+    <label><h3>Add new book</h3></label>
   </div>
   <div class="container">
     <div class="row">
@@ -83,30 +96,32 @@
 
           <!-- Name -->
           <div class="modal-body">
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.name.$invalid && !bookForm.name.$pristine }">
+            <div class="form-group" ng-class="{ 'has-error' : bookForm.name.$invalid && (add.click || !bookForm.name.$pristine)}">
               <label>Name</label>
               <input type="text" name="name" class="form-control" ng-model="name" ng-maxlength="256" required>
               <p ng-show="bookForm.name.$error.maxlength" class="help-block">Name of book is too long.</p>
-              <p ng-show="bookForm.name.$error.required && !bookForm.name.$pristine" class="help-block">Your name of book is required.</p>
+              <p ng-show="bookForm.name.$error.required && (add.click || !bookForm.name.$pristine)" class="help-block">Your name of book is required.</p>
             </div>
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.publisher.$invalid && !bookForm.publisher.$pristine }">
+            <div class="form-group" ng-class="{ 'has-error' : bookForm.publisher.$invalid && (add.click || !bookForm.publisher.$pristine) }">
               <label>Publisher</label>
               <input type="text" name="publisher" class="form-control" ng-model="publisher" ng-maxlength="256" required>
               <p ng-show="bookForm.publisher.$error.maxlength" class="help-block">Publisher of book is too long.</p>
-              <p ng-show="bookForm.publisher.$error.required && !bookForm.publisher.$pristine" class="help-block">Publisher of book is required.</p>
+              <p ng-show="bookForm.publisher.$error.required && (add.click || !bookForm.publisher.$pristine)" class="help-block">Publisher of book is required.</p>
             </div>
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.yearPublished.$invalid && !bookForm.yearPublished.$pristine }">
-              <label>Publisher</label>
+            <div class="form-group" ng-class="{ 'has-error' : bookForm.yearPublished.$invalid && (add.click || !bookForm.yearPublished.$pristine) }">
+              <label>Year published</label>
               <input type="number" name="yearPublished" class="form-control" ng-model="yearPublished" ng-maxlength="4" required>
               <p ng-show="bookForm.yearPublished.$error.maxlength" class="help-block">Year publisher is too long.</p>
-              <p ng-show="bookForm.yearPublished.$error.required && !bookForm.yearPublished.$pristine" class="help-block">Year publisher is required.</p>
+              <p ng-show="bookForm.yearPublished.$error.required && (add.click || !bookForm.yearPublished.$pristine)" class="help-block">Year publisher is required.</p>
             </div>
             <div class="btn-group" uib-dropdown is-open="status.isopen">
               <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
                 Select author
               </button>
               <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                  <li role="menuitem" ng-click="addAuthorForBook(author)" ng-repeat="author in add.authors"><a ng-click="add.addAuthorForBook(author)">{{author.firstName}} {{author.secondName}}</a></li>
+                  <li role="menuitem" ng-click="addAuthorForBook(author)" ng-repeat="author in add.authors">
+                    <a ng-click="add.addAuthorForBook(author)">{{author.firstName}} {{author.secondName}}</a>
+                  </li>
               </ul>
             </div>
               <br><label>Selected authors:</label>
@@ -115,7 +130,7 @@
             </div>
             </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-disabled="bookForm.$invalid" ng-click="add.ok(name, publisher, yearPublished)">Save</button>
+            <button type="button" class="btn btn-primary" ng-click="(add.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && add.ok(name, publisher, yearPublished)">Save</button>
             <button class="btn btn-warning" type="button" ng-click="add.cancel()">Cancel</button>
           </div>
         </form>
@@ -128,30 +143,34 @@
 
 <!--Dialog Add review-->
 <script type="text/ng-template" id="add-review.html">
-  <div class="modal-header">
-    <h3 class="modal-title">Add new review about: {{addReview.book.name}}</h3>
+  <div class="modal-header" align="center">
+    <label><h3>Add new review about: {{addReview.book.name}}</h3></label>
   </div>
   <div class="container">
     <div class="row">
       <div class="col-sm-6">
         <!-- FORM ============ -->
 
-        <form name="bookForm" novalidate>
-
-          <!-- Name -->
+        <form name="reviewForm" novalidate>
+          <!--Comment Name -->
           <div class="modal-body">
-            <div class="form-group">
+            <div class="form-group" ng-class="{ 'has-error' : reviewForm.commentName.$invalid && (addReview.click || !reviewForm.commentName.$pristine)}">
               <label>Commenter name</label>
-              <input type="text" name="commenterName" class="form-control" ng-model="commenterName">
+              <input type="text" name="commentName" class="form-control" ng-model="commentName" required>
+              <p ng-show="reviewForm.commentName.$error.required && (addReview.click || !reviewForm.commentName.$pristine)" class="help-block">Your commenter name of book is required.</p>
+            </div>
+
+            <div class="form-group" ng-class="{ 'has-error' : reviewForm.textArea.$invalid && (addReview.click || !reviewForm.textArea.$pristine)}">
+              <label>Comment</label>
+              <textarea type="text" name="textArea" class="form-control" ng-model="textArea" required></textarea>
+              <p ng-show="reviewForm.textArea.$error.required && (addReview.click || !reviewForm.textArea.$pristine)" class="help-block">Your comment of book is required.</p>
             </div>
             <div class="form-group">
-              <label>Comment</label>
-              <textarea type="text" name="comment" class="form-control" ng-model="comment"></textarea>
+              <span uib-rating ng-model="ratingStars" max="addReview.max" on-leave="addReview.overStar = null" ng-model="ratingStars" aria-labelledby="addReview.defaultRating"></span>
             </div>
-            <span uib-rating ng-model="rate" max="addReview.max" on-leave="addReview.overStar = null" aria-labelledby="default-rating"></span>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-disabled="bookForm.$invalid" ng-click="addReview.ok(commenterName, comment, rate)">Save</button>
+            <button type="button" class="btn btn-primary" ng-click="(addReview.click = true)  && !reviewForm.commentName.$invalid && !reviewForm.textArea.$invalid && addReview.ok(commentName, textArea, ratingStars)">Save</button>
             <button class="btn btn-warning" type="button" ng-click="addReview.cancel()">Cancel</button>
           </div>
         </form>
@@ -165,7 +184,8 @@
 <!--Dialog Edit book-->
 <script type="text/ng-template" id="edit-book.html">
   <div class="modal-header">
-    <h3 class="modal-title">Add new book</h3>
+    <h3 class="modal-title" align="center">Add new book</h3>
+    <label><h3>Add new book</h3></label>
   </div>
   <div class="container">
     <div class="row">
@@ -220,8 +240,7 @@
 <!--Delete Dialog-->
 <script type="text/ng-template" id="delete-book.html">
 
-
-  <div class="modal-header">
+  <div class="modal-header" align="center">
     <label><h3>{{delete.modalOptions.headerText}}</h3></label>
   </div>
   <div class="modal-body">
@@ -243,7 +262,7 @@
 <script type="text/ng-template" id="bulk-delete-book.html">
 
 
-  <div class="modal-header">
+  <div class="modal-header" align="center">
     <label><h3>{{bulkDelete.modalOptions.headerText}}</h3></label>
   </div>
   <div class="modal-body">
@@ -288,20 +307,20 @@
 <!--Error Dialog-->
 <script type="text/ng-template" id="error.html">
   <div draggable=".modal-header">
-    <div class="modal-header">
-      <h3 class="modal-title">Warning!</h3>
+    <div class="modal-header" align="center">
+      <h3 class="modal-title">Error!</h3>
     </div>
     <div class="modal-body">
       <form>
         <div class="form-row">
           <div class="col" align="center">
-            <label>Error</label>
+            <label>The rating can't be less 1</label>
           </div>
         </div>
       </form>
     </div>
     <div align="center" class="modal-footer">
-      <button class="btn btn-danger" type="button" ng-click="errorDialog.close()">CLOSE</button>
+      <button class="btn btn-danger" type="button" data-ng-click="errorDialog.close()">CLOSE</button>
     </div>
   </div>
 </script>

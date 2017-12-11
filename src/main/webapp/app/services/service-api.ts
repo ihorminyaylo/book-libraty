@@ -1,16 +1,25 @@
 import {IAuthor, IAuthorsApi} from "./authors-api/authors-api";
 import {IReview} from "./reviews-api/reviews-api";
 
+export class BookPattern {
+    authorId: number = null;
+    search: string = null;
+    rating: number = null;
+    constructor(authorId: number, search: string, rating: number) {
+        this.authorId = authorId;
+        this.search = search;
+        this.rating = rating;
+    }
+}
 
 export interface IEntitiesAndCountPages<T> {
     list: T[];
     totalItems: number;
 }
 
-export interface IApi<T, P> {
+export interface IApi<T> {
     create(entity: T);
     createReview(commenterName, comment, rating, book);
-    find(listParams: ListParams<P>);
     getAll();
     getByPage(maxSize, offset): angular.IPromise<IEntitiesAndCountPages<T>>;
     getById(id: number);
@@ -19,19 +28,25 @@ export interface IApi<T, P> {
     bulkDelete(idEntities: number[]);
 }
 
-export interface ListParams<P> {
-    limit: number;
-    offset: number;
-    pattern: P;
-    sortParams: SortParams;
+export class ListParams<P> {
+    limit: number = null;
+    offset: number = null;
+    pattern: P = null;
+    sortParams: SortParams = null;
+    constructor(limit: number, offset: number, pattern: P, sortParams: SortParams) {
+        this.limit = limit;
+        this.offset = offset;
+        this.pattern = pattern;
+        this.sortParams = sortParams;
+    }
 }
 export interface SortParams {
     parameter: string;
     status: boolean;
 }
 
-export class HttpApi<T> implements IApi<T, P> {
-    BASE_URL: string = 'http://localhost:9090';
+export class HttpApi<T> implements IApi<T> {
+    BASE_URL: string = '';
     API_URL: string;
     AUTHOR_URL: string = '/api/author';
     BOOK_URL: string = '/api/book';
@@ -44,10 +59,6 @@ export class HttpApi<T> implements IApi<T, P> {
     public create(entity: T) {
         return this.$http.post(this.BASE_URL + this.API_URL, entity);
     }
-
-    public find(listParams: ListParams<P>)
-
-
 
     public getAll() {
         return this.$http.post<IEntitiesAndCountPages<T>>(this.BASE_URL + this.API_URL + '/find', {})

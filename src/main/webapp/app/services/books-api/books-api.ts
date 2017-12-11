@@ -1,13 +1,7 @@
 import * as angular from 'angular'
-import {HttpApi, IApi, IEntitiesAndCountPages} from "../service-api";
+import {BookPattern, HttpApi, IApi, IEntitiesAndCountPages, ListParams} from "../service-api";
 import {IAuthor} from "../authors-api/authors-api";
 import {IReview} from "../reviews-api/reviews-api";
-
-interface BookPattern {
-    authorId: number;
-    search: string;
-    rating: string;
-}
 
 export interface IBooksAndCountPages extends IEntitiesAndCountPages<IBook>{}
 
@@ -24,6 +18,9 @@ export class IBook {
 
 export interface IBooksApi extends IApi<IBook> {
     createBook(book: IBook, authors: IAuthor[]);
+
+    find(listParams: ListParams<BookPattern>);
+
     getBookByPage(limit, offset, filterBy);
     getByBook(idBook: number);
     getByPageByAuthor(limit, offset, author, filterBy);
@@ -31,6 +28,7 @@ export interface IBooksApi extends IApi<IBook> {
 }
 
 class HttpBooksApi extends HttpApi<IBook> implements IBooksApi {
+    patternString: string = '';
     API_URL = this.BOOK_URL;
     constructor($http: angular.IHttpService) {
         super($http);
@@ -38,6 +36,15 @@ class HttpBooksApi extends HttpApi<IBook> implements IBooksApi {
     public createBook(book: IBook, authors: IAuthor[]) {
         return this.$http.post(this.BASE_URL + this.API_URL, {book, authors});
     }
+
+    public find(listParams: ListParams<BookPattern>) {
+        return this.$http.post(this.BASE_URL + this.API_URL + '/find', {limit: listParams.limit, offset: listParams.offset,
+            pattern: {authorId: listParams.pattern.authorId,rating: listParams.pattern.rating, search: listParams.pattern.search}})
+            .then(entitiesResponse => entitiesResponse.data);
+    }
+
+
+
     getByBook(idBook: number) {
         return this.$http.get(this.BASE_URL + this.AUTHOR_URL + `/byBook?idBook=${idBook}`).then(entitiesResponse => entitiesResponse.data);
     }

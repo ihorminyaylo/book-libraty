@@ -44,6 +44,9 @@ public class Book implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "author_id", nullable = false)})
     private List<Author> authors;
 
+    @OneToMany(mappedBy = "book")         //todo: orphanRemoval dosen't work. Now, I use Native query for delete reviews with this book
+    private List<Review> reviews;
+
     public Book() {
     }
 
@@ -107,5 +110,13 @@ public class Book implements Serializable {
 
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 }

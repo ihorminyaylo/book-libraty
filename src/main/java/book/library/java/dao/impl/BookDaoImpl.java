@@ -6,10 +6,12 @@ import book.library.java.dto.ListParams;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
+import book.library.java.model.Review;
 import book.library.java.model.pattern.BookPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -89,6 +91,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
         Book book = get(idBook);
         try {
             entityManager.createNativeQuery("DELETE FROM author_book WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
+            entityManager.createNativeQuery("DELETE FROM review WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
             entityManager.remove(book);
         } catch (Exception e) {
             throw new DaoException();
@@ -98,16 +101,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     @Override
     public void bulkDelete(List<Integer> idBooks) throws DaoException {
         for (Integer idBook : idBooks) {
-            if (idBook == null) {
-                throw new DaoException("Entity id can't be null");
-            }
-            Book book = get(idBook);
-            try {
-                entityManager.createNativeQuery("DELETE FROM author_book WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
-                entityManager.remove(book);
-            } catch (Exception e) {
-                throw new DaoException();
-            }
+            delete(idBook);
         }
     }
 

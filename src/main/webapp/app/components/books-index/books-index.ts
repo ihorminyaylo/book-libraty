@@ -4,6 +4,7 @@ import booksApiModule, {IBook, IBooksAndCountPages, IBooksApi} from '../../servi
 import {IAuthor, IAuthorsApi} from "../../services/authors-api/authors-api";
 import {IDatepickerPopupConfig, IDatepickerPopupConfig} from "angular-ui-bootstrap";
 import {IReview, IReviewsApi} from "../../services/reviews-api/reviews-api";
+import {BookPattern, ListParams} from "../../services/service-api";
 
 interface IRouteParams extends angular.route.IRouteParamsService {
     isbn: string
@@ -13,62 +14,49 @@ interface IRouteParams extends angular.route.IRouteParamsService {
 class BooksIndex {
     checkAll: boolean;
     activeDeleteSelected: boolean;
-    totalItems: number;
     currentPage = 1;
-    maxSize: number = 10;
+    limit: number = 10;
     offset: number = 0;
-    byAuthorId: number;
+    authorId: number = null;
     rating: number;
-    authorWithBooks: IAuthor;
+    authorWithBooks: IAuthor = null;
     booksAndCountPages: IBooksAndCountPages;
-    filter: String;
+    search: string;
     authors: IAuthor[] = [];
-    showSelectedAuthors: boolean = true;
     constructor (private booksApi: IBooksApi, private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService, $routeParams: IRouteParams) {
-        console.log($routeParams);
         if (!isNaN(parseInt($routeParams.isbn))) {
-            this.byAuthorId = parseInt($routeParams.isbn);
-            this.showSelectedAuthors = false;
-            this.authorsApi.getById(this.byAuthorId).then(authors => this.authorWithBooks = authors.data.list[0]);
+            this.authorId = parseInt($routeParams.isbn);
         }
         if (!isNaN(($routeParams.rating))) {
             this.rating = $routeParams.rating;
         }
-        authorsApi.getAll().then(authorsAndCountPages => {this.authors = authorsAndCountPages.list});
         this.pageChanged(this.currentPage);
     }
     selectWithAuthor(author) {
         this.authorWithBooks = author;
-        this.byAuthorId = author.id;
+        if (author == null) {
+            this.authorId = null;
+        }
+        else {
+            this.authorId = author.id;
+        }
         this.pageChanged(this.currentPage);
     }
-    search(filterBy) {
-        this.filter = filterBy;
-        console.log(this.filter)
+    searchBy(filterBy) {
+        console.log(filterBy);
+        if (filterBy === '') {
+            this.search = null;
+        }
+        this.search = filterBy;
         this.pageChanged(this.currentPage);
     }
     pageChanged(page) {
         this.currentPage = page;
-        this.offset = (this.currentPage-1)*this.maxSize;
+        this.offset = (this.currentPage-1)*this.limit;
         this.checkAll = false;
-        if (this.byAuthorId != null) {
-            return this.booksApi.getByPageByAuthor(this.maxSize, this.offset, this.byAuthorId, this.filter).then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages;
-                this.totalItems = this.booksAndCountPages.totalItems;
-                console.log(booksAndCountPages);
-                this.booksAndCountPages.list.forEach(book => {this.booksApi.getByBook(book.id).then(authors => {book.authors = authors})});});
-        }
-        if (this.rating != null) {
-            return this.booksApi.getByRating(this.maxSize, this.offset, this.rating, this.filter).then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages;
-                this.totalItems = this.booksAndCountPages.totalItems;
-                console.log(booksAndCountPages);
-                this.booksAndCountPages.list.forEach(book => {this.booksApi.getByBook(book.id).then(authors => {book.authors = authors})});});
-        }
-        else {
-            this.booksApi.getBookByPage(this.maxSize, this.offset, this.filter).then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages;
-                this.totalItems = this.booksAndCountPages.totalItems;
-                console.log(booksAndCountPages);
-                this.booksAndCountPages.list.forEach(book => {this.booksApi.getByBook(book.id).then(authors => {book.authors = authors})});});
-        }
+        this.authorsApi.readAll().then(authors => this.authors = authors.data);
+        return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), null))
+            .then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages; console.log(this.booksAndCountPages)});
     }
     check(bookId) {
         this.activeDeleteSelected = false;
@@ -164,11 +152,12 @@ class AddBook {
     book: IBook = new IBook();
     authors: IAuthor[] = [];
     selectAuthors: IAuthor[] = [];
+    click: boolean = false;
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private booksApi: IBooksApi,
                 private authorsApi: IAuthorsApi,
                 private $uibModal: ng.ui.bootstrap.IModalService) {
-        authorsApi.getAll().then(authorsAndCountPages => {this.authors = authorsAndCountPages.list; console.log(this.authors)});
+        authorsApi.readAll().then(authors => this.authors = authors.data);
     }
     addAuthorForBook(author: IAuthor) {
         this.selectAuthors.push(author);
@@ -190,12 +179,15 @@ class AddBook {
 }
 
 class AddReview {
-    rate = 0;
+    rate = 1;
     max = 5;
+    click: boolean = false;
+    min = 1;
+    defaultRating = 1;
+
     //review: IReview = new IReview();
 
     isReadonly = false;
-
     hoveringOver(value) {
         overStar = value;
         percent = 100 * (value / this.max);
@@ -213,11 +205,16 @@ class AddReview {
                 private book: IBook) {
     }
     ok(commenterName, comment, rating): void {
-        console.log(commenterName + comment + rating);
-       /* this.review.commenterName = commenterName;
-        this.review.comment = comment;
-        this.review.rating = rating;
-        this.review.bookId = this.book.id;*/
+        if (isNaN(rating)) {
+            this.$uibModal.open({
+                animation: true,
+                backdrop: false,
+                controller: ErrorDialog,
+                controllerAs: 'errorDialog',
+                templateUrl: 'error.html',
+            });
+            return;
+        }
         this.booksApi.createReview(commenterName, comment, rating, this.book);
         this.$uibModalInstance.close(true);
     }
@@ -302,7 +299,7 @@ class BulkDelete {
 class ErrorDialog {
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance) {
     }
-    close(): void {
+    close() {
         this.$uibModalInstance.close();
     }
 }

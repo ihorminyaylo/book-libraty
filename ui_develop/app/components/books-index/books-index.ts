@@ -32,7 +32,7 @@ class BooksIndex {
         if (!isNaN(($routeParams.rating))) {
             this.rating = $routeParams.rating;
         }
-        authorsApi.getAll().then(authorsAndCountPages => {this.authors = authorsAndCountPages.list});
+        authorsApi.getAll().then(authorsAndCountPages => {this.authors = authorsAndCountPages});
         this.pageChanged(this.currentPage);
     }
     selectWithAuthor(author) {
