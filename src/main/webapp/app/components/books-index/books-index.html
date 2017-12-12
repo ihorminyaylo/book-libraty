@@ -4,7 +4,7 @@
   </h1>
   <div uib-dropdown>
     <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-      {{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}} <span class="caret"></span>
+      <div ng-if="b.authorWithBooks === null">SELECT <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
     </button>
     <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.selectWithAuthor(null)">CLEAR</button>
     <button type="button" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
