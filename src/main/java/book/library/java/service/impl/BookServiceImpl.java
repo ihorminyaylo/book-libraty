@@ -52,12 +52,13 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
     }
 
     @Override
-    public void delete(Integer idBook) throws BusinessException {
+    public Integer delete(Integer idBook) throws BusinessException {
         try {
             bookDao.delete(idBook);
         } catch (DaoException e) {
             throw new BusinessException();
         }
+        return idBook;
     }
 
     @Override

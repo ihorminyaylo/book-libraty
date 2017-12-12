@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = "/api/author")
 public class AuthorController {
@@ -65,9 +67,13 @@ public class AuthorController {
         }
     }
 
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity delete(@PathVariable("id") Integer idAuthor) throws DaoException, BusinessException {
+        return ResponseEntity.ok(authorService.delete(idAuthor));
+    }
 
-    /*//todo: in progress
-    @PutMapping(value = "/delete")
+    //todo: in progress
+    /*@PutMapping(value = "/delete")
     public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException {
         try {
             authorService.bulkDelete(idEntities);

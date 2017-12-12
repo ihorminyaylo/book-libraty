@@ -97,6 +97,15 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
         }
     }
 
+    @Override
+    public List<Author> bulkDelete(List<Integer> idAuthors) throws BusinessException {
+        try {
+            return authorDao.bulkDeleteAuthors(idAuthors);
+        } catch (DaoException e) {
+            throw new BusinessException();
+        }
+    }
+
     /*@Override
     public void bulkDelete(List<Integer> idEntities) throws BusinessException {
         super.bulkDelete(idEntities);

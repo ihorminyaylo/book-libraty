@@ -69,18 +69,28 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implem
     }
 
     @Override
+    public Integer delete(Integer idAuthor) throws DaoException {
+        if (idAuthor == null) {
+            throw new DaoException("Entity id can't be null");
+        }
+        Author author = get(idAuthor);
+        if (!author.getBooks().isEmpty()) {
+            return author.getId();
+        }
+        try {
+            entityManager.remove(author);
+        } catch (Exception e) {
+            throw new DaoException();
+        }
+        return null;
+    }
+
+    @Override
     public List<Author> bulkDeleteAuthors(List<Integer> idEntities) throws DaoException {
         List<Author> notRemove = new ArrayList<>();
         for (Integer entityId : idEntities) {
-            if (entityId == null) {
-                throw new DaoException("Entity id can't be null");
-            }
-            Author entity = get(entityId);
-            try {
-                entityManager.remove(entity);
-            } catch (Exception e) {
-                notRemove.add(entity);
-            }
+            if (delete(entityId) != null);
+            notRemove.add(get(entityId));
         }
         return notRemove;
     }

@@ -54,7 +54,7 @@ public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
     }
 
     @Override
-    public void delete(Integer idEntity) throws DaoException {
+    public Integer delete(Integer idEntity) throws DaoException {
         if (idEntity == null) {
             throw new DaoException("Entity id can't be null");
         }
@@ -64,20 +64,13 @@ public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
         } catch (Exception e) {
             throw new DaoException();
         }
+        return idEntity;
     }
 
     @Override
     public void bulkDelete(List<Integer> idEntities) throws DaoException {
         for (Integer entityId : idEntities) {
-            if (entityId == null) {
-                throw new DaoException("Entity id can't be null");
-            }
-            T entity = get(entityId);
-            try {
-                entityManager.remove(entity);
-            } catch (Exception e) {
-                throw new DaoException();
-            }
+            delete(entityId);
         }
     }
 

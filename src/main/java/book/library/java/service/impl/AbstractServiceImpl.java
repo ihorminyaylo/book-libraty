@@ -56,12 +56,13 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
     }
 
     @Override
-    public void delete(Integer idEntity) throws BusinessException {
+    public Integer delete(Integer idEntity) throws BusinessException {
         try {
             entityDaoType.delete(idEntity);
         } catch (Exception e) {
             throw new BusinessException();
         }
+        return idEntity;
     }
 
     /*@Override

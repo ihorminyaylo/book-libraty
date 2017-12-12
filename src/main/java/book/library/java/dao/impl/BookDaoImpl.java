@@ -100,7 +100,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     }
 
     @Override
-    public void delete(Integer idBook) throws DaoException {
+    public Integer delete(Integer idBook) throws DaoException {
         if (idBook == null) {
             throw new DaoException("Entity id can't be null");
         }
@@ -112,6 +112,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
         } catch (Exception e) {
             throw new DaoException();
         }
+        return idBook;
     }
 
     @Override
