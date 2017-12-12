@@ -4,18 +4,68 @@ import book.library.java.dao.AuthorDao;
 import book.library.java.dto.ListParams;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
+import book.library.java.model.Book;
 import book.library.java.model.pattern.AuthorPattern;
+import book.library.java.model.pattern.BookPattern;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implements AuthorDao {
 
-    @Override
+    /*@Override
     public List<Author> find(ListParams listParams) {
         return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating, create_date", Author.class).setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit()).getResultList();
+    }*/
+
+    @Override
+    public List<Author> find(ListParams<AuthorPattern> listParams) {
+        StringBuilder startQuery = new StringBuilder("SELECT * FROM  author");
+        StringBuilder query = new StringBuilder(generateQueryWithParams(listParams, startQuery));
+        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getStatus() != null && listParams.getSortParams().getStatus()) {
+            query.append(" ORDER BY :parameter, average_rating, create_date");
+        }
+        else {
+            query.append(" ORDER BY average_rating, create_date");
+        }
+        Query nativeQuery = (Query) entityManager.createNativeQuery(query.toString(), Author.class);
+        nativeQuery = setParameters(listParams, nativeQuery, "find");
+        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getStatus() != null && listParams.getSortParams().getStatus()) {
+            nativeQuery.setParameter("parameter", listParams.getSortParams().getParameter());
+        }
+        List<Author> authorList = nativeQuery.getResultList();
+        return authorList;
+    }
+
+    public StringBuilder generateQueryWithParams(ListParams<AuthorPattern> listParams, StringBuilder query) {
+        AuthorPattern pattern = listParams != null ? listParams.getPattern() : null;
+        return query;
+    }
+    public Query setParameters(ListParams<AuthorPattern> listParams, Query nativeQuery, String type) {
+        AuthorPattern pattern = listParams != null ? listParams.getPattern() : null;
+        if (type.equals("find")) {
+            if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
+                System.out.println(listParams.getLimit() + "dasdasdas" + listParams.getOffset());
+                System.out.println(listParams.getLimit() + listParams.getOffset());
+                nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
+            }
+        }
+        if (pattern != null) {
+        }
+        return nativeQuery;
+    }
+
+    @Override
+    public Integer totalRecords(ListParams<AuthorPattern> listParams) {
+        StringBuilder query = new StringBuilder("SELECT Count(author.id) FROM author");
+        Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query).toString());
+        nativeQuery = setParameters(listParams, nativeQuery, "totalRecords");
+        BigInteger bigInteger = (BigInteger) nativeQuery.getSingleResult();
+        return bigInteger.intValue();
     }
 
     @Override

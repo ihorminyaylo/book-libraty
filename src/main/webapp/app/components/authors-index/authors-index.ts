@@ -1,13 +1,13 @@
 import * as angular from 'angular'
 
 import authorsApiModule, {IAuthor, IAuthorsAndCountPages, IAuthorsApi} from '../../services/authors-api/authors-api'
+import {ListParams} from "../../services/service-api";
 
 class AuthorsIndex {
     checkAll: boolean;
-    activeDeleteSelected: boolean;
-    totalItems: number;
+    activeDeleteSelected: boolean = true;
     currentPage = 1;
-    maxSize: number = 10;
+    limit: number = 10;
     offset: number = 0;
     authorsAndCountPages: IAuthorsAndCountPages;
     constructor (private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService) {
@@ -15,9 +15,13 @@ class AuthorsIndex {
     }
     pageChanged(page) {
         this.currentPage = page;
-        this.offset = (this.currentPage-1)*this.maxSize;
-        this.authorsApi.getByPage(this.maxSize, this.offset).then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages;
-        this.totalItems = this.authorsAndCountPages.totalItems});
+        this.offset = (this.currentPage-1)*this.limit;
+        /*this.authorsApi.getByPage(this.limit, this.offset).then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages;
+        this.totalItems = this.authorsAndCountPages.totalItems});*/
+        console.log(this.limit + 'offset' + this.offset);
+
+        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; console.log(this.authorsAndCountPages)});
         this.checkAll = false;
     }
     check(authorId) {
@@ -32,7 +36,7 @@ class AuthorsIndex {
     }
     checkAllAuthor() {
         this.checkAll = !this.checkAll;
-        this.activeDeleteSelected = this.checkAll;
+        this.activeDeleteSelected = !this.checkAll;
         this.authorsAndCountPages.list.forEach(author => author.removeStatus = this.checkAll);
     }
     add(): void {

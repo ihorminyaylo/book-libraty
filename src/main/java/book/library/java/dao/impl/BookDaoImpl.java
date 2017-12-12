@@ -43,7 +43,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
             query.append(" ORDER BY average_rating, create_date");
         }
         Query nativeQuery = (Query) entityManager.createNativeQuery(query.toString(), Book.class);
-        nativeQuery = setParameters(listParams, nativeQuery);
+        nativeQuery = setParameters(listParams, nativeQuery, "find");
         if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getStatus() != null && listParams.getSortParams().getStatus()) {
             nativeQuery.setParameter("parameter", listParams.getSortParams().getParameter());
         }
@@ -52,7 +52,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
         return bookList;
     }
 
-    private StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query) {
+    public StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query) {
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
         if (pattern != null) {
             if (pattern.getAuthorId() != null) {
@@ -68,11 +68,13 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
         }
         return query;
     }
-    private Query setParameters(ListParams<BookPattern> listParams, Query nativeQuery) {
+    public Query setParameters(ListParams<BookPattern> listParams, Query nativeQuery, String type) {
         System.out.println(listParams);
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
-        if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
-            nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
+        if (type.equals("find")) {
+            if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
+                nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
+            }
         }
         if (pattern != null) {
             if (pattern.getSearch() !=  null) {
@@ -92,8 +94,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     public Integer totalRecords(ListParams<BookPattern> listParams) {
         StringBuilder query = new StringBuilder("SELECT Count(book.id) FROM book");
         Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query).toString());
-        nativeQuery = setParameters(listParams, nativeQuery);
-        System.out.println(nativeQuery.getSingleResult());
+        nativeQuery = setParameters(listParams, nativeQuery, "totalRecords");
         BigInteger bigInteger = (BigInteger) nativeQuery.getSingleResult();
         return bigInteger.intValue();
     }

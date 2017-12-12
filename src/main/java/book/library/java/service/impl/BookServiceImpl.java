@@ -44,6 +44,7 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
 
     @Override
     public EntitiesAndPageDto<Book> read(ListParams listParams) throws BusinessException {
+        System.out.println(listParams.getLimit() + "offset" + listParams.getOffset());
         Integer totalItems = bookDao.totalRecords(listParams);
         List<Book> listEntity = bookDao.find(listParams);
         listEntity.forEach(book -> book.setReviews(null));

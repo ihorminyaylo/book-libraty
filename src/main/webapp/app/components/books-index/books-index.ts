@@ -73,66 +73,88 @@ class BooksIndex {
         this.activeDeleteSelected = !this.checkAll;
         this.booksAndCountPages.list.forEach(book => book.removeStatus = this.checkAll);
     }
+    dialog;
     add(): void {
-        this.$uibModal.open({
-            backdrop: false,
+        this.dialog = this.$uibModal.open({
             controller: AddBook,
             controllerAs: 'add',
             templateUrl: 'add-book.html',
-        }).result.then(function () {
+            scope: '',
         });
+
+        this.dialog.result.then( function () {
+            location.reload();
+        })
+
+        /*this.dialog.result.then(function (a: BooksIndex) {
+            a = new BooksIndex();
+            this.pageChanged(this.currentPage);
+        })*/
     }
     edit(book): void {
-        this.$uibModal.open({
+        this.dialog = this.$uibModal.open({
             backdrop: false,
             controller: EditBook,
             controllerAs: 'edit',
             templateUrl: 'edit-book.html',
             resolve: {
                 book: () => book
-            }
+            },
+            scope: ''
         }).result.then(function () {
         });
+        this.dialog.result.then( function () {
+            location.reload();
+        })
     }
     addReview(book): void {
-        this.$uibModal.open({
-            backdrop: false,
+        this.dialog = this.$uibModal.open({
             controller: AddReview,
             controllerAs: 'addReview',
             templateUrl: 'add-review.html',
+            scope: '',
             resolve: {
                 book: () => book
             }
-        }).result.then(function () {
         });
+
+        this.dialog.result.then( function () {
+            location.reload();
+        })
     }
     delete(book): void {
-        this.$uibModal.open({
-            backdrop: false,
+        this.dialog = this.$uibModal.open({
             controller: DeleteBook,
             controllerAs: 'delete',
             templateUrl: 'delete-book.html',
+            scope: '',
             resolve: {
                 book: () => book
             }
-        }).result.then(function () {
         });
+
+        this.dialog.result.then( function () {
+            location.reload();
+        })
     }
     bulkDeleteBooks(booksRemove: IBook[], idEntities: number[]) {
         booksRemove = []
         idEntities = [];
         this.booksAndCountPages.list.forEach(book => {if (book.removeStatus) {booksRemove.push(book); idEntities.push(book.id)}});
-        this.$uibModal.open({
-            backdrop: false,
+        this.dialog = this.$uibModal.open({
             controller: BulkDelete,
             controllerAs: 'bulkDelete',
             templateUrl: 'bulk-delete-book.html',
+            scope: '',
             resolve: {
                 idEntities: () => idEntities,
                 booksRemove: () => booksRemove,
             }
-        }).result.then(function () {
         });
+
+        this.dialog.result.then( function () {
+            location.reload();
+        })
     }
 }
 
@@ -166,12 +188,12 @@ class AddBook {
             this.authors.splice(index, 1);
         }
     }
-    ok(name, publisher, yearPublisher): void {
+    ok(name, publisher, yearPublisher) {
         this.book.name = name;
         this.book.publisher = publisher;
         this.book.yearPublished = yearPublisher;
         this.booksApi.createBook(this.book, this.selectAuthors);
-        this.$uibModalInstance.close(true);
+        this.$uibModalInstance.close();
     }
     cancel(): void {
         this.$uibModalInstance.close();

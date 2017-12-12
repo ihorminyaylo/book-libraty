@@ -1,10 +1,8 @@
 <div ng-controller="AuthorsIndex as a">
-    <ul uib-pagination total-items="a.totalItems" ng-model="a.currentPage" ng-change="a.pageChanged(a.currentPage)"></ul>
-<h1 class="ui header" align="center">List of authors</h1>
-    <div align="right">
-        <button ng-if="a.activeDeleteSelected" type="button" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-        <button type="button" class="btn btn-primary" ng-click="a.add()">Author <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-    </div>
+<h1 class="ui header" align="center">List of authors
+    <button type="button" class="btn btn-primary" ng-click="a.add()">Author <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+</h1>
+    <button type="button" ng-disabled="a.activeDeleteSelected" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
 <table class="table table-striped">
     <thead>
     <tr>
@@ -20,7 +18,7 @@
     <tr>
         <td><input type="checkbox" ng-click="a.check(author.id)" ng-checked="author.removeStatus"></td>
         <td>
-            {{$index + (a.currentPage-1)*a.maxSize + 1}}
+            {{$index + (a.currentPage-1)*a.limit + 1}}
         </td>
         <td class="single line">
             {{author.secondName}} {{author.firstName}}
@@ -33,10 +31,10 @@
         </td>
         <td>
             <button type="button" class="btn btn-warning" ng-click="a.edit(author)">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                EDIT <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
             </button>
             <button type="button" class="btn btn-danger" ng-click="a.delete(author)">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </button>
             <a class="btn btn-primary" href="#!/books/author/{{author.id}}">Show books
                 <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
@@ -47,6 +45,7 @@
     <tfoot>
     </tfoot>
 </table>
+    <ul uib-pagination total-items="a.authorsAndCountPages.totalItems" ng-model="a.currentPage" ng-change="a.pageChanged(a.currentPage)"></ul>
 </div>
 
 

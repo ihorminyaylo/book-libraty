@@ -1,5 +1,5 @@
 import * as angular from 'angular'
-import {HttpApi, IApi, IEntitiesAndCountPages} from "../service-api";
+import {AuthorPattern, HttpApi, IApi, IEntitiesAndCountPages, ListParams} from "../service-api";
 
 export interface IAuthorsAndCountPages extends IEntitiesAndCountPages<IAuthor> {
 }
@@ -16,6 +16,7 @@ export class IAuthor {
 
 export interface IAuthorsApi  extends IApi<IAuthor> {
     readAll();
+    find(listParams: ListParams<AuthorPattern>);
     getByBook(idBook: number);
 }
 
@@ -31,6 +32,11 @@ class HttpAuthorsApi extends HttpApi<IAuthor> implements IAuthorsApi {
 
     getByBook(idBook: number) {
         this.$http.get(this.BASE_URL + this.API_URL + `/byBook?idBook=${idBook}`)
+    }
+    public find(listParams: ListParams<AuthorPattern>) {
+        return this.$http.post(this.BASE_URL + this.API_URL + '/find', {limit: listParams.limit, offset: listParams.offset,
+            pattern: {}})
+            .then(entitiesResponse => entitiesResponse.data);
     }
 }
 
