@@ -46,7 +46,7 @@ export interface SortParams {
 }
 
 export class HttpApi<T> implements IApi<T> {
-    BASE_URL: string = '';
+    BASE_URL: string = '' + location.pathname;
     API_URL: string;
     AUTHOR_URL: string = '/api/author';
     BOOK_URL: string = '/api/book';
