@@ -44,7 +44,7 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
 
     @Override
     public EntitiesAndPageDto<Book> read(ListParams listParams) throws BusinessException {
-        Integer totalItems = bookDao.totalRecords();
+        Integer totalItems = bookDao.totalRecords(listParams);
         List<Book> listEntity = bookDao.find(listParams);
         listEntity.forEach(book -> book.setReviews(null));
         return new EntitiesAndPageDto<>(listEntity, totalItems);

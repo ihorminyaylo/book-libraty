@@ -13,7 +13,7 @@ interface IRouteParams extends angular.route.IRouteParamsService {
 
 class BooksIndex {
     checkAll: boolean;
-    activeDeleteSelected: boolean;
+    activeDeleteSelected: boolean = true;
     currentPage = 1;
     limit: number = 10;
     offset: number = 0;
@@ -65,12 +65,12 @@ class BooksIndex {
                 book.removeStatus = !book.removeStatus;
                 if (book.removeStatus === false) {this.checkAll = false}
             }
-            if (book.removeStatus === true) {this.activeDeleteSelected = true}
+            if (book.removeStatus === true) {this.activeDeleteSelected = false}
         });
     }
     checkAllBook() {
         this.checkAll = !this.checkAll;
-        this.activeDeleteSelected = this.checkAll;
+        this.activeDeleteSelected = !this.checkAll;
         this.booksAndCountPages.list.forEach(book => book.removeStatus = this.checkAll);
     }
     add(): void {

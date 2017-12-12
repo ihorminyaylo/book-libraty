@@ -36,7 +36,7 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
     @Override
     public EntitiesAndPageDto<T> read(ListParams listParams) throws BusinessException {
         List<T> listEntity;
-        Integer totalItems = entityDaoType.totalRecords();
+        Integer totalItems = entityDaoType.totalRecords(listParams);
         if (listParams.getLimit() == null || listParams.getOffset() != null) {
             listEntity = entityDaoType.find(listParams);
         } else {

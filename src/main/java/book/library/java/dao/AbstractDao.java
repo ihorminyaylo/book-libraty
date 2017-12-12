@@ -20,5 +20,5 @@ public interface AbstractDao<T, P> {
 
     void bulkDelete(List<Integer> idEntities) throws DaoException;
 
-    Integer totalRecords();
+    Integer totalRecords(ListParams<P> listParams);
 }

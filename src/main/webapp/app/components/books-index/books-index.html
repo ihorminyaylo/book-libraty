@@ -1,39 +1,30 @@
 <div ng-controller="BooksIndex as b">
-
   <h1 class="ui header" align="center">List of books<a ng-if="b.rating > 0">with rating: {{b.rating}} stars</a>
     <button type="button" class="btn btn-primary" ng-click="b.add()">Book <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
   </h1>
+  <div uib-dropdown>
+    <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+      {{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}} <span class="caret"></span>
+    </button>
+    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.selectWithAuthor(null)">CLEAR</button>
+    <button type="button" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+    <ul class="dropdown-menu" uib-dropdown-menu>
+      <li ng-repeat="author in b.authors">
+        <a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a>
+      </li>
+    </ul>
+  </div>
   <br>
-  <div class="col-lg-1">
-    <h4>FILTERS: </h4>
-  </div>
-  <div class="col-lg-6">
-    <div class="input-group">
-      <input ng-model="filter" type="text" class="form-control" placeholder="Search ...">
-      <span class="input-group-btn">
-        <button class="btn btn-default" ng-click="b.searchBy(filter)" type="button">Go!</button>
-      </span>
-    </div>
-  </div>
-    <div class="col-lg-2">
-      <div class="btn-group" uib-dropdown is-open="status.isopen">
-        <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-          <div type="text" ng-if="b.authorWithBooks === null">SELECT AUTHOR</div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
-        </button>
-        <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="author-button">
-          <li role="menuitem" ng-repeat="author in b.authors"><a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a></li>
-        </ul>
-      </div>
-    </div>
-  <div class="col-lg-1">
-    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.selectWithAuthor(null) || b.searchBy('')">CANCEL</button>
-  </div>
     <table class="table table-striped">
     <thead>
     <tr>
-      <th>
-      <button ng-if="b.activeDeleteSelected" type="button" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-      </th>
+      <div class="input-group">
+        <input ng-model="filter" type="text" class="form-control" placeholder="Search ...">
+        <span class="input-group-btn">
+        <button class="btn btn-primary" ng-click="b.searchBy(filter)" type="button">SEARCH</button>
+        <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.searchBy('')">CLEAR</button>
+      </span>
+      </div>
     </tr>
     <tr>
       <th><input type="checkbox" ng-click="b.checkAllBook()" ng-checked="b.checkAll" /></th>
@@ -77,7 +68,9 @@
     </tbody>
     <tfoot>
     </tfoot>
+
   </table>
+
   <ul uib-pagination total-items="b.booksAndCountPages.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)"></ul>
 </div>
 

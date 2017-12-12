@@ -82,7 +82,7 @@ public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
     }
 
     @Override
-    public Integer totalRecords() {
+    public Integer totalRecords(ListParams<P> listParams) {
         String queryString = "SELECT Count(*) FROM " + entityType.getName();
         Query query = entityManager.createQuery(queryString);
         return (int) (long) query.getSingleResult();

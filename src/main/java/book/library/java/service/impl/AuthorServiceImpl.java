@@ -57,7 +57,7 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
             Author author = authorDao.get(Integer.parseInt(listParams.getPattern().toString().substring(5)));
             List<Author> authors = new ArrayList<>();
             authors.add(author);
-            entitiesAndPageDto = new EntitiesAndPageDto<>(authors, authorDao.totalRecords());
+            entitiesAndPageDto = new EntitiesAndPageDto<>(authors, authorDao.totalRecords(null));
         }
         else {
             entitiesAndPageDto = super.read(listParams);
