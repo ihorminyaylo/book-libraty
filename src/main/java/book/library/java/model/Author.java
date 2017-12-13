@@ -1,5 +1,6 @@
 package book.library.java.model;
 
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -40,7 +41,7 @@ public class Author implements Serializable {
     @JoinTable(name = "author_book",
         joinColumns = {@JoinColumn(name = "author_id", nullable = false)},
         inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
-    private List<Book> books = new ArrayList<>();
+    private List<Book> books;
 
     public String getFirstName() {
         return firstName;

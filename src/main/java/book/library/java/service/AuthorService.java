@@ -10,4 +10,5 @@ public interface AuthorService extends AbstractService<Author, AuthorPattern> {
     List<Author> readAll();
     List<Author> readByBook(Integer idBook) throws BusinessException;
     List<Author> bulkDelete(List<Integer> idEntities) throws BusinessException;
+    Author deleteAuthor(Integer idAuthor) throws BusinessException;
 }

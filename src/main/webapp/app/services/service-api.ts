@@ -1,6 +1,9 @@
 import {IAuthor, IAuthorsApi} from "./authors-api/authors-api";
 import {IReview} from "./reviews-api/reviews-api";
 
+export class AuthorPattern {
+}
+
 export class BookPattern {
     authorId: number = null;
     search: string = null;

@@ -4,13 +4,13 @@ CREATE TABLE author (id SERIAL PRIMARY KEY,
                      first_name VARCHAR(256) NOT NULL,
                      second_name VARCHAR(256) NOT NULL,
                      create_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
-                     average_rating DOUBLE PRECISION NOT NULL DEFAULT 0);
+                     average_rating DOUBLE PRECISION);
 CREATE TABLE book (id SERIAL PRIMARY KEY,
                    name VARCHAR(256) NOT NULL ,
                    publisher VARCHAR(256) NOT NULL ,
                                       year_published INTEGER NOT NULL,
                    create_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
-                   average_rating DOUBLE PRECISION NOT NULL DEFAULT 0);
+                   average_rating DOUBLE PRECISION);
 CREATE TABLE review (id SERIAL PRIMARY KEY,
                      comment TEXT NOT NULL ,
                      commenter_name VARCHAR NOT NULL ,
@@ -23,6 +23,17 @@ CREATE TABLE author_book (author_id INTEGER NOT NULL,
                           book_id INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES author(id),
   FOREIGN KEY (book_id) REFERENCES book(id));
+CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$
+BEGIN UPDATE book
+SET average_rating = (SELECT AVG(rating) FROM review
+WHERE book.id = review.book_id);
+RETURN NEW;
+END;
+$calculates$
+LANGUAGE plpgsql;
+CREATE TRIGGER computeAvg
+AFTER INSERT ON review
+FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_book();
 
 INSERT INTO author VALUES (DEFAULT , 'Ihor', 'Miniailo');
 INSERT INTO author VALUES (DEFAULT , 'Mykola', 'Halchuk');

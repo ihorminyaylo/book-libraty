@@ -63,7 +63,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
                 query.append(" AND author_book.author_id = :authorId");
             }
             if (pattern.getRating() != null) {
-                query.append(" AND book.average_rating = :rating");
+                query.append(" AND ROUND(book.average_rating) = :rating");
             }
         }
         return query;

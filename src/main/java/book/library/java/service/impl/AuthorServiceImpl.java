@@ -65,12 +65,14 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
             entitiesAndPageDto.getList().forEach(author -> author.setBooks(new ArrayList<>()));
 */
         }
+        entitiesAndPageDto.getList().forEach(author -> author.setBooks(null));
         return entitiesAndPageDto;
     }
 
     @Override
     public List<Author> readAll() {
-        return authorDao.findAll();
+        List<Author> authors = authorDao.findAll();
+        return authors;
     }
 
     @Override
@@ -102,6 +104,15 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
         try {
             return authorDao.bulkDeleteAuthors(idAuthors);
         } catch (DaoException e) {
+            throw new BusinessException();
+        }
+    }
+
+    @Override
+    public Author deleteAuthor(Integer idAuthor) throws BusinessException {
+        try {
+            return authorDao.deleteAuthor(idAuthor);
+        } catch (Exception e) {
             throw new BusinessException();
         }
     }

@@ -31,6 +31,7 @@ class BooksIndex {
             this.rating = $routeParams.rating;
         }
         this.pageChanged(this.currentPage);
+
     }
     selectWithAuthor(author) {
         this.authorWithBooks = author;
@@ -78,18 +79,10 @@ class BooksIndex {
         this.dialog = this.$uibModal.open({
             controller: AddBook,
             controllerAs: 'add',
-            templateUrl: 'add-book.html',
-            scope: '',
-        });
+            templateUrl: 'add-book.html'});
 
         this.dialog.result.then( function () {
-            location.reload();
         })
-
-        /*this.dialog.result.then(function (a: BooksIndex) {
-            a = new BooksIndex();
-            this.pageChanged(this.currentPage);
-        })*/
     }
     edit(book): void {
         this.dialog = this.$uibModal.open({
@@ -101,10 +94,9 @@ class BooksIndex {
                 book: () => book
             },
             scope: ''
-        }).result.then(function () {
         });
+
         this.dialog.result.then( function () {
-            location.reload();
         })
     }
     addReview(book): void {
@@ -180,12 +172,19 @@ class AddBook {
                 private authorsApi: IAuthorsApi,
                 private $uibModal: ng.ui.bootstrap.IModalService) {
         authorsApi.readAll().then(authors => this.authors = authors.data);
+        console.log(this.selectAuthors.length === 0)
     }
     addAuthorForBook(author: IAuthor) {
         this.selectAuthors.push(author);
         let index = this.authors.indexOf(author, 0);
         if (index > -1) {
             this.authors.splice(index, 1);
+        }
+    }
+    deleteAuthor(authorDelete: IAuthor) {
+        let index = this.selectAuthors.indexOf(authorDelete, 0);
+        if (index > -1) {
+            this.selectAuthors.splice(index, 1);
         }
     }
     ok(name, publisher, yearPublisher) {
@@ -247,29 +246,45 @@ class AddReview {
 
 
 class EditBook {
+    book: IBook = new IBook();
+    authors: IAuthor[] = [];
+    selectAuthors: IAuthor[] = [];
+    click: boolean = false;
+
+
     modalOptions = {
         closeButtonText: 'CLOSE',
         actionButtonText: 'OK',
         headerText: `Edit book: ${this.book.name} ${this.book.publisher}`,
     };
-    selectAuthors: IAuthor[] = [];]
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private booksApi: IBooksApi,
-                //private authorApi: IAuthorsApi,
+                private authorsApi: IAuthorsApi,
                 private $uibModal: ng.ui.bootstrap.IModalService,
-                private book: IBook) {
-        this.booksApi.getByBook(book.id).then(authors => {this.selectAuthors = authors; console.log(this.selectAuthors)});
+                book: IBook) {
+        this.book = book;
+        this.authorsApi.readAll().then(authors => this.authors = authors.data);
+        this.selectAuthors = this.book.authors;
+}
+    addAuthorForBook(author: IAuthor) {
+        this.selectAuthors.push(author);
+        let index = this.authors.indexOf(author, 0);
+        if (index > -1) {
+            this.authors.splice(index, 1);
+        }
     }
-
+    deleteAuthor(authorDelete: IAuthor) {
+        let index = this.selectAuthors.indexOf(authorDelete, 0);
+        if (index > -1) {
+            this.selectAuthors.splice(index, 1);
+        }
+    }
     //todo: validation for input value
-    ok(name, publisher): void {
-        this.booksApi.update(this.book).catch(
-            this.$uibModal.open({
-                backdrop: false,
-                controller: ErrorDialog,
-                controllerAs: 'errorDialog',
-                templateUrl: 'error.html'
-            }));
+    ok(name, publisher, yearPublisher) {
+        this.book.name = name;
+        this.book.publisher = publisher;
+        this.book.yearPublished = yearPublisher;
+        this.booksApi.createBook(this.book, this.selectAuthors);
         this.$uibModalInstance.close();
     }
     cancel(): void {

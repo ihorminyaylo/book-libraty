@@ -25,13 +25,13 @@ class AuthorsIndex {
         this.checkAll = false;
     }
     check(authorId) {
-        this.activeDeleteSelected = false;
+        this.activeDeleteSelected = true;
         this.authorsAndCountPages.list.forEach(author =>{
             if (author.id === authorId) {
                 author.removeStatus = !author.removeStatus;
                 if (author.removeStatus === false) {this.checkAll = false}
             }
-            if (author.removeStatus === true) {this.activeDeleteSelected = true}
+            if (author.removeStatus === true) {this.activeDeleteSelected = false}
         });
     }
     checkAllAuthor() {
@@ -43,8 +43,12 @@ class AuthorsIndex {
         this.$uibModal.open({
             backdrop: false,
             controller: AddAuthor,
-            controllerAs: 'add',
+            controllerAs: 'addAuthor',
             templateUrl: 'add-author.html',
+            resolve: {
+                authorsApi: () => this.authorsApi,
+                authorsAndCountPages: () => this.authorsAndCountPages
+            }
         }).result.then(function () {
         });
     }
@@ -52,11 +56,12 @@ class AuthorsIndex {
         this.$uibModal.open({
             backdrop: false,
             controller: EditAuthor,
-            controllerAs: 'edit',
+            controllerAs: 'editAuthor',
             templateUrl: 'edit-author.html',
             resolve: {
-                author: () => author
-            }
+                author: () => author,
+                authorsApi: () => this.authorsApi
+            },
         }).result.then(function () {
         });
     }
@@ -102,21 +107,22 @@ angular.module(moduleName, [authorsApiModule])
 
 /*Add new author modal*/
 class AddAuthor {
+    click: boolean = false;
     author: IAuthor = new IAuthor();
+    offset;
+
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
-                private $uibModal: ng.ui.bootstrap.IModalService) {}
+                private $uibModal: ng.ui.bootstrap.IModalService,
+                private $scope: ng.IScope,
+                private authorsAndCountPages) {}
     ok(firstName, secondName): void {
         this.author.firstName = firstName;
         this.author.secondName = secondName;
-        this.authorsApi.create(this.author).catch(
-            this.$uibModal.open({
-            animation: true,
-            backdrop: false,
-            controller: ErrorDialog,
-            templateUrl: 'error.html'
-        }));
-        this.$uibModalInstance.close(true);
+        this.offset = (8-1)*10;
+        this.authorsApi.create(this.author).catch(this.authorsApi.find(new ListParams(10, this.offset, null, null))
+            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; console.log(authorsAndCountPages)}));
+        this.$uibModalInstance.close(this.authorsAndCountPages);
     }
     cancel(): void {
         this.$uibModalInstance.close();
@@ -129,23 +135,21 @@ class EditAuthor {
         actionButtonText: 'OK',
         headerText: `Edit author: ${this.author.firstName} ${this.author.secondName}`,
     };
+    firstName: string;
+    secondName: string;
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private $uibModal: ng.ui.bootstrap.IModalService,
-                private author: IAuthor) {}
-
+                private author: IAuthor) {
+        this.firstName = author.firstName;
+        this.secondName = author.secondName;
+    }
     //todo: validation for input value
     ok(firstName, secondName): void {
         this.author.firstName = firstName;
         this.author.secondName = secondName;
-        this.authorsApi.update(this.author).catch(
-                this.$uibModal.open({
-                    backdrop: false,
-                    controller: ErrorDialog,
-                    controllerAs: 'errorDialog',
-                    templateUrl: 'error.html'
-                }));
-        this.$uibModalInstance.close();
+        this.authorsApi.update(this.author);
+        this.$uibModalInstance.close(this.author);
     }
     cancel(): void {
         this.$uibModalInstance.close();
@@ -161,10 +165,20 @@ class DeleteAuthor {
     };
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
-                private author: IAuthor) {
+                private author: IAuthor,
+                private $uibModal: ng.ui.bootstrap.IModalService) {
     }
     ok() {
-        this.authorsApi.bulkDelete([this.author.id]);
+        console.log('delete');
+        this.authorsApi.delete(this.author.id).then(response => {console.log(response);this.$uibModal.open({
+            backdrop: false,
+            controller: Error,
+            controllerAs: 'errorDialog',
+            templateUrl: 'error.html',
+            resolve: {
+
+            }
+        })});
         this.$uibModalInstance.close();
     }
     close() {

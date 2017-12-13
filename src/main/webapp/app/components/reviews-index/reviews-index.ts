@@ -12,7 +12,7 @@ class ReviewDetail {
 class ReviewsIndex {
     reviewDetails: ReviewDetail[] = [];
     constructor (private reviewsApi: IReviewsApi) {
-        this.reviewsApi.readAll().then(reviews => {reviews.data.forEach(reviews => this.reviewDetails.push(new ReviewDetail(reviews[0], reviews[1])));});
+        this.reviewsApi.readAll().then(reviews => {reviews.data.forEach(reviews => this.reviewDetails.push(new ReviewDetail(Math.round(reviews[0]), reviews[1])));});
     }
 }
 

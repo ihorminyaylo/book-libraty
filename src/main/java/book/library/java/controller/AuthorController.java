@@ -69,11 +69,11 @@ public class AuthorController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable("id") Integer idAuthor) throws DaoException, BusinessException {
-        return ResponseEntity.ok(authorService.delete(idAuthor));
+        return ResponseEntity.ok(authorService.deleteAuthor(idAuthor));
     }
 
     //todo: in progress
-    /*@PutMapping(value = "/delete")
+    @PutMapping(value = "/delete")
     public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException {
         try {
             authorService.bulkDelete(idEntities);
@@ -81,5 +81,5 @@ public class AuthorController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-    }*/
+    }
 }

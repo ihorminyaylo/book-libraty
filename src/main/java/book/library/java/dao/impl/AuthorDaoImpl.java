@@ -6,7 +6,6 @@ import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.model.pattern.AuthorPattern;
-import book.library.java.model.pattern.BookPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
@@ -69,16 +68,18 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implem
     }
 
     @Override
-    public Integer delete(Integer idAuthor) throws DaoException {
+    public Author deleteAuthor(Integer idAuthor) throws DaoException {
         if (idAuthor == null) {
             throw new DaoException("Entity id can't be null");
         }
         Author author = get(idAuthor);
+        author.setBooks(entityManager.createNativeQuery("SELECT * FROM book JOIN author_book ON book.id = author_book.book_id WHERE author_id = :authorId", Book.class).setParameter("authorId", author.getId()).getResultList());
         if (!author.getBooks().isEmpty()) {
-            return author.getId();
+            author.getBooks().forEach(book -> book.getAuthors());
+            return author;
         }
         try {
-            entityManager.remove(author);
+            entityManager.createNativeQuery("DELETE FROM author WHERE id = :id").setParameter("id", author.getId()).executeUpdate();
         } catch (Exception e) {
             throw new DaoException();
         }
