@@ -1,13 +1,18 @@
 package book.library.java.controller;
 
-import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
+import book.library.java.model.ListParams;
 import book.library.java.model.Review;
 import book.library.java.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/review")
@@ -22,12 +27,11 @@ public class ReviewController {
 
     @PostMapping
     public ResponseEntity create(@RequestBody Review review) throws DaoException, BusinessException {
-        reviewService.create(review);
-        return ResponseEntity.ok(review);
+        return ResponseEntity.ok(reviewService.create(review));
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ListParams listParams) throws BusinessException {
+    public ResponseEntity<?> read(@RequestBody ListParams listParams) throws BusinessException, DaoException {
         return ResponseEntity.ok(reviewService.read(listParams));
     }
 
@@ -41,10 +45,4 @@ public class ReviewController {
         reviewService.update(review);
         return ResponseEntity.ok(review);
     }
-
-    /*@PutMapping(value = "/delete")
-    public ResponseEntity bulkDelete(@RequestBody List<Integer> listIdReviews) throws DaoException, BusinessException {
-        reviewService.bulkDelete(listIdReviews);
-        return ResponseEntity.ok(listIdReviews);
-    }*/
 }

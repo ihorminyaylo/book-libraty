@@ -20,7 +20,8 @@ export interface IBooksApi extends IApi<IBook> {
     createBook(book: IBook, authors: IAuthor[]);
 
     find(listParams: ListParams<BookPattern>);
-
+    findTop(count: number);
+    getAverageRating();
     getBookByPage(limit, offset, filterBy);
     getByBook(idBook: number);
     getByPageByAuthor(limit, offset, author, filterBy);
@@ -39,11 +40,17 @@ class HttpBooksApi extends HttpApi<IBook> implements IBooksApi {
 
     public find(listParams: ListParams<BookPattern>) {
         return this.$http.post(this.BASE_URL + this.API_URL + '/find', {limit: listParams.limit, offset: listParams.offset,
-            pattern: {authorId: listParams.pattern.authorId,rating: listParams.pattern.rating, search: listParams.pattern.search}})
+            pattern: {authorId: listParams.pattern.authorId,rating: listParams.pattern.rating, search: listParams.pattern.search}, sortParams: listParams.sortParams})
             .then(entitiesResponse => entitiesResponse.data);
     }
 
+    public findTop(count: number) {
+        return this.$http.get(this.BASE_URL + this.API_URL + `/findTop?count=${count}`).then(entitiesResponse => entitiesResponse.data);
+    }
 
+    public getAverageRating() {
+        return this.$http.get(this.BASE_URL + this.API_URL + '/average_rating').then(entitiesResponse => entitiesResponse.data);
+    }
 
     getByBook(idBook: number) {
         return this.$http.get(this.BASE_URL + this.AUTHOR_URL + `/byBook?idBook=${idBook}`).then(entitiesResponse => entitiesResponse.data);

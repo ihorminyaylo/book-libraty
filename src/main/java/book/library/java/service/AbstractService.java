@@ -1,19 +1,17 @@
 package book.library.java.service;
 
 import book.library.java.dto.EntitiesAndPageDto;
-import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
+import book.library.java.exception.DaoException;
+import book.library.java.model.ListParams;
 
 public interface AbstractService<T, P> {
-    void create(T t) throws BusinessException;
+    Integer create(T t) throws BusinessException;
 
-    EntitiesAndPageDto<T> read(ListParams<P> listParams) throws BusinessException;
+    EntitiesAndPageDto<T> read(ListParams<P> listParams) throws BusinessException, DaoException;
 
     void update(T t) throws BusinessException;
 
     Integer delete(Integer idEntity) throws BusinessException;
 
-/*
-    void bulkDelete(List<Integer> idEntities) throws BusinessException;
-*/
 }

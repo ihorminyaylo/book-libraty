@@ -1,9 +1,21 @@
 import * as angular from 'angular'
 
 import authorsApiModule, {IAuthor, IAuthorsAndCountPages, IAuthorsApi} from '../../services/authors-api/authors-api'
-import {ListParams} from "../../services/service-api";
+import {ListParams, SortParams} from "../../services/service-api";
 
 class AuthorsIndex {
+    sortType     = 'name'; // set the default sort type
+    sortReverse: string;
+    sortParams(type) {
+        this.sortType = type;
+        if (this.sortReverse === 'up') {
+            this.sortReverse = 'down';
+        }
+        else {
+            this.sortReverse = 'up';
+        }
+        this.pageChanged(this.currentPage, new SortParams(this.sortType, this.sortReverse));
+    }
     checkAll: boolean;
     activeDeleteSelected: boolean = true;
     currentPage = 1;
@@ -11,16 +23,16 @@ class AuthorsIndex {
     offset: number = 0;
     authorsAndCountPages: IAuthorsAndCountPages;
     constructor (private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService) {
-        this.pageChanged(this.currentPage);
+        this.pageChanged(this.currentPage, null);
     }
-    pageChanged(page) {
+    pageChanged(page, sortParams) {
         this.currentPage = page;
         this.offset = (this.currentPage-1)*this.limit;
         /*this.authorsApi.getByPage(this.limit, this.offset).then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages;
         this.totalItems = this.authorsAndCountPages.totalItems});*/
         console.log(this.limit + 'offset' + this.offset);
 
-        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+        this.authorsApi.find(new ListParams(this.limit, this.offset, null, sortParams))
             .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; console.log(this.authorsAndCountPages)});
         this.checkAll = false;
     }
@@ -163,22 +175,22 @@ class DeleteAuthor {
         headerText: 'Warning!',
         bodyText: `Are you sure to delete author: ${this.author.firstName} ${this.author.secondName}?`
     };
+    authors: IAuthor[] = [];
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private author: IAuthor,
                 private $uibModal: ng.ui.bootstrap.IModalService) {
     }
     ok() {
-        console.log('delete');
-        this.authorsApi.delete(this.author.id).then(response => {console.log(response);this.$uibModal.open({
+        this.authorsApi.delete(this.author.id).then(response => {if (response.data !== '') {this.authors.push(response.data); this.$uibModal.open({
             backdrop: false,
-            controller: Error,
+            controller: ErrorDialog,
             controllerAs: 'errorDialog',
             templateUrl: 'error.html',
             resolve: {
-
+                authorsNotRemove: ()=> this.authors
             }
-        })});
+        })}});
         this.$uibModalInstance.close();
     }
     close() {
@@ -193,13 +205,23 @@ class BulkDelete {
         headerText: 'Warning!',
         bodyText: `Are you sure to delete selected authors?`
     };
+    authors: IAuthor[];
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private authorsRemove: IAuthor[],
-                private idEntities: number[]) {
+                private idEntities: number[],
+                private $uibModal: ng.ui.bootstrap.IModalService) {
     }
     ok() {
-        this.authorsApi.bulkDelete(this.idEntities);
+        this.authorsApi.bulkDelete(this.idEntities).then(response => {if (response.data !== null) {this.authors = response.data; this.$uibModal.open({
+            backdrop: false,
+            controller: ErrorDialog,
+            controllerAs: 'errorDialog',
+            templateUrl: 'error.html',
+            resolve: {
+                authorsNotRemove: ()=> this.authors
+            }
+        })}});
         this.$uibModalInstance.close();
     }
     close() {
@@ -208,7 +230,9 @@ class BulkDelete {
 }
 
 class ErrorDialog {
-    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance) {
+    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
+                private authorsNotRemove: IAuthor[]) {
+        console.log(authorsNotRemove);
     }
     close(): void {
         this.$uibModalInstance.close();

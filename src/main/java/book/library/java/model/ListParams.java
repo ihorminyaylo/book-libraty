@@ -1,4 +1,4 @@
-package book.library.java.dto;
+package book.library.java.model;
 
 public class ListParams<P> {
     private Integer offset;

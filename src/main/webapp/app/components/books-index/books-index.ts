@@ -2,9 +2,8 @@ import * as angular from 'angular'
 
 import booksApiModule, {IBook, IBooksAndCountPages, IBooksApi} from '../../services/books-api/books-api'
 import {IAuthor, IAuthorsApi} from "../../services/authors-api/authors-api";
-import {IDatepickerPopupConfig, IDatepickerPopupConfig} from "angular-ui-bootstrap";
 import {IReview, IReviewsApi} from "../../services/reviews-api/reviews-api";
-import {BookPattern, ListParams} from "../../services/service-api";
+import {BookPattern, ListParams, SortParams} from "../../services/service-api";
 
 interface IRouteParams extends angular.route.IRouteParamsService {
     isbn: string
@@ -12,6 +11,19 @@ interface IRouteParams extends angular.route.IRouteParamsService {
 }
 
 class BooksIndex {
+    averageRating: number;
+    sortType     = 'name';
+    sortReverse: string;
+    sortParams(type) {
+        this.sortType = type;
+        if (this.sortReverse === 'up') {
+            this.sortReverse = 'down';
+        }
+        else {
+            this.sortReverse = 'up';
+        }
+        this.pageChanged(this.currentPage, new SortParams(this.sortType, this.sortReverse));
+    }
     checkAll: boolean;
     activeDeleteSelected: boolean = true;
     currentPage = 1;
@@ -30,7 +42,7 @@ class BooksIndex {
         if (!isNaN(($routeParams.rating))) {
             this.rating = $routeParams.rating;
         }
-        this.pageChanged(this.currentPage);
+        this.pageChanged(this.currentPage, null);
 
     }
     selectWithAuthor(author) {
@@ -41,7 +53,7 @@ class BooksIndex {
         else {
             this.authorId = author.id;
         }
-        this.pageChanged(this.currentPage);
+        this.pageChanged(this.currentPage, null);
     }
     searchBy(filterBy) {
         console.log(filterBy);
@@ -49,14 +61,15 @@ class BooksIndex {
             this.search = null;
         }
         this.search = filterBy;
-        this.pageChanged(this.currentPage);
+        this.pageChanged(this.currentPage, null);
     }
-    pageChanged(page) {
+    pageChanged(page, sortParams) {
         this.currentPage = page;
         this.offset = (this.currentPage-1)*this.limit;
         this.checkAll = false;
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
-        return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), null))
+        this.booksApi.getAverageRating().then(averageRating => this.averageRating = averageRating);
+        return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), sortParams))
             .then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages; console.log(this.booksAndCountPages)});
     }
     check(bookId) {

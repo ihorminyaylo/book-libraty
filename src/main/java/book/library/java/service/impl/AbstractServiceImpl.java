@@ -2,8 +2,9 @@ package book.library.java.service.impl;
 
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.EntitiesAndPageDto;
-import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
+import book.library.java.exception.DaoException;
+import book.library.java.model.ListParams;
 import book.library.java.service.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,16 +26,16 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
     }
 
     @Override
-    public void create(T t) throws BusinessException {
+    public Integer create(T t) throws BusinessException {
         try {
-            entityDaoType.create(t);
+            return entityDaoType.create(t);
         } catch (Exception e) {
             throw new BusinessException();
         }
     }
 
     @Override
-    public EntitiesAndPageDto<T> read(ListParams listParams) throws BusinessException {
+    public EntitiesAndPageDto<T> read(ListParams listParams) throws BusinessException, DaoException {
         List<T> listEntity;
         Integer totalItems = entityDaoType.totalRecords(listParams);
         if (listParams.getLimit() == null || listParams.getOffset() != null) {
@@ -64,13 +65,4 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
         }
         return idEntity;
     }
-
-    /*@Override
-    public void bulkDelete(List<Integer> idEntities) throws BusinessException {
-        try {
-            entityDaoType.bulkDelete(idEntities);
-        } catch (Exception e) {
-            throw new BusinessException();
-        }
-    }*/
 }

@@ -8,8 +8,4 @@ import java.util.List;
 
 public interface ReviewDao extends AbstractDao<Review, ReviewPattern> {
     List<ReviewPageDto> getCountOfTypeReview();
-
-    List<Review> getByBookId(Integer id);
-
-    List<Review> getReviewByAuthorId(Integer id);
 }

@@ -8,9 +8,29 @@
     <tr>
         <th><input type="checkbox" ng-click="a.checkAllAuthor()" ng-checked="a.checkAll" /></th>
         <th class="single line">#</th>
-        <th>Full name</th>
-        <th>Create date</th>
-        <th>Rating</th>
+        <th>
+        <a ng-click="a.sortParams('second_name')"> Second name
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+        </a>
+        </th>
+        <th>
+            <a ng-click="a.sortParams('first_name')"> First name
+                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+            </a>
+        </th>
+        <th>
+            <a ng-click="a.sortParams('create_date')"> Create date
+                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+            </a>
+        </th>
+        <th><a ng-click="a.sortParams('average_rating')"> Rating
+            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+        </a>
+        </th>
         <th>Action</th>
     </tr>
     </thead>
@@ -20,8 +40,11 @@
         <td>
             {{$index + (a.currentPage-1)*a.limit + 1}}
         </td>
-        <td class="single line">
-            {{author.secondName}} {{author.firstName}}
+        <td>
+            {{author.secondName}}
+        </td>
+        <td>
+            {{author.firstName}}
         </td>
         <td>
             {{author.createDate}}
@@ -199,7 +222,26 @@
             <form>
                 <div class="form-row">
                     <div class="col" align="center">
-                        <label>Can't delete author's: {{}}</label>
+                        <label>Can't delete author: {{errorDialog.authorsNotRemove[0].secondName}} {{errorDialog.authorsNotRemove[0].firstName}}</label>
+                        <table ng-if="errorDialog.authorsNotRemove.length > 1" class="table table-striped">
+                            <thead>
+                            <th>#</th>
+                            <th>Second name</th>
+                            <th>First name</th>
+                            </thead>
+                            <tbody ng-repeat="author in errorDialog.authorsNotRemove">
+                            <tr>
+                                <td>
+                                    {{$index + 1}}
+                                </td>
+                                <td>
+                                    {{author.firstName}}
+                                </td>
+                                <td>
+                                    {{author.secondName}}
+                                </td>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </form>

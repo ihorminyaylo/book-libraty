@@ -43,13 +43,17 @@ export class ListParams<P> {
         this.sortParams = sortParams;
     }
 }
-export interface SortParams {
+export class SortParams {
     parameter: string;
-    status: boolean;
+    type: string;
+    constructor(parameter: string, type: string) {
+        this.parameter = parameter;
+        this.type = type;
+    }
 }
 
 export class HttpApi<T> implements IApi<T> {
-    BASE_URL: string = /*'http://localhost:8585/lib/';*/'' + location.pathname;
+    BASE_URL: string = '' + location.pathname;
     API_URL: string;
     AUTHOR_URL: string = '/api/author';
     BOOK_URL: string = '/api/book';

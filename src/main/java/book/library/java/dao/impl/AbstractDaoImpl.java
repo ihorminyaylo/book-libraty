@@ -1,8 +1,11 @@
 package book.library.java.dao.impl;
 
 import book.library.java.dao.AbstractDao;
-import book.library.java.dto.ListParams;
 import book.library.java.exception.DaoException;
+import book.library.java.model.Author;
+import book.library.java.model.Book;
+import book.library.java.model.ListParams;
+import book.library.java.model.Review;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,21 +16,30 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
 
+    private final Class<T> entityType;
     @PersistenceContext
-    protected EntityManager entityManager;
+    EntityManager entityManager;
 
-    private Class<T> entityType;
-
-    public AbstractDaoImpl() {
-        this.entityType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    AbstractDaoImpl() {
+        entityType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Override
-    public void create(T entity) throws DaoException {
+    public Integer create(T entity) throws DaoException {
         if (entity == null) {
             throw new DaoException("Entity can't be null");
         }
         entityManager.persist(entity);
+        if (entity instanceof Author) {
+            return ((Author) entity).getId();
+        }
+        if (entity instanceof Book) {
+            return ((Book) entity).getId();
+        }
+        if (entity instanceof Review) {
+            return ((Review) entity).getId();
+        }
+        return null;
     }
 
     @Override
@@ -41,7 +53,7 @@ public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
     }
 
     @Override
-    public List<T> find(ListParams<P> listParams) {
+    public List<T> find(ListParams<P> listParams) throws DaoException {
         return entityManager.createQuery("FROM " + entityType.getName()).setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit()).getResultList();
     }
 
@@ -79,5 +91,18 @@ public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
         String queryString = "SELECT Count(*) FROM " + entityType.getName();
         Query query = entityManager.createQuery(queryString);
         return (int) (long) query.getSingleResult();
+    }
+
+    void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
+        if (!listParams.getSortParams().getParameter().contains(" ")) {
+            query.append(" ORDER BY ").append(listParams.getSortParams().getParameter());
+            if ("down".equals(listParams.getSortParams().getType())) {
+                query.append(" DESC");
+            } else {
+                query.append(" ASC");
+            }
+        } else {
+            throw new DaoException();
+        }
     }
 }

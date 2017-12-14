@@ -1,13 +1,14 @@
 package book.library.java.service.impl;
 
+import book.library.java.dao.AuthorDao;
 import book.library.java.dao.BookDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
-import book.library.java.dao.AuthorDao;
+import book.library.java.dto.AuthorDto;
 import book.library.java.dto.EntitiesAndPageDto;
-import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
+import book.library.java.model.ListParams;
 import book.library.java.model.pattern.AuthorPattern;
 import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,37 +34,25 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
     }
 
     @Override
-    public void create(Author author) throws BusinessException {
-        if (author.getFirstName() == null || author.getFirstName().equals("")) {
-            throw new BusinessException("First name isn't correct");
-        }
-        if (author.getFirstName() == null || author.getFirstName().equals("")) {
-            throw new BusinessException("Last name isn't correct");
-        }
+    public Integer create(Author author) throws BusinessException {
+        validateAuthor(author);
         try {
-            authorDao.create(author);
+            return authorDao.create(author);
         } catch (DaoException e) {
             throw new BusinessException(e.getMessage());
         }
     }
 
     @Override
-    public EntitiesAndPageDto<Author> read(ListParams listParams) throws BusinessException {
+    public EntitiesAndPageDto<Author> read(ListParams listParams) throws BusinessException, DaoException {
         EntitiesAndPageDto<Author> entitiesAndPageDto;
-        /*if (listParams.getFilterBy() == null && listParams.getPattern() == null && listParams.getOffset() == null && listParams.getLimit() == null) {
-            return new EntitiesAndPageDto<>(authorDao.findAll(), authorDao.totalRecords());
-        }*/
         if (listParams.getPattern() != null && listParams.getPattern().toString().contains("byId")) {
             Author author = authorDao.get(Integer.parseInt(listParams.getPattern().toString().substring(5)));
             List<Author> authors = new ArrayList<>();
             authors.add(author);
             entitiesAndPageDto = new EntitiesAndPageDto<>(authors, authorDao.totalRecords(null));
-        }
-        else {
+        } else {
             entitiesAndPageDto = super.read(listParams);
-/*
-            entitiesAndPageDto.getList().forEach(author -> author.setBooks(new ArrayList<>()));
-*/
         }
         entitiesAndPageDto.getList().forEach(author -> author.setBooks(null));
         return entitiesAndPageDto;
@@ -76,22 +65,8 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
     }
 
     @Override
-    public List<Author> readByBook(Integer idBook) throws BusinessException {
-        try {
-            return authorDao.readByBook(idBook);
-        } catch (DaoException e) {
-            throw new BusinessException();
-        }
-    }
-
-    @Override
     public void update(Author author) throws BusinessException {
-        if (author.getFirstName() == null || author.getFirstName().equals("")) {
-            throw new BusinessException("First name isn't correct");
-        }
-        if (author.getFirstName() == null || author.getFirstName().equals("")) {
-            throw new BusinessException("Last name isn't correct");
-        }
+        validateAuthor(author);
         try {
             authorDao.update(author);
         } catch (DaoException e) {
@@ -100,38 +75,40 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
     }
 
     @Override
-    public List<Author> bulkDelete(List<Integer> idAuthors) throws BusinessException {
+    public List<AuthorDto> bulkDelete(List<Integer> idAuthors) throws BusinessException {
         try {
-            return authorDao.bulkDeleteAuthors(idAuthors);
+            List<Author> authors = authorDao.bulkDeleteAuthors(idAuthors);
+            List<AuthorDto> authorDtos = new ArrayList<>();
+            authors.forEach(author -> {
+                if (author != null) {
+                    authorDtos.add(new AuthorDto(author.getId(), author.getFirstName(), author.getSecondName()));
+                }
+            });
+            return authorDtos;
         } catch (DaoException e) {
             throw new BusinessException();
         }
     }
 
     @Override
-    public Author deleteAuthor(Integer idAuthor) throws BusinessException {
+    public AuthorDto deleteAuthor(Integer idAuthor) throws BusinessException {
         try {
-            return authorDao.deleteAuthor(idAuthor);
+            Author author = authorDao.deleteAuthor(idAuthor);
+            if (author != null) {
+                return new AuthorDto(author.getId(), author.getFirstName(), author.getSecondName());
+            }
+            return null;
         } catch (Exception e) {
             throw new BusinessException();
         }
     }
 
-    /*@Override
-    public void bulkDelete(List<Integer> idEntities) throws BusinessException {
-        super.bulkDelete(idEntities);
-        *//*List<Author> notRemove = new ArrayList<>();
-        List<Integer> authorWithBooks = new ArrayList<>();
-        for (Integer idEntity : idEntities) {
-            if (bookDao.countBooksByAuthorId(idEntity) > 0) {
-                authorWithBooks.add(idEntity);
-            }
+    private void validateAuthor(Author author) throws BusinessException {
+        if (author.getFirstName() == null || author.getFirstName().isEmpty()) {
+            throw new BusinessException("First name isn't correct");
         }
-        try {
-            notRemove = authorDao.bulkDelete(authorWithBooks);
-        } catch (Exception e) {
-            throw new BusinessException();
+        if (author.getFirstName() == null || author.getFirstName().isEmpty()) {
+            throw new BusinessException("Last name isn't correct");
         }
-        return notRemove;*//*
-    }*/
+    }
 }

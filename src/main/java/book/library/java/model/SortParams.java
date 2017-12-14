@@ -1,8 +1,8 @@
-package book.library.java.dto;
+package book.library.java.model;
 
 public class SortParams {
     private String parameter;
-    private Boolean status;
+    private String type;
 
     public String getParameter() {
         return parameter;
@@ -12,11 +12,11 @@ public class SortParams {
         this.parameter = parameter;
     }
 
-    public Boolean getStatus() {
-        return status;
+    public String getType() {
+        return type;
     }
 
-    public void setStatus(Boolean status) {
-        this.status = status;
+    public void setType(String type) {
+        this.type = type;
     }
 }

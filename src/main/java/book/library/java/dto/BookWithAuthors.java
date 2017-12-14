@@ -3,7 +3,6 @@ package book.library.java.dto;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookWithAuthors {

@@ -1,14 +1,20 @@
 package book.library.java.model;
 
-import org.hibernate.annotations.Formula;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -34,17 +40,16 @@ public class Book implements Serializable {
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    //@Formula("(select avg(review.rating) from review where review.book_id = id)")
     @Column(name = "average_rating", insertable = false)
     private BigDecimal averageRating;
 
     @ManyToMany
     @JoinTable(name = "author_book",
-            joinColumns = {@JoinColumn(name = "book_id", nullable = false)},
-            inverseJoinColumns = {@JoinColumn(name = "author_id", nullable = false)})
+        joinColumns = {@JoinColumn(name = "book_id", nullable = false)},
+        inverseJoinColumns = {@JoinColumn(name = "author_id", nullable = false)})
     private List<Author> authors;
 
-    @OneToMany(mappedBy = "book")         //todo: orphanRemoval dosen't work. Now, I use Native query for delete reviews with this book
+    @OneToMany(mappedBy = "book")
     private List<Review> reviews;
 
     public Book() {

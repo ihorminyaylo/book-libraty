@@ -4,7 +4,7 @@
   </h1>
   <div uib-dropdown>
     <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-      <div ng-if="b.authorWithBooks === null">SELECT <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
+      <div ng-if="b.authorWithBooks === null">SELECT AUTHOR <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
     </button>
     <ul class="dropdown-menu" uib-dropdown-menu>
       <li ng-repeat="author in b.authors">
@@ -14,8 +14,9 @@
     <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.selectWithAuthor(null)">CLEAR</button>
     <button type="button" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
   </div>
+  <h3>AVERAGE RATING: <span uib-rating ng-model="b.averageRating" max="5" read-only="true" uib-tooltip="{{b.averageRating}}"></span></h3>
   <br>
-    <table class="table table-striped">
+  <table class="table table-striped">
     <thead>
     <tr>
       <div class="input-group">
@@ -29,15 +30,41 @@
     <tr>
       <th><input type="checkbox" ng-click="b.checkAllBook()" ng-checked="b.checkAll" /></th>
       <th class="single line">#</th>
-      <th>Name</th>
-      <th>Publisher</th>
-      <th>Authors</th>
-      <th>Rating</th>
+      <th>
+        <a ng-click="b.sortParams('name')"> Name
+          <span ng-show="b.sortType === 'name' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+          <span ng-show="b.sortType === 'name' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+        </a>
+      </th>
+      <th><a ng-click="b.sortParams('publisher')"> Publisher
+        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+      </a></th>
+      <th><a ng-click="b.sortParams('year_published')"> Year published
+        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+      </a></th>
+      <th>
+        <div uib-dropdown>
+          <a id="author-button" type="button"  uib-dropdown-toggle ng-disabled="disabled">
+            <div ng-if="b.authorWithBooks === null">Authors <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
+          </a>
+          <ul class="dropdown-menu" uib-dropdown-menu>
+            <li ng-repeat="author in b.authors">
+              <a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a>
+            </li>
+          </ul>
+        </div>
+      </th>
+      <th><a ng-click="b.sortParams('average_rating')"> Rating
+        <span ng-show="b.sortType === 'average_rating' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'average_rating' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+      </a></th>
       <th>Action</th>
     </tr>
     </thead>
-    <tbody ng-repeat="book in b.booksAndCountPages.list">
-    <tr>
+    <tbody>
+    <tr ng-repeat="book in b.booksAndCountPages.list">
       <td><input type="checkbox" ng-click="b.check(book.id)" ng-checked="book.removeStatus"></td>
       <td>
         {{$index + (b.currentPage-1)*b.limit + 1}}
@@ -47,6 +74,9 @@
       </td>
       <td>
         {{book.publisher}}
+      </td>
+      <td>
+        {{book.yearPublished}}
       </td>
       <td>
         <div ng-repeat="author in book.authors">
@@ -71,10 +101,10 @@
     </tbody>
     <tfoot>
     </tfoot>
-
   </table>
 
   <ul uib-pagination total-items="b.booksAndCountPages.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)"></ul>
+
 </div>
 
 

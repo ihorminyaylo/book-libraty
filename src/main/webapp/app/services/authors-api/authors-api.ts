@@ -35,7 +35,7 @@ class HttpAuthorsApi extends HttpApi<IAuthor> implements IAuthorsApi {
     }
     public find(listParams: ListParams<AuthorPattern>) {
         return this.$http.post(this.BASE_URL + this.API_URL + '/find', {limit: listParams.limit, offset: listParams.offset,
-            pattern: {}})
+            pattern: {}, sortParams: listParams.sortParams})
             .then(entitiesResponse => entitiesResponse.data);
     }
 }

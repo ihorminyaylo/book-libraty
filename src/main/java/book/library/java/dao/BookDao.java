@@ -5,14 +5,13 @@ import book.library.java.exception.DaoException;
 import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface BookDao extends AbstractDao<Book, BookPattern> {
-    void create(BookWithAuthors bookWithAuthors) throws DaoException;
+    Integer create(BookWithAuthors bookWithAuthors) throws DaoException;
 
-    Integer countBooksByAuthorId(Integer authorId);
+    List<Book> readTop(Integer count);
 
-    List<Book> getByAuthor(Integer authorId);
-
-    List<Book> getByRating(Double rating);
+    BigDecimal getAverageRating() throws DaoException;
 }

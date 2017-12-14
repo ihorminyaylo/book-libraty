@@ -1,14 +1,21 @@
 package book.library.java.controller;
 
-import book.library.java.dto.ListParams;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
+import book.library.java.model.ListParams;
 import book.library.java.model.pattern.AuthorPattern;
 import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -24,13 +31,8 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody Author author) throws DaoException, BusinessException {
-        try {
-            authorService.create(author);
-            return ResponseEntity.ok(author);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity create(@RequestBody Author author) throws BusinessException {
+        return ResponseEntity.ok(authorService.create(author));
     }
 
 
@@ -40,31 +42,14 @@ public class AuthorController {
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ListParams<AuthorPattern> listParams) {
-        try {
-            return ResponseEntity.ok(authorService.read(listParams));
-        } catch (BusinessException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/byBook")
-    public ResponseEntity<?> readByBook(@RequestParam Integer idBook) {
-        try {
-            return ResponseEntity.ok(authorService.readByBook(idBook));
-        } catch (BusinessException e) {
-            return null;// ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<?> read(@RequestBody ListParams<AuthorPattern> listParams) throws DaoException, BusinessException {
+        return ResponseEntity.ok(authorService.read(listParams));
     }
 
     @PutMapping
     public ResponseEntity update(@RequestBody Author author) throws BusinessException {
-        try {
-            authorService.update(author);
-            return ResponseEntity.ok(author);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        authorService.update(author);
+        return ResponseEntity.ok(author);
     }
 
     @DeleteMapping(value = "/{id}")
@@ -72,14 +57,8 @@ public class AuthorController {
         return ResponseEntity.ok(authorService.deleteAuthor(idAuthor));
     }
 
-    //todo: in progress
     @PutMapping(value = "/delete")
     public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException {
-        try {
-            authorService.bulkDelete(idEntities);
-            return ResponseEntity.ok(idEntities);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return ResponseEntity.ok(authorService.bulkDelete(idEntities));
     }
 }
