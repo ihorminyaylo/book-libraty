@@ -1,5 +1,9 @@
 package book.library.java.model.pattern;
 
+/**
+ * BookPattern is class with pattern for request from front-end.
+ * BookPattern have fields: authorId(Integer), search(String), rating(Integer).
+ */
 public class BookPattern {
     private Integer authorId;
     private String search = "";

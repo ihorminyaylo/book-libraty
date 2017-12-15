@@ -14,6 +14,10 @@ import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * Represent a review.
+ * A review have id, commenterName, comment, rating, createDate, book.
+ */
 @Entity
 @Table(name = "review")
 public class Review implements Serializable {

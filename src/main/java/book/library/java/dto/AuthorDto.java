@@ -1,5 +1,9 @@
 package book.library.java.dto;
 
+/**
+ * Represent a AuthorDto. This class for convenient transfer of information between front-end and back-end.
+ * AuthorDto have id, firstName, secondName, createDate, averageRating
+ */
 public class AuthorDto {
     private Integer id;
     private String firstName;

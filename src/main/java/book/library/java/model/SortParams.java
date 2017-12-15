@@ -1,8 +1,12 @@
 package book.library.java.model;
 
+/**
+ * SortParams class for parameters for params to sort list of entity.
+ * A ListParams have parameter for sort and have type field. Type field is enum.
+ */
 public class SortParams {
     private String parameter;
-    private String type;
+    private TypeSort type;
 
     public String getParameter() {
         return parameter;
@@ -12,11 +16,11 @@ public class SortParams {
         this.parameter = parameter;
     }
 
-    public String getType() {
+    public TypeSort getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(TypeSort type) {
         this.type = type;
     }
 }

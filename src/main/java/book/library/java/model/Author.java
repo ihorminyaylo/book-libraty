@@ -16,7 +16,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-
+/**
+* Represent a author.
+ * A author have id, firstName, secondName, createDate, averageRating
+ */
 @Entity
 @Table(name = "author")
 public class Author implements Serializable {

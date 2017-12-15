@@ -2,6 +2,11 @@ package book.library.java.dto;
 
 import java.util.List;
 
+/**
+ * Represent a EntitiesAndPageDto with generic of type(generic can be any model class of entity)
+ * This class for convenient transfer of information between front-end and back-end.
+ * EntitiesAndPageDto have list(model) and totalItems.
+ */
 public class EntitiesAndPageDto<T> {
     private List<T> list;
     private Integer totalItems;

@@ -1,5 +1,10 @@
 package book.library.java.dto;
 
+/**
+ * Represent a ReviewPageDto.
+ * This class for convenient transfer of information between front-end and back-end.
+ * ReviewPageDto have rating(String) and count(String).
+ */
 public class ReviewPageDto {
     private String rating;
     private String count;

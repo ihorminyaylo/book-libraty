@@ -1,5 +1,11 @@
 package book.library.java.model;
 
+
+/**
+ * ListParams class for parameters for request from front-end.
+ * A ListParams have offset and limit for pagination, pattern, where pattern is  object of class of each model.
+ * ListParams also have sortParams, where sortParams is object of class.
+ */
 public class ListParams<P> {
     private Integer offset;
     private Integer limit;

@@ -18,6 +18,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Represent a book.
+ * A book have id, name, yearPublished, published, createDate, averageRating.
+ */
 @Entity
 @Table(name = "book")
 public class Book implements Serializable {
