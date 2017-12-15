@@ -6,6 +6,7 @@ import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.model.ListParams;
 import book.library.java.model.Review;
+import book.library.java.model.TypeSort;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -97,9 +98,9 @@ public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
         if (!listParams.getSortParams().getParameter().contains(" ")) {
             query.append(" ORDER BY ").append(listParams.getSortParams().getParameter());
             if ("down".equals(listParams.getSortParams().getType())) {
-                query.append(" DESC");
+                query.append(TypeSort.DESC);
             } else {
-                query.append(" ASC");
+                query.append(TypeSort.ASC);
             }
         } else {
             throw new DaoException();
