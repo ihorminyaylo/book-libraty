@@ -4,11 +4,14 @@ public class AuthorDto {
     private Integer id;
     private String firstName;
     private String secondName;
+    private String averageRating;
 
-    public AuthorDto(Integer id, String firstName, String secondName) {
+
+    public AuthorDto(Integer id, String firstName, String secondName, String averageRating) {
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;
+        this.averageRating = averageRating;
     }
 
     public Integer getId() {
@@ -34,5 +37,13 @@ public class AuthorDto {
 
     public void setSecondName(String secondName) {
         this.secondName = secondName;
+    }
+
+    public String getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(String averageRating) {
+        this.averageRating = averageRating;
     }
 }

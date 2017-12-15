@@ -34,13 +34,9 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
     }
 
     @Override
-    public Integer create(Author author) throws BusinessException {
+    public Integer create(Author author) throws BusinessException, DaoException {
         validateAuthor(author);
-        try {
-            return authorDao.create(author);
-        } catch (DaoException e) {
-            throw new BusinessException(e.getMessage());
-        }
+        return authorDao.create(author);
     }
 
     @Override
@@ -65,29 +61,31 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
     }
 
     @Override
-    public void update(Author author) throws BusinessException {
-        validateAuthor(author);
-        try {
-            authorDao.update(author);
-        } catch (DaoException e) {
-            throw new BusinessException(e.getMessage());
-        }
+    public List<AuthorDto> readTop(Integer count) throws DaoException {
+        List<AuthorDto> authorDtos = new ArrayList<>();
+        authorDao.readTop(count).forEach(author -> {
+            if (author != null) {
+                authorDtos.add(new AuthorDto(author.getId(), author.getFirstName(), author.getSecondName(), author.getAverageRating().toString()));
+            }
+        });
+        return authorDtos;
     }
 
     @Override
-    public List<AuthorDto> bulkDelete(List<Integer> idAuthors) throws BusinessException {
-        try {
-            List<Author> authors = authorDao.bulkDeleteAuthors(idAuthors);
-            List<AuthorDto> authorDtos = new ArrayList<>();
-            authors.forEach(author -> {
-                if (author != null) {
-                    authorDtos.add(new AuthorDto(author.getId(), author.getFirstName(), author.getSecondName()));
-                }
-            });
-            return authorDtos;
-        } catch (DaoException e) {
-            throw new BusinessException();
-        }
+    public void update(Author author) throws BusinessException, DaoException {
+        validateAuthor(author);
+        authorDao.update(author);
+    }
+
+    @Override
+    public List<AuthorDto> bulkDelete(List<Integer> idAuthors) throws BusinessException, DaoException {
+        List<AuthorDto> authorDtos = new ArrayList<>();
+        authorDao.bulkDeleteAuthors(idAuthors).forEach(author -> {
+            if (author != null) {
+                authorDtos.add(new AuthorDto(author.getId(), author.getFirstName(), author.getSecondName(), author.getAverageRating().toString()));
+            }
+        });
+        return authorDtos;
     }
 
     @Override
@@ -95,7 +93,7 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
         try {
             Author author = authorDao.deleteAuthor(idAuthor);
             if (author != null) {
-                return new AuthorDto(author.getId(), author.getFirstName(), author.getSecondName());
+                return new AuthorDto(author.getId(), author.getFirstName(), author.getSecondName(), author.getAverageRating().toString());
             }
             return null;
         } catch (Exception e) {

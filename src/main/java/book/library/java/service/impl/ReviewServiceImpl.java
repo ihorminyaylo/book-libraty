@@ -2,8 +2,11 @@ package book.library.java.service.impl;
 
 import book.library.java.dao.ReviewDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
+import book.library.java.dto.EntitiesAndPageDto;
 import book.library.java.dto.ReviewPageDto;
 import book.library.java.exception.BusinessException;
+import book.library.java.exception.DaoException;
+import book.library.java.model.ListParams;
 import book.library.java.model.Review;
 import book.library.java.model.pattern.ReviewPattern;
 import book.library.java.service.ReviewService;
@@ -26,9 +29,21 @@ public class ReviewServiceImpl extends AbstractServiceImpl<Review, ReviewPattern
     }
 
     @Override
-    public Integer create(Review review) throws BusinessException {
+    public Integer create(Review review) throws BusinessException, DaoException {
         validateReview(review);
         return super.create(review);
+    }
+
+    @Override
+    public EntitiesAndPageDto<Review> read(ListParams listParams) throws BusinessException, DaoException {
+        List<Review> listEntity;
+        Integer totalItems = reviewDao.totalRecords(listParams);
+        if (listParams.getLimit() == null || listParams.getOffset() != null) {
+            listEntity = reviewDao.find(listParams);
+        } else {
+            listEntity = reviewDao.findAll();
+        }
+        return new EntitiesAndPageDto<>(listEntity, totalItems);
     }
 
     @Override
@@ -37,7 +52,7 @@ public class ReviewServiceImpl extends AbstractServiceImpl<Review, ReviewPattern
     }
 
     @Override
-    public void update(Review review) throws BusinessException {
+    public void update(Review review) throws BusinessException, DaoException {
         validateReview(review);
         super.update(review);
     }

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -31,23 +32,26 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody Author author) throws BusinessException {
+    public ResponseEntity create(@RequestBody Author author) throws BusinessException, DaoException {
         return ResponseEntity.ok(authorService.create(author));
     }
-
 
     @GetMapping(value = "/findAll")
     public ResponseEntity<?> readAll() {
         return ResponseEntity.ok(authorService.readAll());
     }
 
+    @GetMapping(value = "/findTop")
+    public ResponseEntity readTop(@RequestParam Integer count) throws DaoException {
+        return ResponseEntity.ok(authorService.readTop(count));
+    }
     @PostMapping(value = "/find")
     public ResponseEntity<?> read(@RequestBody ListParams<AuthorPattern> listParams) throws DaoException, BusinessException {
         return ResponseEntity.ok(authorService.read(listParams));
     }
 
     @PutMapping
-    public ResponseEntity update(@RequestBody Author author) throws BusinessException {
+    public ResponseEntity update(@RequestBody Author author) throws BusinessException, DaoException {
         authorService.update(author);
         return ResponseEntity.ok(author);
     }
@@ -58,7 +62,7 @@ public class AuthorController {
     }
 
     @PutMapping(value = "/delete")
-    public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException {
+    public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException, DaoException {
         return ResponseEntity.ok(authorService.bulkDelete(idEntities));
     }
 }

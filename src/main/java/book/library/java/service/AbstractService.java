@@ -6,11 +6,11 @@ import book.library.java.exception.DaoException;
 import book.library.java.model.ListParams;
 
 public interface AbstractService<T, P> {
-    Integer create(T t) throws BusinessException;
+    Integer create(T t) throws BusinessException, DaoException;
 
     EntitiesAndPageDto<T> read(ListParams<P> listParams) throws BusinessException, DaoException;
 
-    void update(T t) throws BusinessException;
+    void update(T t) throws BusinessException, DaoException;
 
     Integer delete(Integer idEntity) throws BusinessException;
 

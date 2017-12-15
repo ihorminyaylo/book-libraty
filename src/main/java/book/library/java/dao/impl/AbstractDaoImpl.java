@@ -98,9 +98,9 @@ public abstract class AbstractDaoImpl<T, P> implements AbstractDao<T, P> {
         if (!listParams.getSortParams().getParameter().contains(" ")) {
             query.append(" ORDER BY ").append(listParams.getSortParams().getParameter());
             if ("down".equals(listParams.getSortParams().getType())) {
-                query.append(TypeSort.DESC);
+                query.append(' ').append(TypeSort.DESC);
             } else {
-                query.append(TypeSort.ASC);
+                query.append(' ').append(TypeSort.ASC);
             }
         } else {
             throw new DaoException();

@@ -26,7 +26,7 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
     }
 
     @Override
-    public Integer create(T t) throws BusinessException {
+    public Integer create(T t) throws BusinessException, DaoException {
         try {
             return entityDaoType.create(t);
         } catch (Exception e) {
@@ -48,7 +48,7 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
 
 
     @Override
-    public void update(T t) throws BusinessException {
+    public void update(T t) throws BusinessException, DaoException {
         try {
             entityDaoType.update(t);
         } catch (Exception e) {

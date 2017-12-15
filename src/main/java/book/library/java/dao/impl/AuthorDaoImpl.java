@@ -58,6 +58,14 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implem
     }
 
     @Override
+    public List<Author> readTop(Integer count) throws DaoException {
+        if (count == null) {
+            throw new DaoException();
+        }
+        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating", Author.class).setFirstResult(0).setMaxResults(count).getResultList();
+    }
+
+    @Override
     public Author deleteAuthor(Integer idAuthor) throws DaoException {
         if (idAuthor == null) {
             throw new DaoException("Entity id can't be null");
