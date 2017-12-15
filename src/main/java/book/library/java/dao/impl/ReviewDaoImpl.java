@@ -37,7 +37,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
     private StringBuilder generateQueryWithParams(ListParams<ReviewPattern> listParams, StringBuilder query) {
         ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
         if (pattern != null) {
-            if (pattern.getBookId() != null) {
+            if (listParams.getPattern().getBookId() != null) {
                 query.append(" WHERE book_id = :bookId");
             }
         }
@@ -45,7 +45,6 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
     }
 
     private Query setParameters(ListParams<ReviewPattern> listParams, Query nativeQuery, String type) {
-        //ReviewPattern pattern = new ReviewPattern((Integer) listParams.getPattern().getBookId());
         ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
         if ("find".equals(type)) {
             if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {

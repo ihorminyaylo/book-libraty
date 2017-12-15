@@ -15,6 +15,13 @@ export class BookPattern {
     }
 }
 
+export class ReviewPattern {
+    bookId: number;
+    constructor(bookId: number) {
+        this.bookId = bookId;
+    }
+}
+
 export interface IEntitiesAndCountPages<T> {
     list: T[];
     totalItems: number;

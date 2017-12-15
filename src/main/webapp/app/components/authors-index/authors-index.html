@@ -1,9 +1,10 @@
 <div ng-controller="AuthorsIndex as a">
-<h1 class="ui header" align="center">List of authors
+<h1 class="ui header" align="center">List of authors</h1>
+    <div align="right">
     <button type="button" class="btn btn-primary" ng-click="a.add()">Author <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-</h1>
     <button type="button" ng-disabled="a.activeDeleteSelected" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-<table class="table table-striped">
+    </div>
+            <table class="table table-striped">
     <thead>
     <tr>
         <th><input type="checkbox" ng-click="a.checkAllAuthor()" ng-checked="a.checkAll" /></th>

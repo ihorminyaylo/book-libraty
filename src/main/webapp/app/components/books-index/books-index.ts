@@ -4,15 +4,19 @@ import booksApiModule, {IBook, IBooksAndCountPages, IBooksApi} from '../../servi
 import {IAuthor, IAuthorsApi} from "../../services/authors-api/authors-api";
 import {IReview, IReviewsApi} from "../../services/reviews-api/reviews-api";
 import {BookPattern, ListParams, SortParams} from "../../services/service-api";
+import IRoute = angular.route.IRoute;
+import IRouteProvider = angular.route.IRouteProvider;
+import IRouteService = angular.route.IRouteService;
 
 interface IRouteParams extends angular.route.IRouteParamsService {
-    isbn: string
+    isbn: string;
     rating: number;
 }
 
 class BooksIndex {
     averageRating: number;
     sortType     = 'name';
+    sortParam: SortParams;
     sortReverse: string;
     sortParams(type) {
         this.sortType = type;
@@ -22,7 +26,9 @@ class BooksIndex {
         else {
             this.sortReverse = 'up';
         }
-        this.pageChanged(this.currentPage, new SortParams(this.sortType, this.sortReverse));
+        this.sortParam = new SortParams(this.sortType, this.sortReverse);
+        this.currentPage = 1;
+        this.pageChanged(this.currentPage);
     }
     checkAll: boolean;
     activeDeleteSelected: boolean = true;
@@ -34,16 +40,16 @@ class BooksIndex {
     authorWithBooks: IAuthor = null;
     booksAndCountPages: IBooksAndCountPages;
     search: string;
+    router: IRouteService;
     authors: IAuthor[] = [];
-    constructor (private booksApi: IBooksApi, private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService, $routeParams: IRouteParams) {
+    constructor (private booksApi: IBooksApi, private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService, private $routeParams: IRouteParams) {
         if (!isNaN(parseInt($routeParams.isbn))) {
             this.authorId = parseInt($routeParams.isbn);
         }
         if (!isNaN(($routeParams.rating))) {
             this.rating = $routeParams.rating;
         }
-        this.pageChanged(this.currentPage, null);
-
+        this.pageChanged(this.currentPage);
     }
     selectWithAuthor(author) {
         this.authorWithBooks = author;
@@ -53,7 +59,11 @@ class BooksIndex {
         else {
             this.authorId = author.id;
         }
-        this.pageChanged(this.currentPage, null);
+        this.pageChanged(this.currentPage);
+    }
+    clearFilters() {
+        this.searchBy('');
+        this.selectWithAuthor(null);
     }
     searchBy(filterBy) {
         console.log(filterBy);
@@ -61,15 +71,15 @@ class BooksIndex {
             this.search = null;
         }
         this.search = filterBy;
-        this.pageChanged(this.currentPage, null);
+        this.pageChanged(this.currentPage);
     }
-    pageChanged(page, sortParams) {
+    pageChanged(page) {
         this.currentPage = page;
         this.offset = (this.currentPage-1)*this.limit;
         this.checkAll = false;
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
         this.booksApi.getAverageRating().then(averageRating => this.averageRating = averageRating);
-        return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), sortParams))
+        return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), this.sortParam))
             .then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages; console.log(this.booksAndCountPages)});
     }
     check(bookId) {

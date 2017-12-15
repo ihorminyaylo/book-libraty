@@ -11,6 +11,7 @@ export class IBook {
   publisher: string;
   yearPublished: string;
   createDate: string;
+  averageRating: number;
   removeStatus: boolean = false;
   authors: IAuthor[];
   constructor() {}

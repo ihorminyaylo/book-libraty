@@ -16,37 +16,14 @@
 	</tr>
 	</tbody>
 </table>
-	<h1 class="ui header" align="center">
-			<label >TOP books</label>
-			<input type="number" name="r.count" class="form-control" ng-model="r.count" ng-value="r.count">
-			<button class="btn btn-primary" type="button" ng-click="r.findTop(r.count)">Search</button>
-	</h1>
+	<h1 class="ui header" align="center">TOP {{r.count}} books</h1>
 	<table class="table table-striped">
 		<thead>
 		<tr>
 			<th class="single line">#</th>
-			<th>
-				<a ng-click="r.sortParams('name')"> Name
-					<span ng-show="r.sortType === 'name' && r.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-					<span ng-show="r.sortType === 'name' && r.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
-				</a>
-			</th>
-			<th><a ng-click="r.sortParams('publisher')"> Publisher
-				<span ng-show="r.sortType === 'publisher' && r.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-				<span ng-show="r.sortType === 'publisher' && r.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
-			</a></th>
-			<th><a ng-click="r.sortParams('year_published')"> Year published
-				<span ng-show="r.sortType === 'year_published' && r.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-				<span ng-show="r.sortType === 'year_published' && r.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
-			</a></th>
-			<th>
-				Authors
-			</th>
-			<th><a ng-click="r.sortParams('average_rating')"> Rating
-				<span ng-show="r.sortType === 'average_rating' && r.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-				<span ng-show="r.sortType === 'average_rating' && r.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
-			</a></th>
-			<th>Action</th>
+			<th>Name</th>
+			<th>Authors</th>
+			<th>Average rating</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -54,14 +31,8 @@
 			<td>
 				{{$index + 1}}
 			</td>
-			<td class="single line">
+			<td>
 				{{book.name}}
-			</td>
-			<td>
-				{{book.publisher}}
-			</td>
-			<td>
-				{{book.yearPublished}}
 			</td>
 			<td>
 				<div ng-repeat="author in book.authors">
@@ -71,16 +42,35 @@
 			<td>
 				<span uib-rating ng-model="book.averageRating" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
 			</td>
+		</tr>
+		</tbody>
+		<tfoot>
+		</tfoot>
+	</table>
+
+	<h1 class="ui header" align="center">TOP {{r.count}} authors</h1>
+	<table class="table table-striped">
+		<thead>
+		<tr>
+			<th class="single line">#</th>
+			<th>Second name</th>
+			<th>First name</th>
+			<th>Average rating</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="author in r.authors">
 			<td>
-				<button type="button" class="btn btn-primary" ng-click="r.addReview(book)">
-					ADD REVIEW <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-				</button>
-				<button type="button" class="btn btn-warning" ng-click="r.edit(book)">
-					EDIT <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-				</button>
-				<button type="button" class="btn btn-danger" ng-click="r.delete(book)">
-					DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-				</button>
+				{{$index + 1}}
+			</td>
+			<td>
+				{{author.secondName}}
+			</td>
+			<td>
+				{{author.firstName}}
+			</td>
+			<td>
+				<span uib-rating ng-model="author.averageRating" max="5" read-only="true" uib-tooltip="{{author.averageRating}}"></span>
 			</td>
 		</tr>
 		</tbody>

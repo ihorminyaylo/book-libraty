@@ -11,7 +11,7 @@ angular.module(moduleName, [])
             template: '<books-index></books-index>'
       })
       .when('/books/author/:isbn', {
-        template: '<books-index></books-index>'
+        template: '<books-index></books-index>',
       })
       .when('/books/rating/:rating', {
         template: '<books-index></books-index>'
@@ -19,7 +19,7 @@ angular.module(moduleName, [])
       .when('/authors', {
             template: '<authors-index></authors-index>'
         })
-      .when('/books_show', {
+      .when('/books_show/:idBook', {
         template: '<books-show></books-show>'
       })
         .when('/modal', {

@@ -6,6 +6,7 @@ import {ListParams, SortParams} from "../../services/service-api";
 class AuthorsIndex {
     sortType     = 'name'; // set the default sort type
     sortReverse: string;
+    sortParam: SortParams;
     sortParams(type) {
         this.sortType = type;
         if (this.sortReverse === 'up') {
@@ -14,7 +15,9 @@ class AuthorsIndex {
         else {
             this.sortReverse = 'up';
         }
-        this.pageChanged(this.currentPage, new SortParams(this.sortType, this.sortReverse));
+        this.sortParam = new SortParams(this.sortType, this.sortReverse);
+        this.currentPage = 1;
+        this.pageChanged(this.currentPage);
     }
     checkAll: boolean;
     activeDeleteSelected: boolean = true;
@@ -23,16 +26,16 @@ class AuthorsIndex {
     offset: number = 0;
     authorsAndCountPages: IAuthorsAndCountPages;
     constructor (private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService) {
-        this.pageChanged(this.currentPage, null);
+        this.pageChanged(this.currentPage);
     }
-    pageChanged(page, sortParams) {
+    pageChanged(page) {
         this.currentPage = page;
         this.offset = (this.currentPage-1)*this.limit;
         /*this.authorsApi.getByPage(this.limit, this.offset).then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages;
         this.totalItems = this.authorsAndCountPages.totalItems});*/
         console.log(this.limit + 'offset' + this.offset);
 
-        this.authorsApi.find(new ListParams(this.limit, this.offset, null, sortParams))
+        this.authorsApi.find(new ListParams(this.limit, this.offset, null, this.sortParam))
             .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; console.log(this.authorsAndCountPages)});
         this.checkAll = false;
     }

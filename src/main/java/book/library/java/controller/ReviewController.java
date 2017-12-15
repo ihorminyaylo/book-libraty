@@ -4,6 +4,7 @@ import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.ListParams;
 import book.library.java.model.Review;
+import book.library.java.model.pattern.ReviewPattern;
 import book.library.java.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,8 @@ public class ReviewController {
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ListParams listParams) throws BusinessException, DaoException {
-        return ResponseEntity.ok(reviewService.read(listParams));
+    public ResponseEntity<?> read(@RequestBody ListParams<ReviewPattern> listParams) throws BusinessException, DaoException {
+        return ResponseEntity.ok(reviewService.readReviews(listParams));
     }
 
     @GetMapping(value = "/review_detail")

@@ -3,9 +3,11 @@ package book.library.java.service.impl;
 import book.library.java.dao.ReviewDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.EntitiesAndPageDto;
+import book.library.java.dto.ReviewDto;
 import book.library.java.dto.ReviewPageDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
+import book.library.java.model.Book;
 import book.library.java.model.ListParams;
 import book.library.java.model.Review;
 import book.library.java.model.pattern.ReviewPattern;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,15 +38,20 @@ public class ReviewServiceImpl extends AbstractServiceImpl<Review, ReviewPattern
     }
 
     @Override
-    public EntitiesAndPageDto<Review> read(ListParams listParams) throws BusinessException, DaoException {
+    public EntitiesAndPageDto<ReviewDto> readReviews(ListParams listParams) throws DaoException {
         List<Review> listEntity;
+        List<ReviewDto> reviewDtoList = new ArrayList<>();
         Integer totalItems = reviewDao.totalRecords(listParams);
         if (listParams.getLimit() == null || listParams.getOffset() != null) {
             listEntity = reviewDao.find(listParams);
         } else {
             listEntity = reviewDao.findAll();
         }
-        return new EntitiesAndPageDto<>(listEntity, totalItems);
+        listEntity.forEach(review -> reviewDtoList.add(new ReviewDto(review.getId(), review.getCommenterName(), review.getComment(), review.getRating(), review.getCreateDate().toString())));
+/*
+        listEntity.forEach(review -> review.getBook().getAuthors().size());
+*/
+        return new EntitiesAndPageDto<>(reviewDtoList, totalItems);
     }
 
     @Override

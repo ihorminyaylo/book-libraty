@@ -1,8 +1,7 @@
 <div ng-controller="BooksIndex as b">
-  <h1 class="ui header" align="center">List of books <label ng-if="b.authorWithBooks !== null">{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}</label><label ng-if="b.rating > 0">with rating: {{b.rating}} stars</label>
-    <button type="button" class="btn btn-primary" ng-click="b.add()">Book <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+  <h1 class="ui header" align="center">List of books
   </h1>
-  <div uib-dropdown>
+  <!--<div uib-dropdown>
     <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
       <div ng-if="b.authorWithBooks === null">SELECT AUTHOR <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
     </button>
@@ -13,9 +12,10 @@
     </ul>
     <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.selectWithAuthor(null)">CLEAR</button>
     <button type="button" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-  </div>
-  <h3>AVERAGE RATING: <span uib-rating ng-model="b.averageRating" max="5" read-only="true" uib-tooltip="{{b.averageRating}}"></span></h3>
+  </div>-->
   <br>
+
+
   <table class="table table-striped">
     <thead>
     <tr>
@@ -23,8 +23,20 @@
         <input ng-model="filter" type="text" class="form-control" placeholder="Search ...">
         <span class="input-group-btn">
         <button class="btn btn-primary" ng-click="b.searchBy(filter)" type="button">SEARCH</button>
-        <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.searchBy('')">CLEAR</button>
-      </span>
+          <div uib-dropdown style="display: inline">
+            <button id="author-button" style="margin-left: 5px;" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+            <div ng-if="b.authorWithBooks === null">SELECT AUTHOR <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
+            </button>
+            <ul class="dropdown-menu" uib-dropdown-menu>
+              <li ng-repeat="author in b.authors">
+                  <a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a>
+              </li>
+            </ul>
+            </div>
+        <button type="button" style="margin-left: 5px;" class="btn btn-default" aria-label="Left Align" ng-click="b.clearFilters()">CLEAR</button>
+            <button type="button" style="margin-left: 80px;" class="btn btn-primary" ng-click="b.add()">Book <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+            <button type="button" style="margin-left: 5px; ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+        </span>
       </div>
     </tr>
     <tr>
@@ -87,6 +99,9 @@
         <span uib-rating ng-model="book.averageRating" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
       </td>
       <td>
+        <a type="button" class="btn btn-primary" href="#!/books_show/{{book.id}}">
+          SHOW BOOK <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        </a>
         <button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
            ADD REVIEW <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
         </button>
