@@ -1,5 +1,6 @@
 package book.library.java.model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,27 +25,23 @@ import java.util.List;
  */
 @Entity
 @Table(name = "book")
-public class Book implements Serializable { // todo: 'Book' does not define a 'serialVersionUID' field
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // todo: maybe GenerationType.SEQUENCE ?
-    @Column(name = "id", nullable = false)
-    private Integer id;
+public class Book extends AbstractEntity {
+    private static final long serialVersionUID = 645377494231112540L;
 
     @Column(name = "name", nullable = false, length = 256)
     private String name;
 
-    @Column(name = "year_published", nullable = false, length = 256) // todo: why nullable = false ?
+    @Column(name = "year_published", length = 256)
     private int yearPublished;
 
-    @Column(name = "publisher", nullable = false, length = 256) // todo: why nullable = false ?
+    @Column(name = "publisher", length = 256)
     private String publisher;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", insertable = false) // todo: why without updatable = false
+    @Column(name = "average_rating", insertable = false, updatable = false)
     private BigDecimal averageRating;
 
     @ManyToMany
@@ -87,14 +84,6 @@ public class Book implements Serializable { // todo: 'Book' does not define a 's
 
     public void setPublisher(String publisher) {
         this.publisher = publisher;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Date getCreateDate() {

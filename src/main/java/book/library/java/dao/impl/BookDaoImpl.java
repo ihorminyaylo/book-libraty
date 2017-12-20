@@ -5,7 +5,7 @@ import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
-import book.library.java.model.ListParams;
+import book.library.java.list.ListParams;
 import book.library.java.model.pattern.BookPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
@@ -22,10 +22,10 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     @Override
     public Integer create(BookWithAuthors bookWithAuthors) throws DaoException {
         Book book = bookWithAuthors.getBook();
-        List<Author> authors = bookWithAuthors.getAuthors();
-        if (bookWithAuthors == null) { // todo: why here?
-            throw new DaoException("Entity can't be null");
+        if (null == bookWithAuthors) {
+            throw new DaoException("AbstractEntity can't be null");
         }
+        List<Author> authors = bookWithAuthors.getAuthors();
         entityManager.persist(book);
         for (Author author : authors) {  // todo: wrong implementation! Rework!
             entityManager.createNativeQuery("INSERT INTO author_book VALUES (:authorId, :bookId)")
@@ -37,7 +37,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
 
     @Override
     public List<Book> readTop(Integer count) {
-	    // todo: "ORDER BY average_rating" - is it really top books?
+        // todo: "ORDER BY average_rating" - is it really top books?
         List<Book> books = entityManager.createNativeQuery("SELECT * FROM book ORDER BY average_rating", Book.class).setFirstResult(0).setMaxResults(count).getResultList();
         books.forEach(book -> {
             book.getAuthors().size();  // todo: are you really need this initialization? Rework!
@@ -47,19 +47,9 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     }
 
     @Override
-    public BigDecimal getAverageRating() throws DaoException {  // todo: is this method really need?
-        Double avgDouble = (Double) entityManager.createNativeQuery("SELECT AVG(average_rating) FROM book").getSingleResult();
-        if (avgDouble == null) {
-            throw new DaoException();
-        }
-        return new BigDecimal(avgDouble).round(new MathContext(2, RoundingMode.CEILING));
-    }
-
-
-    @Override
     public List<Book> find(ListParams<BookPattern> listParams) throws DaoException {
-        StringBuilder startQuery = new StringBuilder("SELECT * FROM  book");
-        StringBuilder query = new StringBuilder(generateQueryWithParams(listParams, startQuery)); // todo: for what are you create new object of StringBuilder ?
+        StringBuilder query = new StringBuilder("SELECT * FROM  book");
+        query = generateQueryWithParams(listParams, query);
         if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) { // todo: why this check here?
             generateQueryWithSortParams(listParams, query);
         } else {
@@ -123,7 +113,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     @Override
     public Integer delete(Integer idBook) throws DaoException {
         if (idBook == null) {
-            throw new DaoException("Entity id can't be null");
+            throw new DaoException("AbstractEntity id can't be null");
         }
         Book book = get(idBook);
         try {
@@ -133,7 +123,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
             entityManager.createNativeQuery("DELETE FROM review WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
             entityManager.remove(book);
         } catch (Exception e) {
-            throw new DaoException();
+            throw new DaoException(e.getMessage(), e.getCause());
         }
         return idBook;
     }

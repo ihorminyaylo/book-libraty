@@ -2,9 +2,8 @@ package book.library.java.controller;
 
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.BusinessException;
-import book.library.java.exception.DaoException;
 import book.library.java.model.Book;
-import book.library.java.model.ListParams;
+import book.library.java.list.ListParams;
 import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +23,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/book")
-// todo: why DaoException in methods signature?
 public class BookController {
 
     private final BookService bookService;
@@ -35,12 +33,12 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody BookWithAuthors bookWithAuthors) throws DaoException, BusinessException {
+    public ResponseEntity create(@RequestBody BookWithAuthors bookWithAuthors)throws BusinessException {
         return ResponseEntity.ok(bookService.create(bookWithAuthors));
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams) throws DaoException, BusinessException {
+    public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams)throws BusinessException {
         return ResponseEntity.ok(bookService.read(listParams));
     }
 
@@ -49,26 +47,20 @@ public class BookController {
         return ResponseEntity.ok(bookService.readTop(count));
     }
 
-    @GetMapping(value = "/average_rating")
-    @ExceptionHandler(DaoException.class) // todo: ???
-    public ResponseEntity getAverageRating() throws DaoException {
-        return ResponseEntity.ok(bookService.getAverageRating());
-    }
-
     @PutMapping
-    public ResponseEntity update(@RequestBody Book book) throws DaoException, BusinessException {
+    public ResponseEntity update(@RequestBody Book book) throws BusinessException {
         bookService.update(book);
         return ResponseEntity.ok(book);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity delete(@PathVariable("id") Integer idBook) throws DaoException, BusinessException {
+    public ResponseEntity delete(@PathVariable("id") Integer idBook) throws BusinessException {
         bookService.delete(idBook);
         return ResponseEntity.ok(idBook);
     }
 
     @PutMapping(value = "/delete")
-    public ResponseEntity bulkDelete(@RequestBody List<Integer> listIdBooks) throws DaoException, BusinessException {
+    public ResponseEntity bulkDelete(@RequestBody List<Integer> listIdBooks) throws BusinessException {
         bookService.bulkDelete(listIdBooks);
         return ResponseEntity.ok(listIdBooks);
     }

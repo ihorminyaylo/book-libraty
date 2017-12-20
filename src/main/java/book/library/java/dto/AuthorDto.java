@@ -1,5 +1,7 @@
 package book.library.java.dto;
 
+import book.library.java.model.Author;
+
 /**
  * Represent a AuthorDto. This class for convenient transfer of information between front-end and back-end.
  * AuthorDto have id, firstName, secondName, createDate, averageRating
@@ -11,15 +13,14 @@ public class AuthorDto {
     private String averageRating;
 
 
-    public AuthorDto(Integer id, String firstName, String secondName, String averageRating) { // todo: maybe better use one argument (Author author) ?
-        this.id = id;
-        this.firstName = firstName;
-        this.secondName = secondName;
-        this.averageRating = averageRating;
+    public AuthorDto(Author author) {
+        id = author.getId();
+        firstName = author.getFirstName();
+        secondName = author.getSecondName();
+        averageRating = author.getAverageRating().toString();
     }
 
     public Integer getId() {
-
         return id;
     }
 

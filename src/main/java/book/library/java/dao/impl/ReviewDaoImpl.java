@@ -3,7 +3,7 @@ package book.library.java.dao.impl;
 import book.library.java.dao.ReviewDao;
 import book.library.java.dto.ReviewPageDto;
 import book.library.java.exception.DaoException;
-import book.library.java.model.ListParams;
+import book.library.java.list.ListParams;
 import book.library.java.model.Review;
 import book.library.java.model.pattern.ReviewPattern;
 import org.hibernate.query.Query;
@@ -16,17 +16,11 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
 
     @Override
     public List<Review> find(ListParams<ReviewPattern> listParams) throws DaoException {
-        StringBuilder startQuery = new StringBuilder("SELECT * FROM  review");
-        StringBuilder query = new StringBuilder(generateQueryWithParams(listParams, startQuery)); // todo: for what are you create new object of StringBuilder ?
-        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) { // todo: why this check here?
-            generateQueryWithSortParams(listParams, query);
-        } else {
-            query.append(" ORDER BY create_date");
-        }
+        StringBuilder query = new StringBuilder("SELECT * FROM  review");
+        query = generateQueryWithParams(listParams, query);
         Query nativeQuery = (Query) entityManager.createNativeQuery(query.toString(), Review.class);
-        nativeQuery = setParameters(listParams, nativeQuery, "find");
-        List<Review> reviewList = nativeQuery.getResultList(); // todo: redundant variable
-        return reviewList;
+        nativeQuery = setParameters(listParams, nativeQuery);
+        return nativeQuery.getResultList();
     }
 
     @Override
@@ -44,16 +38,14 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
         return query;
     }
 
-    private Query setParameters(ListParams<ReviewPattern> listParams, Query nativeQuery, String type) { // todo: for what "type" ?
+    private Query setParameters(ListParams<ReviewPattern> listParams, Query nativeQuery) {
         ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
-        if ("find".equals(type)) {
-            if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
-                nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
-            }
+        if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
+            nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
         }
         if (pattern != null) {
             if (pattern.getBookId() != null) {
-                nativeQuery.setParameter("bookId",pattern.getBookId());
+                nativeQuery.setParameter("bookId", pattern.getBookId());
             }
         }
         return nativeQuery;

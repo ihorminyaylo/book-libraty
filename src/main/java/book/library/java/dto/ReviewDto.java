@@ -5,14 +5,12 @@ public class ReviewDto {
     private String commenterName;
     private String comment;
     private Integer rating;
-    private String createDate; // todo: for what?
 
-    public ReviewDto(Integer id, String commenterName, String comment, Integer rating, String createDate) {
+    public ReviewDto(Integer id, String commenterName, String comment, Integer rating) {
         this.id = id;
         this.commenterName = commenterName;
         this.comment = comment;
         this.rating = rating;
-        this.createDate = createDate;
     }
 
     public Integer getId() {
@@ -47,11 +45,4 @@ public class ReviewDto {
         this.rating = rating;
     }
 
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
 }

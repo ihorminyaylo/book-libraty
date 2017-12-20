@@ -2,37 +2,25 @@ package book.library.java.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
+
 /**
-* Represent a author.
+ * Represent a author.
  * A author have id, firstName, secondName, createDate, averageRating
  */
 @Entity
 @Table(name = "author")
-public class Author implements Serializable { // todo: 'Author' does not define a 'serialVersionUID' field
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // todo: maybe GenerationType.SEQUENCE ?
-    @Column(name = "id", nullable = false)
-    private Integer id;
+public class Author extends AbstractEntity {
+    private static final long serialVersionUID = 7639326813425012421L;
 
     @Column(name = "first_name", nullable = false, length = 256)
     private String firstName;
 
-    @Column(name = "second_name", nullable = false, length = 256) // todo: why nullable = false ?
+    @Column(name = "second_name", length = 256)
     private String secondName;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -42,12 +30,6 @@ public class Author implements Serializable { // todo: 'Author' does not define 
     @Column(name = "average_rating", updatable = false, insertable = false)
     private BigDecimal averageRating;
 
-    @Transient  // todo: why?
-    @ManyToMany
-    @JoinTable(name = "author_book",
-        joinColumns = {@JoinColumn(name = "author_id", nullable = false)},
-        inverseJoinColumns = {@JoinColumn(name = "book_id", nullable = false)})
-    private List<Book> books;
 
     public String getFirstName() {
         return firstName;
@@ -65,21 +47,6 @@ public class Author implements Serializable { // todo: 'Author' does not define 
         this.secondName = secondName;
     }
 
-    public List<Book> getBooks() {
-        return books;
-    }
-
-    public void setBooks(List<Book> books) {
-        this.books = books;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public Date getCreateDate() {
         return createDate;
@@ -90,6 +57,9 @@ public class Author implements Serializable { // todo: 'Author' does not define 
     }
 
     public BigDecimal getAverageRating() {
+        if (averageRating == null) {
+            return BigDecimal.valueOf(0);
+        }
         return averageRating;
     }
 

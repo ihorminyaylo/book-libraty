@@ -3,11 +3,11 @@ package book.library.java.service.impl;
 import book.library.java.dao.BookDao;
 import book.library.java.dao.impl.AbstractDaoImpl;
 import book.library.java.dto.BookWithAuthors;
-import book.library.java.dto.EntitiesAndPageDto;
+import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.Book;
-import book.library.java.model.ListParams;
+import book.library.java.list.ListParams;
 import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
             return bookDao.create(bookWithAuthors);
 
         } catch (Exception e) {
-            throw new BusinessException(); // todo: must add base exception into BusinessException
+            throw new BusinessException(e.getMessage(), e.getCause());
         }
     }
 
@@ -47,18 +47,18 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
     }
 
     @Override
-    public BigDecimal getAverageRating() throws DaoException {  // todo: is this method really need?
-        return bookDao.getAverageRating();
-    }
-
-    @Override
-    public EntitiesAndPageDto<Book> read(ListParams listParams) throws BusinessException, DaoException { // todo: generic for ListParams!, why DaoException in signature?
+    public ListEntityPage<Book> read(ListParams<BookPattern> listParams) throws BusinessException {
         System.out.println(listParams.getLimit() + "offset" + listParams.getOffset()); // todo: ???
 	    // todo: where is condition for search?
         Integer totalItems = bookDao.totalRecords(listParams);
-        List<Book> listEntity = bookDao.find(listParams);
+        List<Book> listEntity = null;
+        try {
+            listEntity = bookDao.find(listParams);
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage(), e.getCause());
+        }
         listEntity.forEach(book -> book.setReviews(null)); // todo: WTF?
-        return new EntitiesAndPageDto<>(listEntity, totalItems);
+        return new ListEntityPage<>(listEntity, totalItems);
     }
 
     @Override
@@ -67,7 +67,7 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
             validateBook(book);
             bookDao.update(book);
         } catch (Exception e) {
-            throw new BusinessException(); // todo: must add base exception into BusinessException
+            throw new BusinessException(e.getMessage(), e.getCause());
         }
     }
 
@@ -76,8 +76,8 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
     public Integer delete(Integer idBook) throws BusinessException {
         try {
             bookDao.delete(idBook);
-        } catch (DaoException e) {
-            throw new BusinessException(); // todo: must add base exception into BusinessException
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage(), e.getCause());
         }
         return idBook;
     }
@@ -86,12 +86,12 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
     public void bulkDelete(List<Integer> idBooks) throws BusinessException {
         try {
             bookDao.bulkDelete(idBooks);
-        } catch (DaoException e) {
-            throw new BusinessException(); // todo: must add base exception into BusinessException
+        } catch (Exception e) {
+            throw new BusinessException(e.getMessage(), e.getCause());
         }
     }
 
-    void validateBook(Book book) throws BusinessException { // todo: Access can be private. Method 'validateBook()' may be 'static'
+    private static void validateBook(Book book) throws BusinessException {
         if (book.getName() == null || book.getName().isEmpty()) {
             throw new BusinessException("Name of book isn't correct");
         }

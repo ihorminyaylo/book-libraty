@@ -1,4 +1,4 @@
-package book.library.java.model;
+package book.library.java.list;
 
 /**
  * SortParams class for parameters for params to sort list of entity.

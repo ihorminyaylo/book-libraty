@@ -1,8 +1,7 @@
 package book.library.java.controller;
 
 import book.library.java.exception.BusinessException;
-import book.library.java.exception.DaoException;
-import book.library.java.model.ListParams;
+import book.library.java.list.ListParams;
 import book.library.java.model.Review;
 import book.library.java.model.pattern.ReviewPattern;
 import book.library.java.service.ReviewService;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/review")
-// todo: why DaoException in methods signature?
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -28,12 +26,12 @@ public class ReviewController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody Review review) throws DaoException, BusinessException {
+    public ResponseEntity create(@RequestBody Review review) throws BusinessException {
         return ResponseEntity.ok(reviewService.create(review));
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ListParams<ReviewPattern> listParams) throws BusinessException, DaoException {
+    public ResponseEntity<?> read(@RequestBody ListParams<ReviewPattern> listParams) throws BusinessException {
         return ResponseEntity.ok(reviewService.readReviews(listParams));
     }
 
@@ -43,7 +41,7 @@ public class ReviewController {
     }
 
     @PutMapping
-    public ResponseEntity update(@RequestBody Review review) throws DaoException, BusinessException {
+    public ResponseEntity update(@RequestBody Review review) throws BusinessException {
         reviewService.update(review);
         return ResponseEntity.ok(review);
     }

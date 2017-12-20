@@ -1,20 +1,22 @@
 package book.library.java.service.impl;
 
 import book.library.java.dao.impl.AbstractDaoImpl;
-import book.library.java.dto.EntitiesAndPageDto;
+import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
-import book.library.java.model.ListParams;
+import book.library.java.list.ListParams;
+import book.library.java.model.AbstractEntity;
 import book.library.java.service.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
 @Transactional
-public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
+public class AbstractServiceImpl<T extends AbstractEntity, P> implements AbstractService<T, P> {
 
     private AbstractDaoImpl<T, P> entityDaoType;
 
@@ -26,34 +28,35 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
     }
 
     @Override
-    public Integer create(T t) throws BusinessException, DaoException { // todo: change name of parameter, why DaoException in signature?
+    public Integer create(T entity) throws BusinessException {
         try {
-            return entityDaoType.create(t);
+            return entityDaoType.create(entity);
         } catch (Exception e) {
-            throw new BusinessException();  // todo: must add base exception into BusinessException
+            throw new BusinessException(e.getMessage(), e.getCause());
         }
     }
 
     @Override
-    public EntitiesAndPageDto<T> read(ListParams listParams) throws BusinessException, DaoException { // todo: generic for ListParams!, why DaoException in signature?
-        List<T> listEntity;
+    public ListEntityPage<T> read(ListParams<P> listParams) throws BusinessException {
+        List<T> listEntity = new ArrayList<>();
         Integer totalItems = entityDaoType.totalRecords(listParams);
-	    // todo: very strange condition and behaviour ???
-        if (listParams.getLimit() == null || listParams.getOffset() != null) {
-            listEntity = entityDaoType.find(listParams);
-        } else {
-            listEntity = entityDaoType.findAll();
+        if (listParams.getLimit() != null || listParams.getOffset() != null) {
+            try {
+                listEntity = entityDaoType.find(listParams);
+            } catch (Exception e) {
+                throw new BusinessException(e.getMessage(), e.getCause());
+            }
         }
-        return new EntitiesAndPageDto<>(listEntity, totalItems);
+        return new ListEntityPage<>(listEntity, totalItems);
     }
 
 
     @Override
-    public void update(T t) throws BusinessException, DaoException { // todo: change name of parameter, why DaoException in signature?
+    public void update(T entity) throws BusinessException {
         try {
-            entityDaoType.update(t);
+            entityDaoType.update(entity);
         } catch (Exception e) {
-            throw new BusinessException();// todo: must add base exception into BusinessException
+            throw new BusinessException(e.getMessage(), e.getCause());
         }
     }
 
@@ -62,7 +65,7 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
         try {
             entityDaoType.delete(idEntity);
         } catch (Exception e) {
-            throw new BusinessException();// todo: must add base exception into BusinessException
+            throw new BusinessException(e.getMessage(), e.getCause());
         }
         return idEntity;
     }

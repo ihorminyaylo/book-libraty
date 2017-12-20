@@ -1,9 +1,8 @@
 package book.library.java.controller;
 
 import book.library.java.exception.BusinessException;
-import book.library.java.exception.DaoException;
 import book.library.java.model.Author;
-import book.library.java.model.ListParams;
+import book.library.java.list.ListParams;
 import book.library.java.model.pattern.AuthorPattern;
 import book.library.java.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/author")
-// todo: why DaoException in methods signature?
 public class AuthorController {
 
     private final AuthorService authorService;
@@ -33,7 +31,7 @@ public class AuthorController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody Author author) throws BusinessException, DaoException {
+    public ResponseEntity create(@RequestBody Author author) throws BusinessException {
         return ResponseEntity.ok(authorService.create(author));
     }
 
@@ -43,27 +41,27 @@ public class AuthorController {
     }
 
     @GetMapping(value = "/findTop")
-    public ResponseEntity readTop(@RequestParam Integer count) throws DaoException {
+    public ResponseEntity readTop(@RequestParam Integer count) throws BusinessException {
         return ResponseEntity.ok(authorService.readTop(count));
     }
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ListParams<AuthorPattern> listParams) throws DaoException, BusinessException { // todo: ResponseEntity<?> - why "<?>" ?
+    public ResponseEntity read(@RequestBody ListParams<AuthorPattern> listParams) throws BusinessException {
         return ResponseEntity.ok(authorService.read(listParams));
     }
 
     @PutMapping
-    public ResponseEntity update(@RequestBody Author author) throws BusinessException, DaoException {
+    public ResponseEntity update(@RequestBody Author author) throws BusinessException {
         authorService.update(author);
         return ResponseEntity.ok(author);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity delete(@PathVariable("id") Integer idAuthor) throws DaoException, BusinessException {
+    public ResponseEntity delete(@PathVariable("id") Integer idAuthor) throws BusinessException {
         return ResponseEntity.ok(authorService.deleteAuthor(idAuthor));
     }
 
     @PutMapping(value = "/delete")
-    public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException, DaoException {
+    public ResponseEntity bulkDelete(@RequestBody List<Integer> idEntities) throws BusinessException {
         return ResponseEntity.ok(authorService.bulkDelete(idEntities));
     }
 }

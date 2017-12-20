@@ -10,8 +10,8 @@ import book.library.java.model.Book;
 import java.util.List;
 
 public class BookWithAuthors {
-    Book book; // todo: why not private?
-    List<Author> authors; // todo: why not private?
+    private Book book;
+    private List<Author> authors;
 
     public BookWithAuthors() {
     }

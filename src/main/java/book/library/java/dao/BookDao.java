@@ -14,5 +14,5 @@ public interface BookDao extends AbstractDao<Book, BookPattern> {
 
     List<Book> readTop(Integer count);
 
-    BigDecimal getAverageRating() throws DaoException;
+    void bulkDelete(List<Integer> idBooks) throws DaoException;
 }

@@ -23,7 +23,6 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
         registry.addMapping("/**").allowedOrigins("http://127.0.0.1:8080")
             .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
             .allowedHeaders("Authorization", "Content-Type")
-                .exposedHeaders("custom-header1", "custom-header2") // todo: Is it really need?
             .allowCredentials(false).maxAge(4800);
     }
 }

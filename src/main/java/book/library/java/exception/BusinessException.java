@@ -1,11 +1,16 @@
 package book.library.java.exception;
 
-public class BusinessException extends Exception { // todo: 'BusinessException' does not define a 'serialVersionUID' field
-	// todo: Please add constructor with argument (String message, Throwable cause) and use it in all places where you catch exceptions
+public class BusinessException extends Exception {
+    private static final long serialVersionUID = 283989440599278153L;
+
     public BusinessException() {
     }
 
     public BusinessException(String message) {
         super(message);
+    }
+
+    public BusinessException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
