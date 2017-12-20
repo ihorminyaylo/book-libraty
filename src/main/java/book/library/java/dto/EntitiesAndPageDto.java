@@ -7,7 +7,7 @@ import java.util.List;
  * This class for convenient transfer of information between front-end and back-end.
  * EntitiesAndPageDto have list(model) and totalItems.
  */
-public class EntitiesAndPageDto<T> {
+public class EntitiesAndPageDto<T> { // todo: strange name. have to rename
     private List<T> list;
     private Integer totalItems;
 

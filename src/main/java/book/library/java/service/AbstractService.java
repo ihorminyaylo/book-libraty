@@ -5,6 +5,7 @@ import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.model.ListParams;
 
+// todo: Please add java-doc for class and all methods
 public interface AbstractService<T, P> {
     Integer create(T t) throws BusinessException, DaoException;
 

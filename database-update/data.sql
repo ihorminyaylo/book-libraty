@@ -1,14 +1,15 @@
+-- todo: Please reformat this code for easy reading
 CREATE USER library_user WITH password 'root';
 GRANT ALL ON DATABASE library TO library_user;
 CREATE TABLE author (id SERIAL PRIMARY KEY,
                      first_name VARCHAR(256) NOT NULL,
-                     second_name VARCHAR(256) NOT NULL,
+                     second_name VARCHAR(256) NOT NULL,  -- todo: why NOT NULL ?
                      create_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
                      average_rating DOUBLE PRECISION);
 CREATE TABLE book (id SERIAL PRIMARY KEY,
                    name VARCHAR(256) NOT NULL ,
-                   publisher VARCHAR(256) NOT NULL ,
-                                      year_published INTEGER NOT NULL,
+                   publisher VARCHAR(256) NOT NULL , -- todo: why NOT NULL ?
+                                      year_published INTEGER NOT NULL,  -- todo: why NOT NULL ?
                    create_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
                    average_rating DOUBLE PRECISION);
 CREATE TABLE review (id SERIAL PRIMARY KEY,
@@ -23,7 +24,7 @@ CREATE TABLE author_book (author_id INTEGER NOT NULL,
                           book_id INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES author(id),
   FOREIGN KEY (book_id) REFERENCES book(id));
-CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$
+CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$ -- todo: why are you recalculate average_rating for all books?
 BEGIN UPDATE book
 SET average_rating = (SELECT AVG(rating) FROM review
 WHERE book.id = review.book_id);
@@ -35,7 +36,7 @@ CREATE TRIGGER bookAvgRating
 AFTER INSERT ON review
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_book();
 
-CREATE FUNCTION calculate_average_rating_author() RETURNS TRIGGER AS $calculates$
+CREATE FUNCTION calculate_average_rating_author() RETURNS TRIGGER AS $calculates$ -- todo: why are you recalculate average_rating for all books?
 BEGIN UPDATE author
 SET average_rating = (SELECT AVG(average_rating) FROM book JOIN author_book ON book.id = author_book.book_id
 WHERE author.id = author_book.author_id);

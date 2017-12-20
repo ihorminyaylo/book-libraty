@@ -6,6 +6,7 @@ import book.library.java.model.pattern.AuthorPattern;
 
 import java.util.List;
 
+// todo: Please add java-doc for class and all methods
 public interface AuthorDao extends AbstractDao<Author, AuthorPattern> {
     List<Author> readTop(Integer count) throws DaoException;
     Author deleteAuthor(Integer idAuthor) throws DaoException;

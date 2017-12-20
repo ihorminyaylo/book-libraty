@@ -24,6 +24,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/book")
+// todo: why DaoException in methods signature?
 public class BookController {
 
     private final BookService bookService;
@@ -49,7 +50,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/average_rating")
-    @ExceptionHandler(DaoException.class)
+    @ExceptionHandler(DaoException.class) // todo: ???
     public ResponseEntity getAverageRating() throws DaoException {
         return ResponseEntity.ok(bookService.getAverageRating());
     }

@@ -23,30 +23,33 @@ import java.util.List;
 @Service
 @Transactional
 public class ReviewServiceImpl extends AbstractServiceImpl<Review, ReviewPattern> implements ReviewService {
-    private final ReviewDao reviewDao;
+    private final ReviewDao reviewDao; // todo: useless - remove
 
     @Autowired
+    // todo: why: @Qualifier("reviewDaoImpl") AbstractDaoImpl<Review, ReviewPattern> entityDaoType ??
     public ReviewServiceImpl(@Qualifier("reviewDaoImpl") AbstractDaoImpl<Review, ReviewPattern> entityDaoType) {
         super(entityDaoType);
         reviewDao = (ReviewDao) entityDaoType;
     }
 
     @Override
-    public Integer create(Review review) throws BusinessException, DaoException {
+    public Integer create(Review review) throws BusinessException, DaoException { // todo: why DaoException in signature?
         validateReview(review);
         return super.create(review);
     }
 
     @Override
-    public EntitiesAndPageDto<ReviewDto> readReviews(ListParams listParams) throws DaoException {
+    public EntitiesAndPageDto<ReviewDto> readReviews(ListParams listParams) throws DaoException { // todo: generic for ListParams!, why DaoException in signature?
         List<Review> listEntity;
         List<ReviewDto> reviewDtoList = new ArrayList<>();
         Integer totalItems = reviewDao.totalRecords(listParams);
+	    // todo: very strange condition and behaviour ???
         if (listParams.getLimit() == null || listParams.getOffset() != null) {
             listEntity = reviewDao.find(listParams);
         } else {
             listEntity = reviewDao.findAll();
         }
+	    // todo: stream + map
         listEntity.forEach(review -> reviewDtoList.add(new ReviewDto(review.getId(), review.getCommenterName(), review.getComment(), review.getRating(), review.getCreateDate().toString())));
 /*
         listEntity.forEach(review -> review.getBook().getAuthors().size());
@@ -55,12 +58,12 @@ public class ReviewServiceImpl extends AbstractServiceImpl<Review, ReviewPattern
     }
 
     @Override
-    public List<ReviewPageDto> readDetail() {
+    public List<ReviewPageDto> readDetail() { // todo: this method does not have sense
         return reviewDao.getCountOfTypeReview();
     }
 
     @Override
-    public void update(Review review) throws BusinessException, DaoException {
+    public void update(Review review) throws BusinessException, DaoException { // todo: why DaoException in signature?
         validateReview(review);
         super.update(review);
     }

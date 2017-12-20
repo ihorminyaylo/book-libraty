@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/author")
+// todo: why DaoException in methods signature?
 public class AuthorController {
 
     private final AuthorService authorService;
@@ -46,7 +47,7 @@ public class AuthorController {
         return ResponseEntity.ok(authorService.readTop(count));
     }
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody ListParams<AuthorPattern> listParams) throws DaoException, BusinessException {
+    public ResponseEntity<?> read(@RequestBody ListParams<AuthorPattern> listParams) throws DaoException, BusinessException { // todo: ResponseEntity<?> - why "<?>" ?
         return ResponseEntity.ok(authorService.read(listParams));
     }
 

@@ -5,6 +5,7 @@ import book.library.java.model.ListParams;
 
 import java.util.List;
 
+// todo: Please add java-doc for class and all methods
 public interface AbstractDao<T, P> {
     Integer create(T entity) throws DaoException;
 

@@ -22,17 +22,17 @@ import java.util.List;
  */
 @Entity
 @Table(name = "author")
-public class Author implements Serializable {
+public class Author implements Serializable { // todo: 'Author' does not define a 'serialVersionUID' field
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // todo: maybe GenerationType.SEQUENCE ?
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "first_name", nullable = false, length = 256)
     private String firstName;
 
-    @Column(name = "second_name", nullable = false, length = 256)
+    @Column(name = "second_name", nullable = false, length = 256) // todo: why nullable = false ?
     private String secondName;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -42,7 +42,7 @@ public class Author implements Serializable {
     @Column(name = "average_rating", updatable = false, insertable = false)
     private BigDecimal averageRating;
 
-    @Transient
+    @Transient  // todo: why?
     @ManyToMany
     @JoinTable(name = "author_book",
         joinColumns = {@JoinColumn(name = "author_id", nullable = false)},

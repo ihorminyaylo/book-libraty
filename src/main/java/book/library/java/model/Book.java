@@ -24,27 +24,27 @@ import java.util.List;
  */
 @Entity
 @Table(name = "book")
-public class Book implements Serializable {
+public class Book implements Serializable { // todo: 'Book' does not define a 'serialVersionUID' field
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // todo: maybe GenerationType.SEQUENCE ?
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @Column(name = "name", nullable = false, length = 256)
     private String name;
 
-    @Column(name = "year_published", nullable = false, length = 256)
+    @Column(name = "year_published", nullable = false, length = 256) // todo: why nullable = false ?
     private int yearPublished;
 
-    @Column(name = "publisher", nullable = false, length = 256)
+    @Column(name = "publisher", nullable = false, length = 256) // todo: why nullable = false ?
     private String publisher;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", insertable = false)
+    @Column(name = "average_rating", insertable = false) // todo: why without updatable = false
     private BigDecimal averageRating;
 
     @ManyToMany

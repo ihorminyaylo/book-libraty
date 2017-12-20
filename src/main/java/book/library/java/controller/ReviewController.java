@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/review")
+// todo: why DaoException in methods signature?
 public class ReviewController {
 
     private final ReviewService reviewService;

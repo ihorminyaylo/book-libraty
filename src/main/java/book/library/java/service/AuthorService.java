@@ -9,6 +9,7 @@ import book.library.java.model.pattern.AuthorPattern;
 
 import java.util.List;
 
+// todo: Please add java-doc for class and all methods
 public interface AuthorService extends AbstractService<Author, AuthorPattern> {
     List<Author> readAll();
 

@@ -11,7 +11,7 @@ public class AuthorDto {
     private String averageRating;
 
 
-    public AuthorDto(Integer id, String firstName, String secondName, String averageRating) {
+    public AuthorDto(Integer id, String firstName, String secondName, String averageRating) { // todo: maybe better use one argument (Author author) ?
         this.id = id;
         this.firstName = firstName;
         this.secondName = secondName;

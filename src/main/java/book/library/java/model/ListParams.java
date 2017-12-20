@@ -1,3 +1,4 @@
+// todo: please create package book.library.java.list and move to it classes: ListParams, SortParams, TypeSort
 package book.library.java.model;
 
 

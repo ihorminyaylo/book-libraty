@@ -23,11 +23,11 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     public Integer create(BookWithAuthors bookWithAuthors) throws DaoException {
         Book book = bookWithAuthors.getBook();
         List<Author> authors = bookWithAuthors.getAuthors();
-        if (bookWithAuthors == null) {
+        if (bookWithAuthors == null) { // todo: why here?
             throw new DaoException("Entity can't be null");
         }
         entityManager.persist(book);
-        for (Author author : authors) {
+        for (Author author : authors) {  // todo: wrong implementation! Rework!
             entityManager.createNativeQuery("INSERT INTO author_book VALUES (:authorId, :bookId)")
                 .setParameter("authorId", author.getId()).setParameter("bookId", book.getId())
                 .executeUpdate();
@@ -37,16 +37,17 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
 
     @Override
     public List<Book> readTop(Integer count) {
+	    // todo: "ORDER BY average_rating" - is it really top books?
         List<Book> books = entityManager.createNativeQuery("SELECT * FROM book ORDER BY average_rating", Book.class).setFirstResult(0).setMaxResults(count).getResultList();
         books.forEach(book -> {
-            book.getAuthors().size();
-            book.setReviews(null);
+            book.getAuthors().size();  // todo: are you really need this initialization? Rework!
+            book.setReviews(null);  // todo: WTF?!
         });
         return books;
     }
 
     @Override
-    public BigDecimal getAverageRating() throws DaoException {
+    public BigDecimal getAverageRating() throws DaoException {  // todo: is this method really need?
         Double avgDouble = (Double) entityManager.createNativeQuery("SELECT AVG(average_rating) FROM book").getSingleResult();
         if (avgDouble == null) {
             throw new DaoException();
@@ -58,8 +59,8 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     @Override
     public List<Book> find(ListParams<BookPattern> listParams) throws DaoException {
         StringBuilder startQuery = new StringBuilder("SELECT * FROM  book");
-        StringBuilder query = new StringBuilder(generateQueryWithParams(listParams, startQuery));
-        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) {
+        StringBuilder query = new StringBuilder(generateQueryWithParams(listParams, startQuery)); // todo: for what are you create new object of StringBuilder ?
+        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) { // todo: why this check here?
             generateQueryWithSortParams(listParams, query);
         } else {
             query.append(" ORDER BY average_rating, create_date");
@@ -77,18 +78,18 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
             if (pattern.getAuthorId() != null) {
                 query.append(" JOIN author_book ON book.id = author_book.book_id");
             }
-            query.append(" WHERE LOWER(name) LIKE LOWER(:search)");
+            query.append(" WHERE LOWER(name) LIKE LOWER(:search)"); // todo: remove LOWER, use another operator
             if (pattern.getAuthorId() != null) {
                 query.append(" AND author_book.author_id = :authorId");
             }
             if (pattern.getRating() != null) {
-                query.append(" AND ROUND(book.average_rating) = :rating");
+                query.append(" AND ROUND(book.average_rating) = :rating"); // todo: wrong condition! Rework! rating make sense only like range
             }
         }
         return query;
     }
 
-    public Query setParameters(ListParams<BookPattern> listParams, Query nativeQuery, String type) {
+    public Query setParameters(ListParams<BookPattern> listParams, Query nativeQuery, String type) { // todo: for what "type" ?
         System.out.println(listParams);
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
         if ("find".equals(type)) {
@@ -115,7 +116,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
         StringBuilder query = new StringBuilder("SELECT Count(book.id) FROM book");
         Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query).toString());
         nativeQuery = setParameters(listParams, nativeQuery, "totalRecords");
-        BigInteger bigInteger = (BigInteger) nativeQuery.getSingleResult();
+        BigInteger bigInteger = (BigInteger) nativeQuery.getSingleResult(); // todo: wrong implementation! Rework!
         return bigInteger.intValue();
     }
 
@@ -126,7 +127,9 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
         }
         Book book = get(idBook);
         try {
+	        // todo: why are you don't use method delete(...) ?
             entityManager.createNativeQuery("DELETE FROM author_book WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
+            // todo: for what this query? Rework! (Foreign key!)
             entityManager.createNativeQuery("DELETE FROM review WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
             entityManager.remove(book);
         } catch (Exception e) {

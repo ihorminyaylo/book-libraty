@@ -17,20 +17,20 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
     @Override
     public List<Review> find(ListParams<ReviewPattern> listParams) throws DaoException {
         StringBuilder startQuery = new StringBuilder("SELECT * FROM  review");
-        StringBuilder query = new StringBuilder(generateQueryWithParams(listParams, startQuery));
-        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) {
+        StringBuilder query = new StringBuilder(generateQueryWithParams(listParams, startQuery)); // todo: for what are you create new object of StringBuilder ?
+        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) { // todo: why this check here?
             generateQueryWithSortParams(listParams, query);
         } else {
             query.append(" ORDER BY create_date");
         }
         Query nativeQuery = (Query) entityManager.createNativeQuery(query.toString(), Review.class);
         nativeQuery = setParameters(listParams, nativeQuery, "find");
-        List<Review> reviewList = nativeQuery.getResultList();
+        List<Review> reviewList = nativeQuery.getResultList(); // todo: redundant variable
         return reviewList;
     }
 
     @Override
-    public List<ReviewPageDto> getCountOfTypeReview() {
+    public List<ReviewPageDto> getCountOfTypeReview() { // todo: for what this method?
         return (List<ReviewPageDto>) entityManager.createNativeQuery("SELECT average_rating as rating, count(average_rating) FROM book GROUP BY average_rating ORDER BY average_rating").getResultList();
     }
 
@@ -44,7 +44,7 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
         return query;
     }
 
-    private Query setParameters(ListParams<ReviewPattern> listParams, Query nativeQuery, String type) {
+    private Query setParameters(ListParams<ReviewPattern> listParams, Query nativeQuery, String type) { // todo: for what "type" ?
         ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
         if ("find".equals(type)) {
             if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {

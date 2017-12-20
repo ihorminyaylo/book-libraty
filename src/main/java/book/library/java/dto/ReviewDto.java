@@ -5,7 +5,7 @@ public class ReviewDto {
     private String commenterName;
     private String comment;
     private Integer rating;
-    private String createDate;
+    private String createDate; // todo: for what?
 
     public ReviewDto(Integer id, String commenterName, String comment, Integer rating, String createDate) {
         this.id = id;

@@ -5,9 +5,9 @@ import {ListParams, SortParams} from "../../services/service-api";
 
 class AuthorsIndex {
     sortType     = 'name'; // set the default sort type
-    sortReverse: string;
+    sortReverse: string; // todo: strange name, have to rename
     sortParam: SortParams;
-    sortParams(type) {
+    sortParams(type) { // todo: why 'type' ? have to rename
         this.sortType = type;
         if (this.sortReverse === 'up') {
             this.sortReverse = 'down';

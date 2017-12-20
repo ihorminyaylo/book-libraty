@@ -22,22 +22,23 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
         this.entityDaoType = entityDaoType;
     }
 
-    public AbstractServiceImpl() {
+    public AbstractServiceImpl() { // todo: useless constructor - remove
     }
 
     @Override
-    public Integer create(T t) throws BusinessException, DaoException {
+    public Integer create(T t) throws BusinessException, DaoException { // todo: change name of parameter, why DaoException in signature?
         try {
             return entityDaoType.create(t);
         } catch (Exception e) {
-            throw new BusinessException();
+            throw new BusinessException();  // todo: must add base exception into BusinessException
         }
     }
 
     @Override
-    public EntitiesAndPageDto<T> read(ListParams listParams) throws BusinessException, DaoException {
+    public EntitiesAndPageDto<T> read(ListParams listParams) throws BusinessException, DaoException { // todo: generic for ListParams!, why DaoException in signature?
         List<T> listEntity;
         Integer totalItems = entityDaoType.totalRecords(listParams);
+	    // todo: very strange condition and behaviour ???
         if (listParams.getLimit() == null || listParams.getOffset() != null) {
             listEntity = entityDaoType.find(listParams);
         } else {
@@ -48,11 +49,11 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
 
 
     @Override
-    public void update(T t) throws BusinessException, DaoException {
+    public void update(T t) throws BusinessException, DaoException { // todo: change name of parameter, why DaoException in signature?
         try {
             entityDaoType.update(t);
         } catch (Exception e) {
-            throw new BusinessException();
+            throw new BusinessException();// todo: must add base exception into BusinessException
         }
     }
 
@@ -61,7 +62,7 @@ public class AbstractServiceImpl<T, P> implements AbstractService<T, P> {
         try {
             entityDaoType.delete(idEntity);
         } catch (Exception e) {
-            throw new BusinessException();
+            throw new BusinessException();// todo: must add base exception into BusinessException
         }
         return idEntity;
     }

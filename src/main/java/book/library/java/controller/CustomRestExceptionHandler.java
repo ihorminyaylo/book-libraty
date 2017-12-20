@@ -18,10 +18,10 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
             HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus()); // todo: redundant argument: new HttpHeaders()
     }
 
-    @ExceptionHandler({DaoException.class})
+    @ExceptionHandler({DaoException.class}) // todo: DaoException have not to be appear on UI part
     public ResponseEntity<Object> handleDaoException(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
             HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "dao exception");

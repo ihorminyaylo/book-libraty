@@ -11,7 +11,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
+import javax.persistence.Transient; // todo: useless
 import java.io.Serializable;
 import java.util.Date;
 
@@ -21,10 +21,10 @@ import java.util.Date;
  */
 @Entity
 @Table(name = "review")
-public class Review implements Serializable {
+public class Review implements Serializable { // todo: 'Review' does not define a 'serialVersionUID' field
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // todo: maybe GenerationType.SEQUENCE ?
     @Column(name = "id", nullable = false)
     private Integer id;
 
