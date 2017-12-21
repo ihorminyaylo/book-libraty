@@ -14,6 +14,7 @@ import java.util.List;
  * A Author Service have such methods: readAll, readTop, bulkDelete, deleteAuthor
  */
 public interface AuthorService extends AbstractService<Author, AuthorPattern> {
+
     /**
      * This method for get all authors.
      *
@@ -22,13 +23,12 @@ public interface AuthorService extends AbstractService<Author, AuthorPattern> {
     List<Author> readAll();
 
     /**
-     * This method for read top authors. Count of top we pass like argument in method.
-     *
-     * @param count of we want to get top authors
+     * This method for read top authors.
+
      * @return List authors DTO
      * @throws BusinessException
      */
-    List<AuthorDto> readTop(Integer count) throws BusinessException;
+    List<AuthorDto> readTopFive() throws BusinessException;
 
     /**
      * This method for bulk delete authors

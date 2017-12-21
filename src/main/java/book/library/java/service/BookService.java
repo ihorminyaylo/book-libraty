@@ -1,7 +1,10 @@
 package book.library.java.service;
 
+import book.library.java.dto.BookDto;
 import book.library.java.dto.BookWithAuthors;
+import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
+import book.library.java.list.ListParams;
 import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
 
@@ -16,7 +19,6 @@ public interface BookService extends AbstractService<Book, BookPattern> {
 
     /**
      * This method for create book, where we get like parameter BooksWithAuthors(Book and authors who wrote this book)
-     *
      * @param bookWithAuthors
      * @return id of book which we created.
      * @throws BusinessException
@@ -24,16 +26,24 @@ public interface BookService extends AbstractService<Book, BookPattern> {
     Integer create(BookWithAuthors bookWithAuthors) throws BusinessException;
 
     /**
-     * This method for read top books. Count of top we pass like argument in method.
      *
-     * @param count of we want to get top books
+     * @param listParams with condition type
+     * @return
+     * @throws BusinessException
+     */
+    ListEntityPage<BookDto> readBooks(ListParams<BookPattern> listParams) throws BusinessException;
+
+    /**
+     * This method for read top books.
      * @return List books DTO
      */
-    List<Book> readTop(Integer count);
+    List<BookDto> readTopFive();
+
+    Integer updateBook(BookWithAuthors bookWithAuthors) throws BusinessException;
+
 
     /**
      * This method for delete one book by id
-     *
      * @param idEntities is List of id books which we want remove
      * @throws BusinessException
      */

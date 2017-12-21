@@ -27,7 +27,7 @@ public class Author extends AbstractEntity {
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", updatable = false, insertable = false)
+    @Column(name = "average_rating", updatable = false, insertable = false, nullable = false)
     private BigDecimal averageRating;
 
 

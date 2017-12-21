@@ -24,8 +24,10 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
     }
 
     @Override
-    public List<ReviewPageDto> getCountOfTypeReview() { // todo: for what this method?
-        return (List<ReviewPageDto>) entityManager.createNativeQuery("SELECT average_rating as rating, count(average_rating) FROM book GROUP BY average_rating ORDER BY average_rating").getResultList();
+    public List<ReviewPageDto> getCountOfEachRating() {
+        return (List<ReviewPageDto>) entityManager.
+            createNativeQuery("SELECT ROUND(average_rating) as rating, count(average_rating) FROM book GROUP BY rating ORDER BY rating")
+            .getResultList();
     }
 
     private StringBuilder generateQueryWithParams(ListParams<ReviewPattern> listParams, StringBuilder query) {

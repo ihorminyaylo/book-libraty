@@ -11,25 +11,25 @@
         <th class="single line">#</th>
         <th>
         <a ng-click="a.sortParams('second_name')"> Second name
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
         </a>
         </th>
         <th>
             <a ng-click="a.sortParams('first_name')"> First name
-                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
             </a>
         </th>
         <th>
             <a ng-click="a.sortParams('create_date')"> Create date
-                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
             </a>
         </th>
         <th><a ng-click="a.sortParams('average_rating')"> Rating
-            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
         </a>
         </th>
         <th>Action</th>
@@ -96,9 +96,8 @@
                     <!-- Second name -->
                     <div class="form-group" ng-class="{ 'has-error' : authorForm.secondName.$invalid && (addAuthor.click || !authorForm.secondName.$pristine)}">
                         <label>Second Name</label>
-                        <input type="text" name="secondName" class="form-control" ng-model="secondName" ng-maxlength="256" required>
+                        <input type="text" name="secondName" class="form-control" ng-model="secondName" ng-maxlength="256">
                         <p ng-show="authorForm.secondName.$error.maxlength" class="help-block">Second name is too long.</p>
-                        <p ng-show="authorForm.secondName.$error.required && (addAuthor.click || !authorForm.secondName.$pristine)" class="help-block">You second name is required.</p>
                     </div>
                     </div>
                     <div class="modal-footer">
@@ -134,9 +133,8 @@
                         <!-- Second name -->
                         <div class="form-group" ng-class="{ 'has-error' : authorForm.secondName.$invalid && (editAuthor.click || !authorForm.secondName.$pristine)}">
                             <label>Second Name</label>
-                            <input type="text" name="secondName" class="form-control" ng-model="editAuthor.secondName" ng-maxlength="256" required ng-value="editAuthor.author.secondName">
+                            <input type="text" name="secondName" class="form-control" ng-model="editAuthor.secondName" ng-maxlength="256" ng-value="editAuthor.author.secondName">
                             <p ng-show="authorForm.secondName.$error.maxlength" class="help-block">Second name is too long.</p>
-                            <p ng-show="authorForm.secondName.$error.required && (editAuthor.click || !authorForm.secondName.$pristine)" class="help-block">You second name is required.</p>
                         </div>
                     </div>
                     <div class="modal-footer">

@@ -6,14 +6,14 @@ CREATE TABLE author (id SERIAL PRIMARY KEY,
                      first_name VARCHAR(256) NOT NULL,
                      second_name VARCHAR(256),
                      create_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
-                     average_rating DOUBLE PRECISION);
+                     average_rating DOUBLE PRECISION DEFAULT 0);
 
 CREATE TABLE book (id SERIAL PRIMARY KEY,
                    name VARCHAR(256) NOT NULL ,
                    publisher VARCHAR(256),
                    year_published INTEGER,
                    create_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
-                   average_rating DOUBLE PRECISION);
+                   average_rating DOUBLE PRECISION DEFAULT 0);
 
 CREATE TABLE review (id SERIAL PRIMARY KEY,
                      comment TEXT NOT NULL ,
@@ -33,7 +33,7 @@ CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$ 
 BEGIN
 UPDATE book
 SET average_rating = (SELECT AVG(rating) FROM review
-WHERE book.id = review.book_id);
+WHERE book.id = review.book_id AND rating > 0);
 RETURN NEW;
 END;
 $calculates$
@@ -48,7 +48,7 @@ CREATE FUNCTION calculate_average_rating_author() RETURNS TRIGGER AS $calculates
 BEGIN
 UPDATE author
 SET average_rating = (SELECT AVG(average_rating) FROM book JOIN author_book ON book.id = author_book.book_id
-WHERE author.id = author_book.author_id;
+WHERE author.id = author_book.author_id AND average_rating > 0);
   RETURN NEW;
 END;
 $calculates$

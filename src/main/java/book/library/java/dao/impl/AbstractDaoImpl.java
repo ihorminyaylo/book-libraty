@@ -33,7 +33,9 @@ public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements Ab
         if (entity == null) {
             throw new DaoException("AbstractEntity can't be null");
         }
-        // todo: what id entity.getId() != null ?
+        if (entity.getId() != null) {
+            throw new DaoException("Can't set id. Id generated in Data Base");
+        }
         entityManager.persist(entity);
         return entity.getId();
     }
@@ -83,14 +85,14 @@ public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements Ab
     public Integer totalRecords(ListParams<P> listParams) {
         String queryString = "SELECT Count(*) FROM " + entityType.getName();
         Query query = entityManager.createQuery(queryString);
-        return (int) (long) query.getSingleResult(); // todo: wrong implementation! Rework!
+        return Integer.parseInt(query.getSingleResult().toString());
     }
 
     void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
         if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) {
             if (!listParams.getSortParams().getParameter().contains(" ")) { // todo: wrong validation! Rework!
                 query.append(" ORDER BY ").append(listParams.getSortParams().getParameter());
-                if ("down".equals(listParams.getSortParams().getType())) { // todo: wrong implementation! Rework!
+                if ("desc".equals(listParams.getSortParams().getType())) {
                     query.append(' ').append(TypeSort.DESC);
                 } else {
                     query.append(' ').append(TypeSort.ASC);

@@ -6,7 +6,14 @@ import book.library.java.model.pattern.ReviewPattern;
 
 import java.util.List;
 
-// todo: Please add java-doc for class and all methods
+/**
+ * Represent a Review DAO with generic Review(type of entity) and ReviewPattern(type of Pattern)
+ * A Review DAO have next methods: create, readTop, bulkDelete
+ */
 public interface ReviewDao extends AbstractDao<Review, ReviewPattern> {
-    List<ReviewPageDto> getCountOfTypeReview();
+    /**
+     * This method for get ReviewPageDto with fields rating(stars) - unique and count of each rating
+     * @return List of ReviewPageDto
+     */
+    List<ReviewPageDto> getCountOfEachRating();
 }

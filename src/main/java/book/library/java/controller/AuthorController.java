@@ -41,8 +41,8 @@ public class AuthorController {
     }
 
     @GetMapping(value = "/findTop")
-    public ResponseEntity readTop(@RequestParam Integer count) throws BusinessException {
-        return ResponseEntity.ok(authorService.readTop(count));
+    public ResponseEntity readTopFive() throws BusinessException {
+        return ResponseEntity.ok(authorService.readTopFive());
     }
     @PostMapping(value = "/find")
     public ResponseEntity read(@RequestBody ListParams<AuthorPattern> listParams) throws BusinessException {

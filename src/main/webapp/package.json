@@ -10,7 +10,6 @@
     "test": "karma start",
     "start": "live-server"
   },
-  "author": "Elmar Burke <elmar.burke@symetics.com>", // todo: ????
   "dependencies": {
     "@angular/cdk": "github:angular/cdk-builds",
     "@angular/material": "github:angular/material2-builds",

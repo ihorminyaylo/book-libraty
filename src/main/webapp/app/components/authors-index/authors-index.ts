@@ -5,15 +5,15 @@ import {ListParams, SortParams} from "../../services/service-api";
 
 class AuthorsIndex {
     sortType     = 'name'; // set the default sort type
-    sortReverse: string; // todo: strange name, have to rename
+    sortReverse: string;
     sortParam: SortParams;
-    sortParams(type) { // todo: why 'type' ? have to rename
+    sortParams(type) {
         this.sortType = type;
-        if (this.sortReverse === 'up') {
-            this.sortReverse = 'down';
+        if (this.sortReverse === 'asc') {
+            this.sortReverse = 'desc';
         }
         else {
-            this.sortReverse = 'up';
+            this.sortReverse = 'asc';
         }
         this.sortParam = new SortParams(this.sortType, this.sortReverse);
         this.currentPage = 1;
@@ -159,7 +159,6 @@ class EditAuthor {
         this.firstName = author.firstName;
         this.secondName = author.secondName;
     }
-    //todo: validation for input value
     ok(firstName, secondName): void {
         this.author.firstName = firstName;
         this.author.secondName = secondName;

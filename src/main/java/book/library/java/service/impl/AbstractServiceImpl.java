@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class AbstractServiceImpl<T extends AbstractEntity, P> implements AbstractService<T, P> {
+public abstract class AbstractServiceImpl<T extends AbstractEntity, P> implements AbstractService<T, P> {
 
     private AbstractDaoImpl<T, P> entityDaoType;
 
@@ -29,6 +29,7 @@ public class AbstractServiceImpl<T extends AbstractEntity, P> implements Abstrac
 
     @Override
     public Integer create(T entity) throws BusinessException {
+        validateEntity(entity);
         try {
             return entityDaoType.create(entity);
         } catch (Exception e) {
@@ -69,4 +70,7 @@ public class AbstractServiceImpl<T extends AbstractEntity, P> implements Abstrac
         }
         return idEntity;
     }
+
+    @Override
+    public abstract void validateEntity(T entity) throws BusinessException;
 }

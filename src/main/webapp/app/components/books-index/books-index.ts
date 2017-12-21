@@ -14,17 +14,16 @@ interface IRouteParams extends angular.route.IRouteParamsService {
 }
 
 class BooksIndex {
-    averageRating: number;
     sortType     = 'name';
     sortParam: SortParams;
     sortReverse: string;
     sortParams(type) {
         this.sortType = type;
-        if (this.sortReverse === 'up') {
-            this.sortReverse = 'down';
+        if (this.sortReverse === 'asc') {
+            this.sortReverse = 'desc';
         }
         else {
-            this.sortReverse = 'up';
+            this.sortReverse = 'asc';
         }
         this.sortParam = new SortParams(this.sortType, this.sortReverse);
         this.currentPage = 1;
@@ -78,7 +77,6 @@ class BooksIndex {
         this.offset = (this.currentPage-1)*this.limit;
         this.checkAll = false;
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
-        this.booksApi.getAverageRating().then(averageRating => this.averageRating = averageRating);
         return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), this.sortParam))
             .then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages; console.log(this.booksAndCountPages)});
     }
@@ -149,7 +147,6 @@ class BooksIndex {
         });
 
         this.dialog.result.then( function () {
-            location.reload();
         })
     }
     bulkDeleteBooks(booksRemove: IBook[], idEntities: number[]) {
@@ -168,7 +165,6 @@ class BooksIndex {
         });
 
         this.dialog.result.then( function () {
-            location.reload();
         })
     }
 }
@@ -302,12 +298,11 @@ class EditBook {
             this.selectAuthors.splice(index, 1);
         }
     }
-    //todo: validation for input value
-    ok(name, publisher, yearPublisher) {
+    save(name, publisher, yearPublisher) {
         this.book.name = name;
         this.book.publisher = publisher;
         this.book.yearPublished = yearPublisher;
-        this.booksApi.createBook(this.book, this.selectAuthors);
+        this.booksApi.updateBook(this.book, this.selectAuthors);
         this.$uibModalInstance.close();
     }
     cancel(): void {

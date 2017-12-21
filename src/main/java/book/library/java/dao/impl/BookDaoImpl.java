@@ -3,17 +3,19 @@ package book.library.java.dao.impl;
 import book.library.java.dao.BookDao;
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.DaoException;
+import book.library.java.list.ListParams;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
-import book.library.java.list.ListParams;
 import book.library.java.model.pattern.BookPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
-import java.math.RoundingMode;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -26,63 +28,68 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
             throw new DaoException("AbstractEntity can't be null");
         }
         List<Author> authors = bookWithAuthors.getAuthors();
+        book.setAuthors(authors);
         entityManager.persist(book);
-        for (Author author : authors) {  // todo: wrong implementation! Rework!
-            entityManager.createNativeQuery("INSERT INTO author_book VALUES (:authorId, :bookId)")
-                .setParameter("authorId", author.getId()).setParameter("bookId", book.getId())
-                .executeUpdate();
-        }
         return book.getId();
     }
 
     @Override
-    public List<Book> readTop(Integer count) {
-        // todo: "ORDER BY average_rating" - is it really top books?
-        List<Book> books = entityManager.createNativeQuery("SELECT * FROM book ORDER BY average_rating", Book.class).setFirstResult(0).setMaxResults(count).getResultList();
+    public List<Book> readTopFive() {
+        List<Book> books = entityManager.createNativeQuery("SELECT * FROM book ORDER BY average_rating", Book.class).setFirstResult(0).setMaxResults(5).getResultList();
         books.forEach(book -> {
-            book.getAuthors().size();  // todo: are you really need this initialization? Rework!
-            book.setReviews(null);  // todo: WTF?!
+            book.getAuthors().size();
         });
         return books;
+    }
+
+    @Override
+    public Integer update(BookWithAuthors bookWithAuthors) throws DaoException {
+        Book book = bookWithAuthors.getBook();
+        if (null == bookWithAuthors) {
+            throw new DaoException("AbstractEntity can't be null");
+        }
+        List<Author> authors = bookWithAuthors.getAuthors();
+        book.setAuthors(authors);
+        entityManager.merge(book);
+        return book.getId();
     }
 
     @Override
     public List<Book> find(ListParams<BookPattern> listParams) throws DaoException {
         StringBuilder query = new StringBuilder("SELECT * FROM  book");
         query = generateQueryWithParams(listParams, query);
-        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) { // todo: why this check here?
-            generateQueryWithSortParams(listParams, query);
-        } else {
-            query.append(" ORDER BY average_rating, create_date");
-        }
+        generateQueryWithSortParams(listParams, query);
         Query nativeQuery = (Query) entityManager.createNativeQuery(query.toString(), Book.class);
-        nativeQuery = setParameters(listParams, nativeQuery, "find");
+        nativeQuery = setParameters(listParams, nativeQuery, true);
         List<Book> bookList = nativeQuery.getResultList();
         bookList.forEach(book -> book.getAuthors().size());
         return bookList;
     }
 
-    public StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query) {
-        BookPattern pattern = listParams != null ? listParams.getPattern() : null;
-        if (pattern != null) {
-            if (pattern.getAuthorId() != null) {
-                query.append(" JOIN author_book ON book.id = author_book.book_id");
+    private StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query) {
+        if (listParams.getPattern() != null) {
+            BookPattern pattern = listParams != null ? listParams.getPattern() : null;
+            if (pattern != null) {
+                if (pattern.getAuthorId() != null) {
+                    query.append(" JOIN author_book ON book.id = author_book.book_id");
+                }
+                query.append(" WHERE name LIKE :search"); // todo: remove LOWER, use another operator
+                if (pattern.getAuthorId() != null) {
+                    query.append(" AND author_book.author_id = :authorId");
+                }
+                if (pattern.getRating() != null) {
+                    query.append(" AND book.average_rating BETWEEN :ratingSmall AND :ratingBig");
+                }
             }
-            query.append(" WHERE LOWER(name) LIKE LOWER(:search)"); // todo: remove LOWER, use another operator
-            if (pattern.getAuthorId() != null) {
-                query.append(" AND author_book.author_id = :authorId");
-            }
-            if (pattern.getRating() != null) {
-                query.append(" AND ROUND(book.average_rating) = :rating"); // todo: wrong condition! Rework! rating make sense only like range
-            }
+        } else {
+            query.append(" ORDER BY average_rating, create_date");
         }
         return query;
     }
 
-    public Query setParameters(ListParams<BookPattern> listParams, Query nativeQuery, String type) { // todo: for what "type" ?
-        System.out.println(listParams);
+    private Query setParameters(ListParams<BookPattern> listParams, Query nativeQuery, Boolean typeQueryFind) {
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
-        if ("find".equals(type)) {
+        if (typeQueryFind) {
             if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
                 nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
             }
@@ -95,7 +102,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
                 nativeQuery.setParameter("authorId", listParams.getPattern().getAuthorId());
             }
             if (pattern.getRating() != null) {
-                nativeQuery.setParameter("rating", listParams.getPattern().getRating());
+                nativeQuery.setParameter("ratingSmall", listParams.getPattern().getRating() - 0.5).setParameter("ratingBig", listParams.getPattern().getRating() + 0.5);
             }
         }
         return nativeQuery;
@@ -105,27 +112,17 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
     public Integer totalRecords(ListParams<BookPattern> listParams) {
         StringBuilder query = new StringBuilder("SELECT Count(book.id) FROM book");
         Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query).toString());
-        nativeQuery = setParameters(listParams, nativeQuery, "totalRecords");
-        BigInteger bigInteger = (BigInteger) nativeQuery.getSingleResult(); // todo: wrong implementation! Rework!
-        return bigInteger.intValue();
+        nativeQuery = setParameters(listParams, nativeQuery, false);
+        System.out.println(nativeQuery.getSingleResult());
+        return Integer.parseInt(nativeQuery.getSingleResult().toString());
     }
 
     @Override
-    public Integer delete(Integer idBook) throws DaoException {
-        if (idBook == null) {
-            throw new DaoException("AbstractEntity id can't be null");
+    public void update(Book book) throws DaoException {
+        if (book == null || book.getId() == null) {
+            throw new DaoException("AbstractEntity can't be null");
         }
-        Book book = get(idBook);
-        try {
-	        // todo: why are you don't use method delete(...) ?
-            entityManager.createNativeQuery("DELETE FROM author_book WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
-            // todo: for what this query? Rework! (Foreign key!)
-            entityManager.createNativeQuery("DELETE FROM review WHERE book_id = :bookId").setParameter("bookId", book.getId()).executeUpdate();
-            entityManager.remove(book);
-        } catch (Exception e) {
-            throw new DaoException(e.getMessage(), e.getCause());
-        }
-        return idBook;
+        entityManager.merge(book);
     }
 
     @Override

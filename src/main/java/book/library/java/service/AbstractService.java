@@ -43,4 +43,10 @@ public interface AbstractService<T, P> {
      * @throws BusinessException
      */
     Integer delete(Integer idEntity) throws BusinessException;
+
+    /**
+     * This method for validate entity
+     * @param entity
+     */
+    void validateEntity(T entity) throws BusinessException;
 }

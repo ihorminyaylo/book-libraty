@@ -15,7 +15,7 @@ export class IAuthor {
 }
 
 export interface IAuthorsApi  extends IApi<IAuthor> {
-    findTop(count: number);
+    findTop();
     readAll();
     find(listParams: ListParams<AuthorPattern>);
     getByBook(idBook: number);
@@ -31,8 +31,8 @@ class HttpAuthorsApi extends HttpApi<IAuthor> implements IAuthorsApi {
         return this.$http.get(this.BASE_URL + this.API_URL + '/findAll');
     }
 
-    public findTop(count: number) {
-        return this.$http.get(this.BASE_URL + this.API_URL + `/findTop?count=${count}`).then(entitiesResponse => entitiesResponse.data);
+    public findTop() {
+        return this.$http.get(this.BASE_URL + this.API_URL + `/findTop`).then(entitiesResponse => entitiesResponse.data);
     }
 
     getByBook(idBook: number) {

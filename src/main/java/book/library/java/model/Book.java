@@ -41,7 +41,7 @@ public class Book extends AbstractEntity {
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", insertable = false, updatable = false)
+    @Column(name = "average_rating", insertable = false, updatable = false, nullable = false)
     private BigDecimal averageRating;
 
     @ManyToMany
@@ -50,7 +50,7 @@ public class Book extends AbstractEntity {
         inverseJoinColumns = {@JoinColumn(name = "author_id", nullable = false)})
     private List<Author> authors;
 
-    @OneToMany(mappedBy = "book")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "book")
     private List<Review> reviews;
 
     public Book() {

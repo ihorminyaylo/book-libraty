@@ -103,7 +103,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" ng-click="(edit.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && add.ok(name, publisher, yearPublished)">Save</button>
+						<button type="button" class="btn btn-primary" ng-click="(edit.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && edit.ok(name, publisher, yearPublished)">Save</button>
 						<button class="btn btn-warning" type="button" ng-click="edit.cancel()">Cancel</button>
 					</div>
 				</form>

@@ -1,16 +1,18 @@
 package book.library.java.dto;
 
+import book.library.java.model.Review;
+
 public class ReviewDto {
     private Integer id;
     private String commenterName;
     private String comment;
     private Integer rating;
 
-    public ReviewDto(Integer id, String commenterName, String comment, Integer rating) {
-        this.id = id;
-        this.commenterName = commenterName;
-        this.comment = comment;
-        this.rating = rating;
+    public ReviewDto(Review review) {
+        id = review.getId();
+        commenterName = review.getCommenterName();
+        comment = review.getComment();
+        rating = review.getRating();
     }
 
     public Integer getId() {

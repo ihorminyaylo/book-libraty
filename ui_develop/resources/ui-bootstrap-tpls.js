@@ -357,12 +357,12 @@ angular.module('ui.bootstrap.buttons', [])
 
       element.find('input').css({display: 'none'});
 
-      //model -> UI
+      //entity -> UI
       ngModelCtrl.$render = function() {
         element.toggleClass(buttonsCtrl.activeClass, angular.equals(ngModelCtrl.$modelValue, scope.$eval(attrs.uibBtnRadio)));
       };
 
-      //ui->model
+      //ui->entity
       element.on(buttonsCtrl.toggleEvent, function() {
         if (attrs.disabled) {
           return;
@@ -409,12 +409,12 @@ angular.module('ui.bootstrap.buttons', [])
         return angular.isDefined(attribute) ? scope.$eval(attribute) : defaultValue;
       }
 
-      //model -> UI
+      //entity -> UI
       ngModelCtrl.$render = function() {
         element.toggleClass(buttonsCtrl.activeClass, angular.equals(ngModelCtrl.$modelValue, getTrueValue()));
       };
 
-      //ui->model
+      //ui->entity
       element.on(buttonsCtrl.toggleEvent, function() {
         if (attrs.disabled) {
           return;
@@ -1618,7 +1618,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
       if (isValid) {
         this.activeDate = dateParser.fromTimezone(date, ngModelOptions.getOption('timezone'));
       } else if (!$datepickerSuppressError) {
-        $log.error('Datepicker directive: "ng-model" value must be a Date object');
+        $log.error('Datepicker directive: "ng-entity" value must be a Date object');
       }
     }
     this.refreshView();
@@ -1792,7 +1792,7 @@ angular.module('ui.bootstrap.datepicker', ['ui.bootstrap.dateparser', 'ui.bootst
         return ngModelOptions[key];
       };
     } else { // in angular >=1.6 $options is always present
-      // ng-model-options defaults timezone to null; don't let its precedence squash a non-null value
+      // ng-entity-options defaults timezone to null; don't let its precedence squash a non-null value
       var timezone = ngModelCtrl.$options.getOption('timezone') ||
         ($scope.datepickerOptions.ngModelOptions ? $scope.datepickerOptions.ngModelOptions.timezone : null) ||
         (datepickerConfig.ngModelOptions ? datepickerConfig.ngModelOptions.timezone : null);
@@ -2794,7 +2794,6 @@ function($scope, $element, $attrs, $compile, $log, $parse, $window, $document, $
       $attrs.$observe('uibDatepickerPopup', function(value, oldValue) {
         var newDateFormat = value || datepickerPopupConfig.datepickerPopup;
         // Invalidate the $modelValue to ensure that formatters re-run
-        // FIXME: Refactor when PR is merged: https://github.com/angular/angular.js/pull/10764
         if (newDateFormat !== dateFormat) {
           dateFormat = newDateFormat;
           ngModel.$modelValue = null;
@@ -3980,7 +3979,6 @@ angular.module('ui.bootstrap.modal', ['ui.bootstrap.multiMap', 'ui.bootstrap.sta
       var scrollbarPadding;
       var SNAKE_CASE_REGEXP = /[A-Z]/g;
 
-      // TODO: extract into common dependency with tooltip
       function snake_case(name) {
         var separator = '-';
         return name.replace(SNAKE_CASE_REGEXP, function(letter, pos) {
@@ -4729,7 +4727,7 @@ angular.module('ui.bootstrap.pager', ['ui.bootstrap.paging', 'ui.bootstrap.tabin
       var paginationCtrl = ctrls[0], ngModelCtrl = ctrls[1];
 
       if (!ngModelCtrl) {
-        return; // do nothing if no ng-model
+        return; // do nothing if no ng-entity
       }
 
       paginationCtrl.init(ngModelCtrl, uibPagerConfig);
@@ -4883,7 +4881,7 @@ angular.module('ui.bootstrap.pagination', ['ui.bootstrap.paging', 'ui.bootstrap.
       var paginationCtrl = ctrls[0], ngModelCtrl = ctrls[1];
 
       if (!ngModelCtrl) {
-         return; // do nothing if no ng-model
+         return; // do nothing if no ng-entity
       }
 
       paginationCtrl.init(ngModelCtrl, uibPaginationConfig);
@@ -4960,7 +4958,6 @@ angular.module('ui.bootstrap.tooltip', ['ui.bootstrap.position', 'ui.bootstrap.s
 
   /**
    * Returns the actual instance of the $tooltip service.
-   * TODO support multiple triggers
    */
   this.$get = ['$window', '$compile', '$timeout', '$document', '$uibPosition', '$interpolate', '$rootScope', '$parse', '$$stackedMap', function($window, $compile, $timeout, $document, $position, $interpolate, $rootScope, $parse, $$stackedMap) {
     var openedTooltips = $$stackedMap.createNew();
@@ -5099,7 +5096,6 @@ angular.module('ui.bootstrap.tooltip', ['ui.bootstrap.position', 'ui.bootstrap.s
             ttScope.origScope = scope;
 
             // By default, the tooltip is not open.
-            // TODO add ability to start tooltip opened
             ttScope.isOpen = false;
 
             function toggleTooltipBind() {
@@ -5187,7 +5183,6 @@ angular.module('ui.bootstrap.tooltip', ['ui.bootstrap.position', 'ui.bootstrap.s
                   assignIsOpen(false);
                   // And now we remove it from the DOM. However, if we have animation, we
                   // need to wait for it to expire beforehand.
-                  // FIXME: this is a placeholder for a port of the transitions library.
                   // The fade transition in TWBS is 150ms.
                   if (ttScope.animation) {
                     if (!transitionTimeout) {
@@ -6535,7 +6530,7 @@ angular.module('ui.bootstrap.timepicker', [])
 
     if (isNaN(date)) {
       ngModelCtrl.$setValidity('time', false);
-      $log.error('Timepicker directive: "ng-model" value must be a Date object, a number of milliseconds since 01.01.1970 or a string representing an RFC2822 or ISO 8601 date.');
+      $log.error('Timepicker directive: "ng-entity" value must be a Date object, a number of milliseconds since 01.01.1970 or a string representing an RFC2822 or ISO 8601 date.');
     } else {
       if (date) {
         selected = date;
@@ -6552,7 +6547,7 @@ angular.module('ui.bootstrap.timepicker', [])
     }
   };
 
-  // Call internally when we know that model is valid.
+  // Call internally when we know that entity is valid.
   function refresh(keyboardChange) {
     makeValid();
     ngModelCtrl.$setViewValue(new Date(selected));
@@ -6759,7 +6754,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.debounce', 'ui.bootstrap
     //minimal wait time after last character typed before typeahead kicks-in
     var waitTime = originalScope.$eval(attrs.typeaheadWaitMs) || 0;
 
-    //should it restrict model values to the ones selected from the popup only?
+    //should it restrict entity values to the ones selected from the popup only?
     var isEditable = originalScope.$eval(attrs.typeaheadEditable) !== false;
     originalScope.$watch(attrs.typeaheadEditable, function (newVal) {
       isEditable = newVal !== false;
@@ -6802,7 +6797,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.debounce', 'ui.bootstrap
 
     //INTERNAL VARIABLES
 
-    //model setter executed upon match selection
+    //entity setter executed upon match selection
     var parsedModel = $parse(attrs.ngModel);
     var invokeModelSetter = $parse(attrs.ngModel + '($$$p)');
     var $setModelValue = function(scope, newValue) {
@@ -7263,7 +7258,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.debounce', 'ui.bootstrap
         var locals = {};
 
         // The validity may be set to false via $parsers (see above) if
-        // the model is restricted to selected values. If the model
+        // the entity is restricted to selected values. If the entity
         // is set manually it is considered to be valid.
         if (!isEditable) {
           modelCtrl.$setValidity('editable', true);
@@ -7275,7 +7270,7 @@ angular.module('ui.bootstrap.typeahead', ['ui.bootstrap.debounce', 'ui.bootstrap
         }
 
         //it might happen that we don't have enough info to properly render input value
-        //we need to check for this situation and simply return model value if we can't apply custom formatting
+        //we need to check for this situation and simply return entity value if we can't apply custom formatting
         locals[parserResult.itemName] = modelValue;
         candidateViewValue = parserResult.viewMapper(originalScope, locals);
         locals[parserResult.itemName] = undefined;
@@ -7751,15 +7746,15 @@ angular.module("uib/template/timepicker/timepicker.html", []).run(["$templateCac
     "    </tr>\n" +
     "    <tr>\n" +
     "      <td class=\"form-group uib-time hours\" ng-class=\"{'has-error': invalidHours}\">\n" +
-    "        <input type=\"text\" placeholder=\"HH\" ng-model=\"hours\" ng-change=\"updateHours()\" class=\"form-control text-center\" ng-readonly=\"::readonlyInput\" maxlength=\"2\" tabindex=\"{{::tabindex}}\" ng-disabled=\"noIncrementHours()\" ng-blur=\"blur()\">\n" +
+    "        <input type=\"text\" placeholder=\"HH\" ng-entity=\"hours\" ng-change=\"updateHours()\" class=\"form-control text-center\" ng-readonly=\"::readonlyInput\" maxlength=\"2\" tabindex=\"{{::tabindex}}\" ng-disabled=\"noIncrementHours()\" ng-blur=\"blur()\">\n" +
     "      </td>\n" +
     "      <td class=\"uib-separator\">:</td>\n" +
     "      <td class=\"form-group uib-time minutes\" ng-class=\"{'has-error': invalidMinutes}\">\n" +
-    "        <input type=\"text\" placeholder=\"MM\" ng-model=\"minutes\" ng-change=\"updateMinutes()\" class=\"form-control text-center\" ng-readonly=\"::readonlyInput\" maxlength=\"2\" tabindex=\"{{::tabindex}}\" ng-disabled=\"noIncrementMinutes()\" ng-blur=\"blur()\">\n" +
+    "        <input type=\"text\" placeholder=\"MM\" ng-entity=\"minutes\" ng-change=\"updateMinutes()\" class=\"form-control text-center\" ng-readonly=\"::readonlyInput\" maxlength=\"2\" tabindex=\"{{::tabindex}}\" ng-disabled=\"noIncrementMinutes()\" ng-blur=\"blur()\">\n" +
     "      </td>\n" +
     "      <td ng-show=\"showSeconds\" class=\"uib-separator\">:</td>\n" +
     "      <td class=\"form-group uib-time seconds\" ng-class=\"{'has-error': invalidSeconds}\" ng-show=\"showSeconds\">\n" +
-    "        <input type=\"text\" placeholder=\"SS\" ng-model=\"seconds\" ng-change=\"updateSeconds()\" class=\"form-control text-center\" ng-readonly=\"readonlyInput\" maxlength=\"2\" tabindex=\"{{::tabindex}}\" ng-disabled=\"noIncrementSeconds()\" ng-blur=\"blur()\">\n" +
+    "        <input type=\"text\" placeholder=\"SS\" ng-entity=\"seconds\" ng-change=\"updateSeconds()\" class=\"form-control text-center\" ng-readonly=\"readonlyInput\" maxlength=\"2\" tabindex=\"{{::tabindex}}\" ng-disabled=\"noIncrementSeconds()\" ng-blur=\"blur()\">\n" +
     "      </td>\n" +
     "      <td ng-show=\"showMeridian\" class=\"uib-time am-pm\"><button type=\"button\" ng-class=\"{disabled: noToggleMeridian()}\" class=\"btn btn-default text-center\" ng-click=\"toggleMeridian()\" ng-disabled=\"noToggleMeridian()\" tabindex=\"{{::tabindex}}\">{{meridian}}</button></td>\n" +
     "    </tr>\n" +

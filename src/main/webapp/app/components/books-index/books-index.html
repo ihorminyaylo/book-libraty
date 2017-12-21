@@ -44,17 +44,17 @@
       <th class="single line">#</th>
       <th>
         <a ng-click="b.sortParams('name')"> Name
-          <span ng-show="b.sortType === 'name' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-          <span ng-show="b.sortType === 'name' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+          <span ng-show="b.sortType === 'name' && b.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+          <span ng-show="b.sortType === 'name' && b.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
         </a>
       </th>
       <th><a ng-click="b.sortParams('publisher')"> Publisher
-        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
       </a></th>
       <th><a ng-click="b.sortParams('year_published')"> Year published
-        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
       </a></th>
       <th>
         <div uib-dropdown>
@@ -310,7 +310,7 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="(edit.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && add.ok(name, publisher, yearPublished)">Save</button>
+            <button type="button" class="btn btn-primary" ng-click="(edit.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && edit.save(name, publisher, yearPublished)">Save</button>
             <button class="btn btn-warning" type="button" ng-click="edit.cancel()">Cancel</button>
           </div>
         </form>

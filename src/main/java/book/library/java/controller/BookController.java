@@ -39,18 +39,17 @@ public class BookController {
 
     @PostMapping(value = "/find")
     public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams)throws BusinessException {
-        return ResponseEntity.ok(bookService.read(listParams));
+        return ResponseEntity.ok(bookService.readBooks(listParams));
     }
 
     @GetMapping(value = "/findTop")
-    public ResponseEntity readTop(@RequestParam Integer count) {
-        return ResponseEntity.ok(bookService.readTop(count));
+    public ResponseEntity readTopFive() {
+        return ResponseEntity.ok(bookService.readTopFive());
     }
 
     @PutMapping
-    public ResponseEntity update(@RequestBody Book book) throws BusinessException {
-        bookService.update(book);
-        return ResponseEntity.ok(book);
+    public ResponseEntity update(@RequestBody BookWithAuthors bookWithAuthors) throws BusinessException {
+        return ResponseEntity.ok(bookService.updateBook(bookWithAuthors));
     }
 
     @DeleteMapping(value = "/{id}")

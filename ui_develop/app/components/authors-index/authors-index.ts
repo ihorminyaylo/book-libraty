@@ -130,7 +130,6 @@ class EditAuthor {
                 private $uibModal: ng.ui.bootstrap.IModalService,
                 private author: IAuthor) {}
 
-    //todo: validation for input value
     ok(firstName, secondName): void {
         this.author.firstName = firstName;
         this.author.secondName = secondName;

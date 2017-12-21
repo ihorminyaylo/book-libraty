@@ -20,19 +20,16 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implem
     public List<Author> find(ListParams<AuthorPattern> listParams) {
         String query = "SELECT * FROM  author ORDER BY average_rating, create_date";
         Query nativeQuery = (Query) entityManager.createNativeQuery(query, Author.class);
-        nativeQuery = setParameters(listParams, nativeQuery, "find");
+        nativeQuery = setParameters(listParams, nativeQuery);
         return nativeQuery.getResultList();
     }
 
-    private Query setParameters(ListParams<AuthorPattern> listParams, Query nativeQuery, String type) { // todo: for what "type" ?
+    private Query setParameters(ListParams<AuthorPattern> listParams, Query nativeQuery) {
         AuthorPattern pattern = listParams != null ? listParams.getPattern() : null;
-        if ("find".equals(type)) {
             if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
                 nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
             }
-        }
-        if (pattern != null) { // todo: ???
-        }
+
         return nativeQuery;
     }
 
@@ -40,18 +37,12 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implem
     public Integer totalRecords(ListParams<AuthorPattern> listParams) {
         String query = "SELECT Count(author.id) FROM author";
         Query nativeQuery = (Query) entityManager.createNativeQuery(query);
-        nativeQuery = setParameters(listParams, nativeQuery, "totalRecords");
-        BigInteger bigInteger = (BigInteger) nativeQuery.getSingleResult(); // todo: wrong implementation! Rework!
-        return bigInteger.intValue();
+        return Integer.parseInt(nativeQuery.getSingleResult().toString());
     }
 
     @Override
-    public List<Author> readTop(Integer count) throws DaoException { // todo: why Integer ?
-        if (count == null) {
-            throw new DaoException("Count of author for read top can't be null");
-        }
-        // todo: "ORDER BY average_rating" - is it really top authors?
-        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating", Author.class).setFirstResult(0).setMaxResults(count).getResultList();
+    public List<Author> readTopFive() throws DaoException {
+        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating", Author.class).setFirstResult(0).setMaxResults(5).getResultList();
     }
 
     @Override
@@ -78,7 +69,7 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implem
     }
 
     @Override
-    public List<Author> bulkDeleteAuthors(List<Integer> idEntities) throws DaoException {
+    public List<Author> bulkDelete(List<Integer> idEntities) throws DaoException {
         List<Author> notRemove = new ArrayList<>();
         for (Integer entityId : idEntities) {
             Author author = deleteAuthor(entityId);

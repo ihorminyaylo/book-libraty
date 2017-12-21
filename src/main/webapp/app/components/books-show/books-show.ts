@@ -84,7 +84,6 @@ class EditBook {
             this.selectAuthors.splice(index, 1);
         }
     }
-    //todo: validation for input value
     ok(name, publisher, yearPublisher) {
         this.book.name = name;
         this.book.publisher = publisher;

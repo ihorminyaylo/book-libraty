@@ -37,7 +37,7 @@ public class ReviewController {
 
     @GetMapping(value = "/review_detail")
     public ResponseEntity readDetail() {
-        return ResponseEntity.ok(reviewService.readDetail());
+        return ResponseEntity.ok(reviewService.getCountOfEachRating());
     }
 
     @PutMapping

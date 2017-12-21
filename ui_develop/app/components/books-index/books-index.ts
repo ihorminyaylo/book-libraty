@@ -230,7 +230,6 @@ class EditBook {
         this.booksApi.getByBook(book.id).then(authors => {this.selectAuthors = authors; console.log(this.selectAuthors)});
     }
 
-    //todo: validation for input value
     ok(name, publisher): void {
         this.booksApi.update(this.book).catch(
             this.$uibModal.open({
