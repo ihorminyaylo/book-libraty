@@ -2,8 +2,10 @@ package book.library.java.dao.impl;
 
 import book.library.java.dao.BookDao;
 import book.library.java.dto.BookWithAuthors;
+import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
+import book.library.java.list.TypeSort;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
@@ -73,7 +75,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
                 if (pattern.getAuthorId() != null) {
                     query.append(" JOIN author_book ON book.id = author_book.book_id");
                 }
-                query.append(" WHERE name LIKE :search"); // todo: remove LOWER, use another operator
+                query.append(" WHERE name ILIKE :search");
                 if (pattern.getAuthorId() != null) {
                     query.append(" AND author_book.author_id = :authorId");
                 }

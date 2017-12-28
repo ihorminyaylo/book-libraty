@@ -37,6 +37,11 @@ public class BookController {
         return ResponseEntity.ok(bookService.create(bookWithAuthors));
     }
 
+    @GetMapping(value = "/byBook")
+    public ResponseEntity readByBookId(@RequestParam Integer idBook) throws BusinessException {
+        return ResponseEntity.ok(bookService.readByBookId(idBook));
+    }
+
     @PostMapping(value = "/find")
     public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams)throws BusinessException {
         return ResponseEntity.ok(bookService.readBooks(listParams));

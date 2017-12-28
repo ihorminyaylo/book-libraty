@@ -25,6 +25,8 @@ public interface BookService extends AbstractService<Book, BookPattern> {
      */
     Integer create(BookWithAuthors bookWithAuthors) throws BusinessException;
 
+    BookDto readByBookId(Integer idBook) throws BusinessException;
+
     /**
      *
      * @param listParams with condition type

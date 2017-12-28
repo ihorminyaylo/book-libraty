@@ -5,6 +5,8 @@ import book.library.java.model.Author;
 import book.library.java.list.ListParams;
 import book.library.java.model.pattern.AuthorPattern;
 import book.library.java.service.AuthorService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/author")
 public class AuthorController {
+    private final Logger logger = LoggerFactory.getLogger(AuthorController.class);
 
     private final AuthorService authorService;
 

@@ -24,9 +24,6 @@ public abstract class AbstractServiceImpl<T extends AbstractEntity, P> implement
         this.entityDaoType = entityDaoType;
     }
 
-    public AbstractServiceImpl() { // todo: useless constructor - remove
-    }
-
     @Override
     public Integer create(T entity) throws BusinessException {
         validateEntity(entity);

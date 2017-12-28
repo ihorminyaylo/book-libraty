@@ -3,21 +3,25 @@ package book.library.java.dao.impl;
 import book.library.java.dao.AbstractDao;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
+import book.library.java.list.SortParams;
 import book.library.java.model.AbstractEntity;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.list.ListParams;
 import book.library.java.model.Review;
 import book.library.java.list.TypeSort;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
+@Service
 public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements AbstractDao<T, P> {
 
     private final Class<T> entityType;
@@ -54,7 +58,7 @@ public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements Ab
     }
 
     @Override
-    public abstract List<T> find(ListParams<P> listParams) throws DaoException;
+    public abstract List<T> find(ListParams<P> listParams) throws DaoException, BusinessException;
 
     @Override
     public void update(T entity) throws DaoException {
@@ -89,17 +93,15 @@ public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements Ab
     }
 
     void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
-        if (listParams.getSortParams() != null && listParams.getSortParams().getParameter() != null && listParams.getSortParams().getType() != null) {
-            if (!listParams.getSortParams().getParameter().contains(" ")) { // todo: wrong validation! Rework!
-                query.append(" ORDER BY ").append(listParams.getSortParams().getParameter());
-                if ("desc".equals(listParams.getSortParams().getType())) {
-                    query.append(' ').append(TypeSort.DESC);
-                } else {
-                    query.append(' ').append(TypeSort.ASC);
+        SortParams sortParams = listParams.getSortParams();
+        if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
+            for (Field field :entityType.getFields()) {
+                if (sortParams.getParameter().equals(field.getName())) {
+                    query.append(" ORDER BY ").append(sortParams.getParameter()).append(' ').append(sortParams.getType());
+                    return;
                 }
-            } else {
-                throw new DaoException("This parameter isn't correct");
             }
+            throw new DaoException("The field isn't correct");
         }
         else {
             query.append(" ORDER BY create_date");

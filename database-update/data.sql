@@ -29,7 +29,7 @@ CREATE TABLE author_book (author_id INTEGER NOT NULL,
   FOREIGN KEY (book_id) REFERENCES book(id));
 
 
-CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$ -- todo: why are you recalculate average_rating for all books?
+CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$
 BEGIN
 UPDATE book
 SET average_rating = (SELECT AVG(rating) FROM review
@@ -41,10 +41,10 @@ LANGUAGE plpgsql;
 
 CREATE TRIGGER bookAvgRating
 AFTER INSERT ON review
-FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_book();
+EXECUTE PROCEDURE calculate_average_rating_book();
 
 
-CREATE FUNCTION calculate_average_rating_author() RETURNS TRIGGER AS $calculates$ -- todo: why are you recalculate average_rating for all books?
+CREATE FUNCTION calculate_average_rating_author() RETURNS TRIGGER AS $calculates$
 BEGIN
 UPDATE author
 SET average_rating = (SELECT AVG(average_rating) FROM book JOIN author_book ON book.id = author_book.book_id
@@ -56,7 +56,7 @@ LANGUAGE plpgsql;
 
 CREATE TRIGGER authorAvgRating
 AFTER INSERT ON review
-FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author();
+EXECUTE PROCEDURE calculate_average_rating_author();
 
 
 INSERT INTO author VALUES (DEFAULT , 'Ihor', 'Miniailo');

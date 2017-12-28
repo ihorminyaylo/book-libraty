@@ -1,5 +1,6 @@
 package book.library.java.dao;
 
+import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
 
@@ -38,7 +39,7 @@ public interface AbstractDao<T, P> {
      * @return List entity
      * @throws DaoException
      */
-    List<T> find(ListParams<P> listParams) throws DaoException;
+    List<T> find(ListParams<P> listParams) throws DaoException, BusinessException;
 
     /**
      * This method for update already existent entity in Data Base

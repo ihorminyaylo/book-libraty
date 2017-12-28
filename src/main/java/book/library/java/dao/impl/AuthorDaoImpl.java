@@ -29,7 +29,6 @@ public class AuthorDaoImpl extends AbstractDaoImpl<Author, AuthorPattern> implem
             if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
                 nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
             }
-
         return nativeQuery;
     }
 

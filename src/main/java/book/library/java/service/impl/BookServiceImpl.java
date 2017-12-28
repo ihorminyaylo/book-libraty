@@ -6,6 +6,7 @@ import book.library.java.dto.BookDto;
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
+import book.library.java.exception.DaoException;
 import book.library.java.model.Book;
 import book.library.java.list.ListParams;
 import book.library.java.model.pattern.BookPattern;
@@ -37,6 +38,17 @@ public class BookServiceImpl extends AbstractServiceImpl<Book, BookPattern> impl
             return bookDao.create(bookWithAuthors);
 
         } catch (Exception e) {
+            throw new BusinessException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
+    public BookDto readByBookId(Integer idBook) throws BusinessException {
+        try {
+            Book book = bookDao.get(idBook);
+            book.getAuthors().size();
+            return new BookDto(book);
+        } catch (DaoException e) {
             throw new BusinessException(e.getMessage(), e.getCause());
         }
     }
