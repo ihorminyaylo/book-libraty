@@ -2,9 +2,12 @@ package book.library.java.dto;
 
 import book.library.java.model.Review;
 
+import java.util.Date;
+
 public class ReviewDto {
     private Integer id;
     private String commenterName;
+    private String createDate;
     private String comment;
     private Integer rating;
 
@@ -13,6 +16,7 @@ public class ReviewDto {
         commenterName = review.getCommenterName();
         comment = review.getComment();
         rating = review.getRating();
+        createDate = ((Date) review.getCreateDate()).toString();
     }
 
     public Integer getId() {
@@ -47,4 +51,11 @@ public class ReviewDto {
         this.rating = rating;
     }
 
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
 }

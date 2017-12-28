@@ -30,6 +30,8 @@ public interface AuthorService extends AbstractService<Author, AuthorPattern> {
      */
     List<AuthorDto> readTopFive() throws BusinessException;
 
+    AuthorDto readById(Integer idAuthor) throws BusinessException;
+
     /**
      * This method for bulk delete authors
      *

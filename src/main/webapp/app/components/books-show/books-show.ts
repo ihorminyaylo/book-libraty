@@ -13,14 +13,22 @@ class BooksShow {
   
   book: IBook = new IBook;
   reviewsAndCountPages: IReviewsAndCountPages;
+  currentPage = 1;
+  limit: number = 10;
+  offset: number = 0;
   
   constructor (private booksApi: IBooksApi, private reviewsApi: IReviewsApi, private $routeParams: IRouteParams, private $uibModal: ng.ui.bootstrap.IModalService) {
-      console.log(this.$routeParams.idBook);
       if (!isNaN(parseInt($routeParams.idBook))) {
           this.book.id = parseInt($routeParams.idBook);
       }
-      this.reviewsApi.find(new ListParams(10, 0, new ReviewPattern(this.book.id), null)).then(reviews => {this.reviewsAndCountPages = reviews; console.log(this.reviewsAndCountPages)});
-      this.booksApi.getByBook(this.book.id).then(book => this.book = book);
+      this.pageChanged(this.currentPage);
+  }
+  pageChanged(page) {
+        this.currentPage = page;
+        this.offset = (this.currentPage-1)*this.limit;
+        this.booksApi.getByBook(this.book.id).then(book => {this.book = book});
+        return this.reviewsApi.find(new ListParams(this.limit, this.offset, new ReviewPattern(this.book.id), null))
+            .then(reviewsAndCountPages => {this.reviewsAndCountPages = reviewsAndCountPages;});
   }
   dialog;
     edit(): void {
@@ -33,6 +41,21 @@ class BooksShow {
                 book: () => this.book
             },
             scope: ''
+        });
+
+        this.dialog.result.then( function () {
+        })
+    }
+
+    addReview(): void {
+        this.dialog = this.$uibModal.open({
+            controller: AddReview,
+            controllerAs: 'addReview',
+            templateUrl: 'add-review.html',
+            scope: '',
+            resolve: {
+                book: () => this.book
+            }
         });
 
         this.dialog.result.then( function () {
@@ -92,6 +115,59 @@ class EditBook {
         this.$uibModalInstance.close();
     }
     cancel(): void {
+        this.$uibModalInstance.close();
+    }
+}
+
+class AddReview {
+    rate = 1;
+    max = 5;
+    click: boolean = false;
+    min = 1;
+    defaultRating = 1;
+
+    //review: IReview = new IReview();
+
+    isReadonly = false;
+    hoveringOver(value) {
+        overStar = value;
+        percent = 100 * (value / this.max);
+    };
+    ratingStates = [
+        {stateOn: 'glyphicon-ok-sign', stateOff: 'glyphicon-ok-circle'},
+        {stateOn: 'glyphicon-star', stateOff: 'glyphicon-star-empty'},
+        {stateOn: 'glyphicon-heart', stateOff: 'glyphicon-ban-circle'},
+        {stateOn: 'glyphicon-heart'},
+        {stateOff: 'glyphicon-off'}
+    ];
+    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
+                private booksApi: IBooksApi,
+                private $uibModal: ng.ui.bootstrap.IModalService,
+                private book: IBook) {
+    }
+    ok(commenterName, comment, rating): void {
+        if (isNaN(rating)) {
+            this.$uibModal.open({
+                animation: true,
+                backdrop: false,
+                controller: ErrorDialog,
+                controllerAs: 'errorDialog',
+                templateUrl: 'error.html',
+            });
+            return;
+        }
+        this.booksApi.createReview(commenterName, comment, rating, this.book);
+        this.$uibModalInstance.close(true);
+    }
+    cancel(): void {
+        this.$uibModalInstance.close();
+    }
+}
+
+class ErrorDialog {
+    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance) {
+    }
+    close() {
         this.$uibModalInstance.close();
     }
 }

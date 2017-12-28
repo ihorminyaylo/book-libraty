@@ -10,16 +10,16 @@
         <th><input type="checkbox" ng-click="a.checkAllAuthor()" ng-checked="a.checkAll" /></th>
         <th class="single line">#</th>
         <th>
-        <a ng-click="a.sortParams('second_name')"> Second name
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
-        </a>
-        </th>
-        <th>
             <a ng-click="a.sortParams('first_name')"> First name
                 <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
                 <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
             </a>
+        </th>
+        <th>
+        <a ng-click="a.sortParams('second_name')"> Second name
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+        </a>
         </th>
         <th>
             <a ng-click="a.sortParams('create_date')"> Create date
@@ -42,10 +42,10 @@
             {{$index + (a.currentPage-1)*a.limit + 1}}
         </td>
         <td>
-            {{author.secondName}}
+            {{author.firstName}}
         </td>
         <td>
-            {{author.firstName}}
+            {{author.secondName}}
         </td>
         <td>
             {{author.createDate}}

@@ -52,4 +52,11 @@ public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implem
         }
         return nativeQuery;
     }
+
+    @Override
+    public Integer totalRecords(ListParams<ReviewPattern> listParams) {
+        String queryString = "SELECT Count(*) FROM review WHERE book_id = :idBook";
+        javax.persistence.Query query = entityManager.createNativeQuery(queryString).setParameter("idBook", listParams.getPattern().getBookId());
+        return Integer.parseInt(query.getSingleResult().toString());
+    }
 }

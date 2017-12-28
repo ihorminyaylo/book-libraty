@@ -47,6 +47,15 @@ public class AuthorServiceImpl extends AbstractServiceImpl<Author, AuthorPattern
     }
 
     @Override
+    public AuthorDto readById(Integer idAuthor) throws BusinessException {
+        try {
+            return new AuthorDto(authorDao.get(idAuthor));
+        } catch (DaoException e) {
+            throw new BusinessException(e.getMessage(), e.getCause());
+        }
+    }
+
+    @Override
     public void update(Author author) throws BusinessException {
         validateEntity(author);
         try {

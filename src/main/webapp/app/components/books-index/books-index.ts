@@ -44,6 +44,7 @@ class BooksIndex {
     constructor (private booksApi: IBooksApi, private authorsApi: IAuthorsApi, private $uibModal: ng.ui.bootstrap.IModalService, private $routeParams: IRouteParams) {
         if (!isNaN(parseInt($routeParams.isbn))) {
             this.authorId = parseInt($routeParams.isbn);
+            this.authorsApi.getById(this.authorId).then(author => {this.authorWithBooks = author.data});
         }
         if (!isNaN(($routeParams.rating))) {
             this.rating = $routeParams.rating;
@@ -60,12 +61,11 @@ class BooksIndex {
         }
         this.pageChanged(this.currentPage);
     }
-    clearFilters() {
+    clearFilters(filter) {
         this.searchBy('');
         this.selectWithAuthor(null);
     }
     searchBy(filterBy) {
-        console.log(filterBy);
         if (filterBy === '') {
             this.search = null;
         }
@@ -78,7 +78,7 @@ class BooksIndex {
         this.checkAll = false;
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
         return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), this.sortParam))
-            .then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages; console.log(this.booksAndCountPages)});
+            .then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages});
     }
     check(bookId) {
         this.activeDeleteSelected = false;
@@ -191,7 +191,6 @@ class AddBook {
                 private authorsApi: IAuthorsApi,
                 private $uibModal: ng.ui.bootstrap.IModalService) {
         authorsApi.readAll().then(authors => this.authors = authors.data);
-        console.log(this.selectAuthors.length === 0)
     }
     addAuthorForBook(author: IAuthor) {
         this.selectAuthors.push(author);

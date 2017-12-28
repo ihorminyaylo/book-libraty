@@ -24,7 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/author")
 public class AuthorController {
-    private final Logger logger = LoggerFactory.getLogger(AuthorController.class);
 
     private final AuthorService authorService;
 
@@ -36,6 +35,11 @@ public class AuthorController {
     @PostMapping
     public ResponseEntity create(@RequestBody Author author) throws BusinessException {
         return ResponseEntity.ok(authorService.create(author));
+    }
+
+    @GetMapping(value = "/byId")
+    public ResponseEntity readByBookId(@RequestParam Integer idAuthor) throws BusinessException {
+        return ResponseEntity.ok(authorService.readById(idAuthor));
     }
 
     @GetMapping(value = "/findAll")

@@ -33,10 +33,9 @@ class AuthorsIndex {
         this.offset = (this.currentPage-1)*this.limit;
         /*this.authorsApi.getByPage(this.limit, this.offset).then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages;
         this.totalItems = this.authorsAndCountPages.totalItems});*/
-        console.log(this.limit + 'offset' + this.offset);
 
         this.authorsApi.find(new ListParams(this.limit, this.offset, null, this.sortParam))
-            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; console.log(this.authorsAndCountPages)});
+            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages});
         this.checkAll = false;
     }
     check(authorId) {
@@ -136,7 +135,7 @@ class AddAuthor {
         this.author.secondName = secondName;
         this.offset = (8-1)*10;
         this.authorsApi.create(this.author).catch(this.authorsApi.find(new ListParams(10, this.offset, null, null))
-            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; console.log(authorsAndCountPages)}));
+            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages}));
         this.$uibModalInstance.close(this.authorsAndCountPages);
     }
     cancel(): void {
@@ -215,7 +214,7 @@ class BulkDelete {
                 private $uibModal: ng.ui.bootstrap.IModalService) {
     }
     ok() {
-        this.authorsApi.bulkDelete(this.idEntities).then(response => {if (response.data !== null) {this.authors = response.data; this.$uibModal.open({
+        this.authorsApi.bulkDelete(this.idEntities).then(response => {if (response.data.length !== 0) {this.authors = response.data; this.$uibModal.open({
             backdrop: false,
             controller: ErrorDialog,
             controllerAs: 'errorDialog',

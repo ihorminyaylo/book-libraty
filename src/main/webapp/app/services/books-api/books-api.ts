@@ -52,7 +52,7 @@ class HttpBooksApi extends HttpApi<IBook> implements IBooksApi {
     }
 
     getByBook(idBook: number) {
-        return this.$http.get(this.BASE_URL + this.AUTHOR_URL + `/byBook?idBook=${idBook}`).then(entitiesResponse => entitiesResponse.data);
+        return this.$http.get(this.BASE_URL + this.API_URL + `/byBook?idBook=${idBook}`).then(entitiesResponse => entitiesResponse.data);
     }
     public getByPageByAuthor(limit, offset, authorId, filterBy) {
         return this.$http.post<IEntitiesAndCountPages<IBook>>(this.BASE_URL + this.API_URL + '/find',

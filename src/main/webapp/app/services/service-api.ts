@@ -60,7 +60,7 @@ export class SortParams {
 }
 
 export class HttpApi<T> implements IApi<T> {
-    BASE_URL: string = /*'http://localhost:8585/lib';*/'' + location.pathname;
+    BASE_URL: string = '' + location.pathname;
     API_URL: string;
     AUTHOR_URL: string = '/api/author';
     BOOK_URL: string = '/api/book';
@@ -84,8 +84,7 @@ export class HttpApi<T> implements IApi<T> {
             .then(entitiesResponse => entitiesResponse.data);
     }
     public getById(id: number) {
-        return this.$http.post<IEntitiesAndCountPages<T>>(this.BASE_URL + this.API_URL + '/find',
-            {"pattern": `byId=${id}`})
+        return this.$http.get<IEntitiesAndCountPages<T>>(this.BASE_URL + this.API_URL + `/byId?idAuthor=${id}`);
     }
     public update(entity: T) {
         return this.$http.put(this.BASE_URL + this.API_URL, entity);

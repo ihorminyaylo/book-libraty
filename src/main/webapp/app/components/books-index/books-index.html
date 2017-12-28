@@ -1,21 +1,7 @@
 <div ng-controller="BooksIndex as b">
   <h1 class="ui header" align="center">List of books
   </h1>
-  <!--<div uib-dropdown>
-    <button id="author-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-      <div ng-if="b.authorWithBooks === null">SELECT AUTHOR <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
-    </button>
-    <ul class="dropdown-menu" uib-dropdown-menu>
-      <li ng-repeat="author in b.authors">
-        <a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a>
-      </li>
-    </ul>
-    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="b.selectWithAuthor(null)">CLEAR</button>
-    <button type="button" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-  </div>-->
   <br>
-
-
   <table class="table table-striped">
     <thead>
     <tr>
@@ -33,9 +19,9 @@
               </li>
             </ul>
             </div>
-        <button type="button" style="margin-left: 5px;" class="btn btn-default" aria-label="Left Align" ng-click="b.clearFilters()">CLEAR</button>
+        <a href="#!/books" ng-click="(filter = null)"><button type="button" style="margin-left: 5px;" class="btn btn-default" aria-label="Left Align" ng-click="(b.clearFilters())">CLEAR</button></a>
             <button type="button" style="margin-left: 80px;" class="btn btn-primary" ng-click="b.add()">Book <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-            <button type="button" style="margin-left: 5px; ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+            <button type="button" style="margin-left: 5px;" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
         </span>
       </div>
     </tr>
@@ -102,12 +88,12 @@
         <a type="button" class="btn btn-primary" href="#!/books_show/{{book.id}}">
           SHOW BOOK <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
         </a>
-        <button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
+        <!--<button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
            ADD REVIEW <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
         </button>
         <button type="button" class="btn btn-warning" ng-click="b.edit(book)">
           EDIT <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-        </button>
+        </button>-->
         <button type="button" class="btn btn-danger" ng-click="b.delete(book)">
           DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
         </button>

@@ -9,14 +9,14 @@ public class BookDto {
     private Integer id;
     private String name;
     private String publisher;
-    private Integer yearPublisher;
+    private Integer yearPublished;
     private List<AuthorDto> authors;
 
     public BookDto(Book book) {
         id = book.getId();
         name = book.getName();
         publisher = book.getPublisher();
-        yearPublisher = book.getYearPublished();
+        yearPublished = book.getYearPublished();
         authors = book.getAuthors().stream().map(author -> new AuthorDto(author)).collect(Collectors.toList());
         averageRating = book.getAverageRating().toString();
     }
@@ -45,12 +45,12 @@ public class BookDto {
         this.publisher = publisher;
     }
 
-    public Integer getYearPublisher() {
-        return yearPublisher;
+    public Integer getYearPublished() {
+        return yearPublished;
     }
 
-    public void setYearPublisher(Integer yearPublisher) {
-        this.yearPublisher = yearPublisher;
+    public void setYearPublished(Integer yearPublished) {
+        this.yearPublished = yearPublished;
     }
 
     public String getAverageRating() {

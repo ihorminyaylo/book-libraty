@@ -1,5 +1,14 @@
 <div ng-controller="BooksShow as b">
 <h1 class="ui header" align="center">List of reviews in book: {{b.book.name}}</h1>
+	<h3 align="center">Authors of book: <div ng-repeat="author in b.book.authors">{{author.firstName}} {{author.secondName}}</div></h3>
+	<div align="center">
+		<button type="button" class="btn btn-warning" ng-click="b.edit(book)">
+			EDIT <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		</button>
+		<button type="button" class="btn btn-primary" ng-click="b.addReview()">
+			ADD REVIEW <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+		</button>
+	</div>
 	<table class="table table-striped">
 		<thead>
 		<tr>
@@ -13,7 +22,7 @@
 		<tbody>
 		<tr ng-repeat="review in b.reviewsAndCountPages.list">
 			<td>
-				{{$index + (b.currentPage-1)*b.limit + 1}}
+				{{$index + 1}}
 			</td>
 			<td class="single line">
 				{{review.commenterName}}
@@ -32,6 +41,7 @@
 		<tfoot>
 		</tfoot>
 	</table>
+	<ul uib-pagination total-items="b.reviewsAndCountPages.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)"></ul>
 </div>
 
 
@@ -50,19 +60,19 @@
 					<div class="modal-body">
 						<div class="form-group" ng-class="{ 'has-error' : bookForm.name.$invalid && (edit.click || !bookForm.name.$pristine)}">
 							<label>Name</label>
-							<input type="text" name="name" class="form-control" ng-model="name" ng-maxlength="256" required ng-value="edit.book.name">
+							<input type="text" name="name" class="form-control" ng-model="edit.book.name" ng-maxlength="256" required ng-value="edit.book.name">
 							<p ng-show="bookForm.name.$error.maxlength" class="help-block">Name of book is too long.</p>
 							<p ng-show="bookForm.name.$error.required && (edit.click || !bookForm.name.$pristine)" class="help-block">Your name of book is required.</p>
 						</div>
 						<div class="form-group" ng-class="{ 'has-error' : bookForm.publisher.$invalid && (edit.click || !bookForm.publisher.$pristine) }">
 							<label>Publisher</label>
-							<input type="text" name="publisher" class="form-control" ng-model="publisher" ng-maxlength="256" required ng-value="edit.book.publisher">
+							<input type="text" name="publisher" class="form-control" ng-model="edit.book.publisher" ng-maxlength="256" required ng-value="edit.book.publisher">
 							<p ng-show="bookForm.publisher.$error.maxlength" class="help-block">Publisher of book is too long.</p>
 							<p ng-show="bookForm.publisher.$error.required && (edit.click || !bookForm.publisher.$pristine)" class="help-block">Publisher of book is required.</p>
 						</div>
 						<div class="form-group" ng-class="{ 'has-error' : bookForm.yearPublished.$invalid && (edit.click || !bookForm.yearPublished.$pristine) }">
 							<label>Year published</label>
-							<input type="number" name="yearPublished" class="form-control" ng-model="yearPublished" ng-maxlength="4" required ng-value="edit.book.yearPublished">
+							<input type="number" name="yearPublished" class="form-control" ng-model="edit.book.yearPublished" ng-maxlength="4" required ng-value="edit.book.yearPublished">
 							<p ng-show="bookForm.yearPublished.$error.maxlength" class="help-block">Year publisher is too long.</p>
 							<p ng-show="bookForm.yearPublished.$error.required && (edit.click || !bookForm.yearPublished.$pristine)" class="help-block">Year publisher is required.</p>
 						</div>
@@ -108,6 +118,66 @@
 					</div>
 				</form>
 			</div>
+		</div>
+	</div>
+</script>
+
+
+<!--Dialog Add review-->
+<script type="text/ng-template" id="add-review.html">
+	<div class="modal-header" align="center">
+		<label><h3>Add new review about: {{addReview.book.name}}</h3></label>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<!-- FORM ============ -->
+
+				<form name="reviewForm" novalidate>
+					<!--Comment Name -->
+					<div class="modal-body">
+						<div class="form-group" ng-class="{ 'has-error' : reviewForm.commentName.$invalid && (addReview.click || !reviewForm.commentName.$pristine)}">
+							<label>Commenter name</label>
+							<input type="text" name="commentName" class="form-control" ng-model="commentName" required>
+							<p ng-show="reviewForm.commentName.$error.required && (addReview.click || !reviewForm.commentName.$pristine)" class="help-block">Your commenter name of book is required.</p>
+						</div>
+
+						<div class="form-group" ng-class="{ 'has-error' : reviewForm.textArea.$invalid && (addReview.click || !reviewForm.textArea.$pristine)}">
+							<label>Comment</label>
+							<textarea type="text" name="textArea" class="form-control" ng-model="textArea" required></textarea>
+							<p ng-show="reviewForm.textArea.$error.required && (addReview.click || !reviewForm.textArea.$pristine)" class="help-block">Your comment of book is required.</p>
+						</div>
+						<div class="form-group">
+							<span uib-rating ng-model="ratingStars" max="addReview.max" on-leave="addReview.overStar = null" ng-model="ratingStars" aria-labelledby="addReview.defaultRating"></span>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary" ng-click="(addReview.click = true)  && !reviewForm.commentName.$invalid && !reviewForm.textArea.$invalid && addReview.ok(commentName, textArea, ratingStars)">Save</button>
+						<button class="btn btn-warning" type="button" ng-click="addReview.cancel()">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>
+
+<!--Error Dialog-->
+<script type="text/ng-template" id="error.html">
+	<div draggable=".modal-header">
+		<div class="modal-header" align="center">
+			<h3 class="modal-title">Error!</h3>
+		</div>
+		<div class="modal-body">
+			<form>
+				<div class="form-row">
+					<div class="col" align="center">
+						<label>The rating can't be less 1</label>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div align="center" class="modal-footer">
+			<button class="btn btn-danger" type="button" data-ng-click="errorDialog.close()">CLOSE</button>
 		</div>
 	</div>
 </script>
