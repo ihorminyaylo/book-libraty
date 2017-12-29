@@ -14,6 +14,7 @@ interface IRouteParams extends angular.route.IRouteParamsService {
 }
 
 class BooksIndex {
+    maxPages: number = 3;
     sortType     = 'name';
     sortParam: SortParams;
     sortReverse: string;
@@ -75,13 +76,13 @@ class BooksIndex {
     pageChanged(page) {
         this.currentPage = page;
         this.offset = (this.currentPage-1)*this.limit;
-        this.checkAll = false;
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
-        return this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), this.sortParam))
-            .then(booksAndCountPages => {this.booksAndCountPages = booksAndCountPages});
+        this.booksApi.find(new ListParams(this.limit, this.offset, new BookPattern(this.authorId, this.search, this.rating), this.sortParam))
+            .then(booksAndCountPages => {console.log(booksAndCountPages);this.booksAndCountPages = booksAndCountPages; this.booksAndCountPages.list.forEach(book => book.averageRatingRound = Math.round(book.averageRating))});
+        this.checkAll = false;
     }
     check(bookId) {
-        this.activeDeleteSelected = false;
+        this.activeDeleteSelected = true;
         this.booksAndCountPages.list.forEach(book =>{
             if (book.id === bookId) {
                 book.removeStatus = !book.removeStatus;
@@ -96,29 +97,29 @@ class BooksIndex {
         this.booksAndCountPages.list.forEach(book => book.removeStatus = this.checkAll);
     }
     dialog;
+
     add(): void {
         this.dialog = this.$uibModal.open({
             controller: AddBook,
             controllerAs: 'add',
-            templateUrl: 'add-book.html'});
-
-        this.dialog.result.then( function () {
-        })
-    }
-    edit(book): void {
-        this.dialog = this.$uibModal.open({
-            backdrop: false,
-            controller: EditBook,
-            controllerAs: 'edit',
-            templateUrl: 'edit-book.html',
+            templateUrl: 'add-book.html',
             resolve: {
-                book: () => book
-            },
-            scope: ''
-        });
+                selectAuthor: () => this.authorWithBooks,
+                booksAndCountPages: () => this.booksAndCountPages
+            }});
+        this.dialog.result.finally(response => this.pageChanged(1));
+    }
 
-        this.dialog.result.then( function () {
-        })
+    delete(book): void {
+        this.dialog = this.$uibModal.open({
+            controller: DeleteBook,
+            controllerAs: 'delete',
+            templateUrl: 'delete-book.html',
+            resolve: {
+                book: () => book,
+                booksAndCountPages: () => this.booksAndCountPages
+            }});
+        this.dialog.result.then(response => {this.pageChanged(1)});
     }
     addReview(book): void {
         this.dialog = this.$uibModal.open({
@@ -127,27 +128,13 @@ class BooksIndex {
             templateUrl: 'add-review.html',
             scope: '',
             resolve: {
-                book: () => book
+                book: () => book,
+                items: function () {
+                    return;
+                }
             }
         });
-
-        this.dialog.result.then( function () {
-            location.reload();
-        })
-    }
-    delete(book): void {
-        this.dialog = this.$uibModal.open({
-            controller: DeleteBook,
-            controllerAs: 'delete',
-            templateUrl: 'delete-book.html',
-            scope: '',
-            resolve: {
-                book: () => book
-            }
-        });
-
-        this.dialog.result.then( function () {
-        })
+        this.dialog.result.then(response => this.pageChanged(1));
     }
     bulkDeleteBooks(booksRemove: IBook[], idEntities: number[]) {
         booksRemove = []
@@ -163,9 +150,7 @@ class BooksIndex {
                 booksRemove: () => booksRemove,
             }
         });
-
-        this.dialog.result.then( function () {
-        })
+        this.dialog.result.then(response => {this.pageChanged(1)});
     }
 }
 
@@ -189,8 +174,11 @@ class AddBook {
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private booksApi: IBooksApi,
                 private authorsApi: IAuthorsApi,
-                private $uibModal: ng.ui.bootstrap.IModalService) {
+                private selectAuthor: IAuthor) {
         authorsApi.readAll().then(authors => this.authors = authors.data);
+        if (selectAuthor !== null) {
+            this.addAuthorForBook(this.selectAuthor);
+        }
     }
     addAuthorForBook(author: IAuthor) {
         this.selectAuthors.push(author);
@@ -213,6 +201,26 @@ class AddBook {
         this.$uibModalInstance.close();
     }
     cancel(): void {
+        this.$uibModalInstance.close();
+    }
+}
+
+class DeleteBook {
+    modalOptions = {
+        closeButtonText: 'CLOSE',
+        actionButtonText: 'OK',
+        headerText: 'Warning!',
+        bodyText: `Are you sure to delete book: ${this.book.name}?`
+    };
+    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
+                private booksApi: IBooksApi,
+                private book: IBook) {
+    }
+    ok() {
+        this.booksApi.delete(this.book.id);
+        this.$uibModalInstance.close();
+    }
+    close() {
         this.$uibModalInstance.close();
     }
 }
@@ -258,73 +266,6 @@ class AddReview {
         this.$uibModalInstance.close(true);
     }
     cancel(): void {
-        this.$uibModalInstance.close();
-    }
-}
-
-
-class EditBook {
-    book: IBook = new IBook();
-    authors: IAuthor[] = [];
-    selectAuthors: IAuthor[] = [];
-    click: boolean = false;
-
-
-    modalOptions = {
-        closeButtonText: 'CLOSE',
-        actionButtonText: 'OK',
-        headerText: `Edit book: ${this.book.name} ${this.book.publisher}`,
-    };
-    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
-                private booksApi: IBooksApi,
-                private authorsApi: IAuthorsApi,
-                private $uibModal: ng.ui.bootstrap.IModalService,
-                book: IBook) {
-        this.book = book;
-        this.authorsApi.readAll().then(authors => this.authors = authors.data);
-        this.selectAuthors = this.book.authors;
-}
-    addAuthorForBook(author: IAuthor) {
-        this.selectAuthors.push(author);
-        let index = this.authors.indexOf(author, 0);
-        if (index > -1) {
-            this.authors.splice(index, 1);
-        }
-    }
-    deleteAuthor(authorDelete: IAuthor) {
-        let index = this.selectAuthors.indexOf(authorDelete, 0);
-        if (index > -1) {
-            this.selectAuthors.splice(index, 1);
-        }
-    }
-    save(name, publisher, yearPublisher) {
-        this.book.name = name;
-        this.book.publisher = publisher;
-        this.book.yearPublished = yearPublisher;
-        this.booksApi.updateBook(this.book, this.selectAuthors);
-        this.$uibModalInstance.close();
-    }
-    cancel(): void {
-        this.$uibModalInstance.close();
-    }
-}
-
-class DeleteBook {
-    modalOptions = {
-        closeButtonText: 'CLOSE',
-        actionButtonText: 'OK',
-        headerText: 'Warning!',
-        bodyText: `Are you sure to delete book: ${this.book.name}?`
-    };
-    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
-                private booksApi: IBooksApi,
-                private book: IBook) {
-    }
-    ok() {
-        this.booksApi.delete(this.book.id);
-        this.$uibModalInstance.close();
-    }
-    close() {
         this.$uibModalInstance.close();
     }
 }

@@ -9,6 +9,7 @@ export class IAuthor {
     secondName: string;
     createDate: string;
     averageRating: number;
+    averageRatingRound: number;
     books: string[];
     removeStatus: boolean;
     constructor () {}

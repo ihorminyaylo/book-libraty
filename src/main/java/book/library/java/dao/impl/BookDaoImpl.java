@@ -2,26 +2,18 @@ package book.library.java.dao.impl;
 
 import book.library.java.dao.BookDao;
 import book.library.java.dto.BookWithAuthors;
-import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
-import book.library.java.list.TypeSort;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements BookDao {
+public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookDao {
 
     @Override
     public Integer create(BookWithAuthors bookWithAuthors) throws DaoException {
@@ -70,7 +62,7 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
 
     private StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query) {
         if (listParams.getPattern() != null) {
-            BookPattern pattern = listParams != null ? listParams.getPattern() : null;
+            BookPattern pattern = listParams.getPattern();
             if (pattern != null) {
                 if (pattern.getAuthorId() != null) {
                     query.append(" JOIN author_book ON book.id = author_book.book_id");
@@ -115,7 +107,6 @@ public class BookDaoImpl extends AbstractDaoImpl<Book, BookPattern> implements B
         StringBuilder query = new StringBuilder("SELECT Count(book.id) FROM book");
         Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query).toString());
         nativeQuery = setParameters(listParams, nativeQuery, false);
-        System.out.println(nativeQuery.getSingleResult());
         return Integer.parseInt(nativeQuery.getSingleResult().toString());
     }
 

@@ -3,18 +3,13 @@ package book.library.java.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -41,7 +36,7 @@ public class Book extends AbstractEntity {
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", insertable = false, updatable = false, nullable = false)
+    @Column(name = "average_rating", insertable = false, updatable = false)
     private BigDecimal averageRating;
 
     @ManyToMany
@@ -54,11 +49,6 @@ public class Book extends AbstractEntity {
     private List<Review> reviews;
 
     public Book() {
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        createDate = new Date();
     }
 
     public String getName() {

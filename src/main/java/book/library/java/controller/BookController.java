@@ -2,14 +2,12 @@ package book.library.java.controller;
 
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.BusinessException;
-import book.library.java.model.Book;
 import book.library.java.list.ListParams;
 import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,7 +31,7 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody BookWithAuthors bookWithAuthors)throws BusinessException {
+    public ResponseEntity create(@RequestBody BookWithAuthors bookWithAuthors) throws BusinessException {
         return ResponseEntity.ok(bookService.create(bookWithAuthors));
     }
 
@@ -43,7 +41,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/find")
-    public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams)throws BusinessException {
+    public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams) throws BusinessException {
         return ResponseEntity.ok(bookService.readBooks(listParams));
     }
 

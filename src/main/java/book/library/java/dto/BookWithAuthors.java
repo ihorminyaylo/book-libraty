@@ -3,11 +3,12 @@ package book.library.java.dto;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 
+import java.util.List;
+
 /**
  * Represent a BookWithAuthors. This class for convenient transfer of information between front-end and back-end.
  * BookWithAuthors have book(model) and list of authors(author model)
  */
-import java.util.List;
 
 public class BookWithAuthors {
     private Book book;

@@ -1,8 +1,8 @@
 <div ng-controller="AuthorsIndex as a">
 <h1 class="ui header" align="center">List of authors</h1>
     <div align="right">
-    <button type="button" class="btn btn-primary" ng-click="a.add()">Author <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-    <button type="button" ng-disabled="a.activeDeleteSelected" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+    <button type="button" class="btn btn-primary" ng-click="a.add()">AUTHOR <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+    <button type="button" ng-disabled="a.activeDeleteSelected" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
     </div>
             <table class="table table-striped">
     <thead>
@@ -54,22 +54,22 @@
             <div><span uib-rating ng-model="author.averageRating" max="5" read-only="true" uib-tooltip="{{author.averageRating}}"></span></div>
         </td>
         <td>
+            <a class="btn btn-primary" href="#!/books/author/{{author.id}}">
+                BOOKS <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+            </a>
             <button type="button" class="btn btn-warning" ng-click="a.edit(author)">
-                EDIT <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
             </button>
             <button type="button" class="btn btn-danger" ng-click="a.delete(author)">
-                DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
             </button>
-            <a class="btn btn-primary" href="#!/books/author/{{author.id}}">Show books
-                <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
-            </a>
         </td>
     </tr>
     </tbody>
     <tfoot>
     </tfoot>
 </table>
-    <ul uib-pagination total-items="a.authorsAndCountPages.totalItems" ng-model="a.currentPage" ng-change="a.pageChanged(a.currentPage)"></ul>
+    <ul uib-pagination total-items="a.authorsAndCountPages.totalItems" ng-model="a.currentPage" ng-change="a.pageChanged(a.currentPage)" max-size="a.maxPages" class="pagination-sm" boundary-links="true" rotate="false"></ul>
 </div>
 
 
@@ -221,8 +221,8 @@
             <form>
                 <div class="form-row">
                     <div class="col" align="center">
-                        <label>Can't delete author: {{errorDialog.authorsNotRemove[0].secondName}} {{errorDialog.authorsNotRemove[0].firstName}}</label>
-                        <table ng-if="errorDialog.authorsNotRemove.length > 1" class="table table-striped">
+                        <label>Can't delete authors: </label>
+                        <table class="table table-striped">
                             <thead>
                             <th>#</th>
                             <th>Second name</th>

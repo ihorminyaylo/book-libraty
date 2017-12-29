@@ -1,12 +1,10 @@
 package book.library.java.controller;
 
 import book.library.java.exception.BusinessException;
-import book.library.java.model.Author;
 import book.library.java.list.ListParams;
+import book.library.java.model.Author;
 import book.library.java.model.pattern.AuthorPattern;
 import book.library.java.service.AuthorService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,6 +49,7 @@ public class AuthorController {
     public ResponseEntity readTopFive() throws BusinessException {
         return ResponseEntity.ok(authorService.readTopFive());
     }
+
     @PostMapping(value = "/find")
     public ResponseEntity read(@RequestBody ListParams<AuthorPattern> listParams) throws BusinessException {
         return ResponseEntity.ok(authorService.read(listParams));

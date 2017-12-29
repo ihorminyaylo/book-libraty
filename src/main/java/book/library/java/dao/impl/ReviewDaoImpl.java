@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class ReviewDaoImpl extends AbstractDaoImpl<Review, ReviewPattern> implements ReviewDao {
+public class ReviewDaoImpl extends AbstractDao<Review, ReviewPattern> implements ReviewDao {
 
     @Override
     public List<Review> find(ListParams<ReviewPattern> listParams) throws DaoException {

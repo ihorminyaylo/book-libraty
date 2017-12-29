@@ -1,34 +1,32 @@
 package book.library.java.dao.impl;
 
-import book.library.java.dao.AbstractDao;
+import book.library.java.dao.Dao;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
+import book.library.java.list.ListParams;
 import book.library.java.list.SortParams;
 import book.library.java.model.AbstractEntity;
-import book.library.java.model.Author;
-import book.library.java.model.Book;
-import book.library.java.list.ListParams;
-import book.library.java.model.Review;
-import book.library.java.list.TypeSort;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-@Service
-public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements AbstractDao<T, P> {
+@Repository
+@Transactional(propagation = Propagation.MANDATORY)
+public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T, P> {
 
     private final Class<T> entityType;
     @PersistenceContext
     EntityManager entityManager;
 
-    AbstractDaoImpl() {
+    AbstractDao() {
         entityType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
@@ -46,7 +44,7 @@ public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements Ab
 
     @Override
     public T get(Integer id) throws DaoException {
-        if(id == null) {
+        if (id == null) {
             throw new DaoException("Id of entity can't be null");
         }
         return entityManager.find(entityType, id);
@@ -89,21 +87,19 @@ public abstract class AbstractDaoImpl<T extends AbstractEntity, P> implements Ab
     public Integer totalRecords(ListParams<P> listParams) {
         String queryString = "SELECT Count(*) FROM " + entityType.getName();
         Query query = entityManager.createQuery(queryString);
-        return Integer.parseInt(query.getSingleResult().toString());
+        return Integer.parseInt(query.getSingleResult().toString()); // hueta
     }
 
     void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
         SortParams sortParams = listParams.getSortParams();
         if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
-            for (Field field :entityType.getFields()) {
-                if (sortParams.getParameter().equals(field.getName())) {
+            for (Field field : entityType.getFields()) {
+                if (sortParams.getParameter().equalsIgnoreCase(field.getName())) {
                     query.append(" ORDER BY ").append(sortParams.getParameter()).append(' ').append(sortParams.getType());
                     return;
                 }
             }
-            throw new DaoException("The field isn't correct");
-        }
-        else {
+        } else {
             query.append(" ORDER BY create_date");
         }
     }

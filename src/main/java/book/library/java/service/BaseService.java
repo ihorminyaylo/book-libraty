@@ -5,10 +5,10 @@ import book.library.java.exception.BusinessException;
 import book.library.java.list.ListParams;
 
 /**
- * Represent a Abstract Service with generic T(type of entity) and P(type of Pattern for definite entity)
- * A Abstract Service have CRUD methods(create, read, update, delete)
+ * Represent a Abstract BaseService with generic T(type of entity) and P(type of Pattern for definite entity)
+ * A Abstract BaseService have CRUD methods(create, read, update, delete)
  */
-public interface AbstractService<T, P> {
+public interface BaseService<T, P> {
     /**
      * This method for create entity, which we get like parameter
      *
@@ -46,6 +46,7 @@ public interface AbstractService<T, P> {
 
     /**
      * This method for validate entity
+     *
      * @param entity
      */
     void validateEntity(T entity) throws BusinessException;

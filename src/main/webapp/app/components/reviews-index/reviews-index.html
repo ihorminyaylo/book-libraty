@@ -27,12 +27,12 @@
 		</tr>
 		</thead>
 		<tbody>
-		<tr ng-repeat="book in r.books">
+			<tr ng-repeat="book in r.books">
 			<td>
 				{{$index + 1}}
 			</td>
 			<td>
-				{{book.name}}
+				<a href="#!/books_show/{{book.id}}">{{book.name}}</a>
 			</td>
 			<td>
 				<div ng-repeat="author in book.authors">
@@ -40,9 +40,9 @@
 				</div>
 			</td>
 			<td>
-				<span uib-rating ng-model="book.averageRating" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
+				<span uib-rating ng-model="book.averageRatingRound" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
 			</td>
-		</tr>
+			</tr>
 		</tbody>
 		<tfoot>
 		</tfoot>
@@ -70,7 +70,7 @@
 				{{author.firstName}}
 			</td>
 			<td>
-				<span uib-rating ng-model="author.averageRating" max="5" read-only="true" uib-tooltip="{{author.averageRating}}"></span>
+				<span uib-rating ng-model="author.averageRatingRound" max="5" read-only="true" uib-tooltip="{{author.averageRating}}"></span>
 			</td>
 		</tr>
 		</tbody>

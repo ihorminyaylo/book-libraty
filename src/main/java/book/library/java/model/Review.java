@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -29,7 +28,7 @@ public class Review extends AbstractEntity {
     private Integer rating;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date")
+    @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
     @ManyToOne
@@ -37,11 +36,6 @@ public class Review extends AbstractEntity {
     private Book book;
 
     public Review() {
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        createDate = new Date();
     }
 
     public String getCommenterName() {

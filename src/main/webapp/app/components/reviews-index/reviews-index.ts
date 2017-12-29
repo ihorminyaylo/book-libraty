@@ -19,8 +19,8 @@ class ReviewsIndex {
     count: number = 5;
     constructor (private reviewsApi: IReviewsApi, private booksApi: IBooksApi, private authorsApi: IAuthorsApi) {
         this.reviewsApi.readAll().then(reviews => {reviews.data.forEach(reviews => {this.reviewDetails.push(new ReviewDetail(Math.round(reviews[0]), reviews[1]));});});
-        this.booksApi.findTop().then(books => this.books = books);
-        this.authorsApi.findTop().then(authors => this.authors = authors);
+        this.booksApi.findTop().then(books => {this.books = books; this.books.forEach(book => book.averageRatingRound = Math.round(book.averageRating))});
+        this.authorsApi.findTop().then(authors => {this.authors = authors; this.authors.forEach(author => author.averageRatingRound = Math.round(author.averageRating))});
     }
 }
 

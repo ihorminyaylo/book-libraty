@@ -9,11 +9,11 @@ import java.util.List;
 
 
 /**
- * Represent a Author Service
- * which extends of AbstractService with generic Author(type of entity) and AuthorPattern(type of Pattern for definite entity)
- * A Author Service have such methods: readAll, readTop, bulkDelete, deleteAuthor
+ * Represent a Author BaseService
+ * which extends of BaseService with generic Author(type of entity) and AuthorPattern(type of Pattern for definite entity)
+ * A Author BaseService have such methods: readAll, readTop, bulkDelete, deleteAuthor
  */
-public interface AuthorService extends AbstractService<Author, AuthorPattern> {
+public interface AuthorService extends BaseService<Author, AuthorPattern> {
 
     /**
      * This method for get all authors.
@@ -24,7 +24,7 @@ public interface AuthorService extends AbstractService<Author, AuthorPattern> {
 
     /**
      * This method for read top authors.
-
+     *
      * @return List authors DTO
      * @throws BusinessException
      */

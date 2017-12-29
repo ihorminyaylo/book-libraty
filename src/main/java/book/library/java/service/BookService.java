@@ -11,14 +11,15 @@ import book.library.java.model.pattern.BookPattern;
 import java.util.List;
 
 /**
- * Represent a Book Service
- * which extends of AbstractService with generic Book(type of entity) and BookPattern(type of Pattern for definite entity)
- * A Book Service have such methods: create, readTop, bulkDelete
+ * Represent a Book BaseService
+ * which extends of BaseService with generic Book(type of entity) and BookPattern(type of Pattern for definite entity)
+ * A Book BaseService have such methods: create, readTop, bulkDelete
  */
-public interface BookService extends AbstractService<Book, BookPattern> {
+public interface BookService extends BaseService<Book, BookPattern> {
 
     /**
      * This method for create book, where we get like parameter BooksWithAuthors(Book and authors who wrote this book)
+     *
      * @param bookWithAuthors
      * @return id of book which we created.
      * @throws BusinessException
@@ -28,15 +29,15 @@ public interface BookService extends AbstractService<Book, BookPattern> {
     BookDto readByBookId(Integer idBook) throws BusinessException;
 
     /**
-     *
      * @param listParams with condition type
      * @return
      * @throws BusinessException
      */
-    ListEntityPage<BookDto> readBooks(ListParams<BookPattern> listParams) throws BusinessException;
+    ListEntityPage readBooks(ListParams<BookPattern> listParams) throws BusinessException;
 
     /**
      * This method for read top books.
+     *
      * @return List books DTO
      */
     List<BookDto> readTopFive();
@@ -46,6 +47,7 @@ public interface BookService extends AbstractService<Book, BookPattern> {
 
     /**
      * This method for delete one book by id
+     *
      * @param idEntities is List of id books which we want remove
      * @throws BusinessException
      */

@@ -20,8 +20,8 @@
             </ul>
             </div>
         <a href="#!/books" ng-click="(filter = null)"><button type="button" style="margin-left: 5px;" class="btn btn-default" aria-label="Left Align" ng-click="(b.clearFilters())">CLEAR</button></a>
-            <button type="button" style="margin-left: 80px;" class="btn btn-primary" ng-click="b.add()">Book <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-            <button type="button" style="margin-left: 5px;" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">BULK DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+            <button type="button" style="margin-left: 80px;" class="btn btn-primary" ng-click="b.add()">BOOK <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+            <button type="button" style="margin-left: 5px;" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
         </span>
       </div>
     </tr>
@@ -43,16 +43,7 @@
         <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
       </a></th>
       <th>
-        <div uib-dropdown>
-          <a id="author-button" type="button"  uib-dropdown-toggle ng-disabled="disabled">
-            <div ng-if="b.authorWithBooks === null">Authors <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
-          </a>
-          <ul class="dropdown-menu" uib-dropdown-menu>
-            <li ng-repeat="author in b.authors">
-              <a ng-click="b.selectWithAuthor(author)">{{author.firstName}} {{author.secondName}}</a>
-            </li>
-          </ul>
-        </div>
+        Authors
       </th>
       <th><a ng-click="b.sortParams('average_rating')"> Rating
         <span ng-show="b.sortType === 'average_rating' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
@@ -82,20 +73,17 @@
         </div>
       </td>
       <td>
-        <span uib-rating ng-model="book.averageRating" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
+        <span uib-rating ng-model="book.averageRatingRound" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
       </td>
       <td>
-        <a type="button" class="btn btn-primary" href="#!/books_show/{{book.id}}">
-          SHOW BOOK <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-        </a>
-        <!--<button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
-           ADD REVIEW <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        <button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
+          REVIEW <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
         </button>
-        <button type="button" class="btn btn-warning" ng-click="b.edit(book)">
-          EDIT <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-        </button>-->
+        <a type="button" class="btn btn-warning" href="#!/books_show/{{book.id}}">
+          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+        </a>
         <button type="button" class="btn btn-danger" ng-click="b.delete(book)">
-          DELETE <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
         </button>
       </td>
     </tr>
@@ -103,9 +91,7 @@
     <tfoot>
     </tfoot>
   </table>
-
-  <ul uib-pagination total-items="b.booksAndCountPages.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)"></ul>
-
+  <ul uib-pagination total-items="b.booksAndCountPages.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)" max-size="b.maxPages" class="pagination-sm" boundary-links="true" rotate="false"></ul>
 </div>
 
 

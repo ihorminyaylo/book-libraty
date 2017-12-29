@@ -2,8 +2,6 @@ package book.library.java.controller;
 
 import book.library.java.exception.ApiError;
 import book.library.java.exception.BusinessException;
-import book.library.java.exception.DaoException;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -18,13 +16,13 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAll(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
             HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "error occurred");
-        return new ResponseEntity<Object>(apiError, apiError.getStatus());
+        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
     @ExceptionHandler({BusinessException.class})
     public ResponseEntity<Object> handleBusinessException(Exception ex, WebRequest request) {
         ApiError apiError = new ApiError(
             HttpStatus.INTERNAL_SERVER_ERROR, ex.getLocalizedMessage(), "business exception");
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 }

@@ -27,7 +27,7 @@ public class Author extends AbstractEntity {
     @Column(name = "create_date", updatable = false, insertable = false)
     private Date createDate;
 
-    @Column(name = "average_rating", updatable = false, insertable = false, nullable = false)
+    @Column(name = "average_rating", updatable = false, insertable = false)
     private BigDecimal averageRating;
 
 
@@ -57,9 +57,6 @@ public class Author extends AbstractEntity {
     }
 
     public BigDecimal getAverageRating() {
-        if (averageRating == null) {
-            return BigDecimal.valueOf(0);
-        }
         return averageRating;
     }
 

@@ -7,6 +7,7 @@ class AuthorsIndex {
     sortType     = 'name'; // set the default sort type
     sortReverse: string;
     sortParam: SortParams;
+    maxPages: number = 3;
     sortParams(type) {
         this.sortType = type;
         if (this.sortReverse === 'asc') {
@@ -63,9 +64,8 @@ class AuthorsIndex {
                 authorsApi: () => this.authorsApi,
                 authorsAndCountPages: () => this.authorsAndCountPages
             }
-        }).result.then(function () {
-        });
-    }
+        }).result.then(response => this.pageChanged(1));
+    };
     edit(author): void {
         this.$uibModal.open({
             backdrop: false,
@@ -76,8 +76,7 @@ class AuthorsIndex {
                 author: () => author,
                 authorsApi: () => this.authorsApi
             },
-        }).result.then(function () {
-        });
+        }).result.then(response => this.pageChanged(1));
     }
     delete(author): void {
         this.$uibModal.open({
@@ -88,14 +87,14 @@ class AuthorsIndex {
             resolve: {
                 author: () => author
             }
-        }).result.then(function () {
-        });
+        }).result.then(response => this.pageChanged(1));
     }
+    dialog;
     bulkDeleteAuthors(entitiesRemove: IAuthor[], idEntities: number[]) {
         entitiesRemove = [];
         idEntities = [];
         this.authorsAndCountPages.list.forEach(author => {if (author.removeStatus) {entitiesRemove.push(author); idEntities.push(author.id)}});
-        this.$uibModal.open({
+        this.dialog = this.$uibModal.open({
             backdrop: false,
             controller: BulkDelete,
             controllerAs: 'bulkDelete',
@@ -104,8 +103,8 @@ class AuthorsIndex {
                 authorsRemove: () => entitiesRemove,
                 idEntities: () => idEntities
             }
-        }).result.then(function () {
         });
+        this.dialog.result.then(response => this.pageChanged(1));
     }
 }
 
@@ -135,7 +134,7 @@ class AddAuthor {
         this.author.secondName = secondName;
         this.offset = (8-1)*10;
         this.authorsApi.create(this.author).catch(this.authorsApi.find(new ListParams(10, this.offset, null, null))
-            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages}));
+            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))}));
         this.$uibModalInstance.close(this.authorsAndCountPages);
     }
     cancel(): void {

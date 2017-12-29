@@ -2,6 +2,7 @@ package book.library.java.dto;
 
 import book.library.java.model.Book;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +12,7 @@ public class BookDto {
     private String publisher;
     private Integer yearPublished;
     private List<AuthorDto> authors;
+    private String averageRating;
 
     public BookDto(Book book) {
         id = book.getId();
@@ -60,8 +62,6 @@ public class BookDto {
     public void setAverageRating(String averageRating) {
         this.averageRating = averageRating;
     }
-
-    private String averageRating;
 
     public List<AuthorDto> getAuthors() {
         return authors;

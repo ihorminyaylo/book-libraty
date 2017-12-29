@@ -1,12 +1,11 @@
 package book.library.java.service.impl;
 
-import book.library.java.dao.impl.AbstractDaoImpl;
+import book.library.java.dao.Dao;
 import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
-import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
 import book.library.java.model.AbstractEntity;
-import book.library.java.service.AbstractService;
+import book.library.java.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,33 +15,37 @@ import java.util.List;
 
 @Service
 @Transactional
-public abstract class AbstractServiceImpl<T extends AbstractEntity, P> implements AbstractService<T, P> {
+public abstract class AbstractService<T extends AbstractEntity, P> implements BaseService<T, P> {
 
-    private AbstractDaoImpl<T, P> entityDaoType;
+    private Dao<T, P> dao;
 
-    public AbstractServiceImpl(AbstractDaoImpl<T, P> entityDaoType) {
-        this.entityDaoType = entityDaoType;
+    AbstractService(Dao<T, P> dao) {
+        this.dao = dao;
+    }
+
+    public Dao<T, P> getDao() {
+        return dao;
     }
 
     @Override
     public Integer create(T entity) throws BusinessException {
         validateEntity(entity);
         try {
-            return entityDaoType.create(entity);
+            return dao.create(entity);
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage(), e.getCause());
+            throw new BusinessException(e);
         }
     }
 
     @Override
     public ListEntityPage<T> read(ListParams<P> listParams) throws BusinessException {
         List<T> listEntity = new ArrayList<>();
-        Integer totalItems = entityDaoType.totalRecords(listParams);
+        Integer totalItems = dao.totalRecords(listParams);
         if (listParams.getLimit() != null || listParams.getOffset() != null) {
             try {
-                listEntity = entityDaoType.find(listParams);
+                listEntity = dao.find(listParams);
             } catch (Exception e) {
-                throw new BusinessException(e.getMessage(), e.getCause());
+                throw new BusinessException(e);
             }
         }
         return new ListEntityPage<>(listEntity, totalItems);
@@ -52,18 +55,18 @@ public abstract class AbstractServiceImpl<T extends AbstractEntity, P> implement
     @Override
     public void update(T entity) throws BusinessException {
         try {
-            entityDaoType.update(entity);
+            dao.update(entity);
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage(), e.getCause());
+            throw new BusinessException(e);
         }
     }
 
     @Override
     public Integer delete(Integer idEntity) throws BusinessException {
         try {
-            entityDaoType.delete(idEntity);
+            dao.delete(idEntity);
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage(), e.getCause());
+            throw new BusinessException(e);
         }
         return idEntity;
     }

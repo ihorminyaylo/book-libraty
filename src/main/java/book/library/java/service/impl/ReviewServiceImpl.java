@@ -1,7 +1,6 @@
 package book.library.java.service.impl;
 
 import book.library.java.dao.ReviewDao;
-import book.library.java.dao.impl.ReviewDaoImpl;
 import book.library.java.dto.ListEntityPage;
 import book.library.java.dto.ReviewDto;
 import book.library.java.dto.ReviewPageDto;
@@ -13,35 +12,30 @@ import book.library.java.service.ReviewService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.Query;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class ReviewServiceImpl extends AbstractServiceImpl<Review, ReviewPattern> implements ReviewService {
-    private final ReviewDao reviewDao;
+public class ReviewServiceImpl extends AbstractService<Review, ReviewPattern> implements ReviewService {
 
     @Autowired
-    public ReviewServiceImpl(ReviewDaoImpl reviewDao) {
+    public ReviewServiceImpl(ReviewDao reviewDao) {
         super(reviewDao);
-        this.reviewDao = reviewDao;
     }
 
     @Override
     public ListEntityPage<ReviewDto> readReviews(ListParams<ReviewPattern> listParams) throws BusinessException {
         List<Review> reviewList;
-        Integer totalItems = reviewDao.totalRecords(listParams);
+        Integer totalItems = getDao().totalRecords(listParams);
         if (listParams.getLimit() != null && listParams.getOffset() != null) {
             try {
-                reviewList = reviewDao.find(listParams);
+                reviewList = getDao().find(listParams);
             } catch (Exception e) {
-                throw new BusinessException(e.getMessage(), e.getCause());
+                throw new BusinessException(e);
             }
         } else {
-            reviewList = reviewDao.findAll();
+            reviewList = getDao().findAll();
         }
         List<ReviewDto> reviewDtoList = reviewList.stream().map(ReviewDto::new).collect(Collectors.toList());
         return new ListEntityPage<>(reviewDtoList, totalItems);
@@ -49,7 +43,7 @@ public class ReviewServiceImpl extends AbstractServiceImpl<Review, ReviewPattern
 
     @Override
     public List<ReviewPageDto> getCountOfEachRating() {
-        return reviewDao.getCountOfEachRating();
+        return ((ReviewDao) getDao()).getCountOfEachRating();
     }
 
     @Override
