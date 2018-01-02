@@ -1,7 +1,7 @@
 import * as angular from 'angular'
 
 import authorsApiModule, {IAuthor, IAuthorsAndCountPages, IAuthorsApi} from '../../services/authors-api/authors-api'
-import {ListParams, SortParams} from "../../services/service-api";
+import {AuthorPattern, ListParams, SortParams} from "../../services/service-api";
 
 class AuthorsIndex {
     sortType     = 'name'; // set the default sort type
@@ -10,11 +10,11 @@ class AuthorsIndex {
     maxPages: number = 3;
     sortParams(type) {
         this.sortType = type;
-        if (this.sortReverse === 'asc') {
-            this.sortReverse = 'desc';
+        if (this.sortReverse === 'ASC') {
+            this.sortReverse = 'DESC';
         }
         else {
-            this.sortReverse = 'asc';
+            this.sortReverse = 'ASC';
         }
         this.sortParam = new SortParams(this.sortType, this.sortReverse);
         this.currentPage = 1;
@@ -36,7 +36,7 @@ class AuthorsIndex {
         this.totalItems = this.authorsAndCountPages.totalItems});*/
 
         this.authorsApi.find(new ListParams(this.limit, this.offset, null, this.sortParam))
-            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages});
+            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))});
         this.checkAll = false;
     }
     check(authorId) {
@@ -62,9 +62,11 @@ class AuthorsIndex {
             templateUrl: 'add-author.html',
             resolve: {
                 authorsApi: () => this.authorsApi,
-                authorsAndCountPages: () => this.authorsAndCountPages
+                authorsAndCountPages: () => this.authorsAndCountPages,
+                currentPage: () => this.currentPage
             }
-        }).result.then(response => this.pageChanged(1));
+        });
+        this.checkAll = false;
     };
     edit(author): void {
         this.$uibModal.open({
@@ -74,9 +76,12 @@ class AuthorsIndex {
             templateUrl: 'edit-author.html',
             resolve: {
                 author: () => author,
-                authorsApi: () => this.authorsApi
+                authorsApi: () => this.authorsApi,
+                authorsAndCountPages: () => this.authorsAndCountPages,
+                currentPage: () => this.currentPage
             },
-        }).result.then(response => this.pageChanged(1));
+        });
+        this.checkAll = false;
     }
     delete(author): void {
         this.$uibModal.open({
@@ -85,9 +90,12 @@ class AuthorsIndex {
             controllerAs: 'delete',
             templateUrl: 'delete-author.html',
             resolve: {
-                author: () => author
+                author: () => author,
+                authorsAndCountPages: () => this.authorsAndCountPages,
+                currentPage: () => this.currentPage
             }
-        }).result.then(response => this.pageChanged(1));
+        });
+        this.checkAll = false;
     }
     dialog;
     bulkDeleteAuthors(entitiesRemove: IAuthor[], idEntities: number[]) {
@@ -101,10 +109,12 @@ class AuthorsIndex {
             templateUrl: 'bulk-delete-author.html',
             resolve: {
                 authorsRemove: () => entitiesRemove,
-                idEntities: () => idEntities
+                idEntities: () => idEntities,
+                authorsAndCountPages: () => this.authorsAndCountPages,
+                currentPage: () => this.currentPage
             }
         });
-        this.dialog.result.then(response => this.pageChanged(1));
+        this.checkAll = false;
     }
 }
 
@@ -122,19 +132,28 @@ angular.module(moduleName, [authorsApiModule])
 class AddAuthor {
     click: boolean = false;
     author: IAuthor = new IAuthor();
-    offset;
 
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private $uibModal: ng.ui.bootstrap.IModalService,
                 private $scope: ng.IScope,
-                private authorsAndCountPages) {}
+                private authorsAndCountPages: IAuthorsAndCountPages,
+                private currentPage: number) {}
+
+    offset = 0;
+    limit = 10;
+    search: string;
+    pageChanged() {
+        this.offset = (this.currentPage-1)*this.limit;
+        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+            .then(authorsAndCountPages => {this.authorsAndCountPages.list = authorsAndCountPages.list; this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems; this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))});
+    }
+
     ok(firstName, secondName): void {
         this.author.firstName = firstName;
         this.author.secondName = secondName;
         this.offset = (8-1)*10;
-        this.authorsApi.create(this.author).catch(this.authorsApi.find(new ListParams(10, this.offset, null, null))
-            .then(authorsAndCountPages => {this.authorsAndCountPages = authorsAndCountPages; this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))}));
+        this.authorsApi.create(this.author).then(response => this.pageChanged());
         this.$uibModalInstance.close(this.authorsAndCountPages);
     }
     cancel(): void {
@@ -153,14 +172,25 @@ class EditAuthor {
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private $uibModal: ng.ui.bootstrap.IModalService,
-                private author: IAuthor) {
+                private author: IAuthor,
+                private authorsAndCountPages: IAuthorsAndCountPages,
+                private currentPage: number) {
         this.firstName = author.firstName;
         this.secondName = author.secondName;
     }
+    offset = 0;
+    limit = 10;
+    search: string;
+    pageChanged() {
+        this.offset = (this.currentPage-1)*this.limit;
+        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+            .then(authorsAndCountPages => {this.authorsAndCountPages.list = authorsAndCountPages.list; this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems; this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))});
+    }
+
     ok(firstName, secondName): void {
         this.author.firstName = firstName;
         this.author.secondName = secondName;
-        this.authorsApi.update(this.author);
+        this.authorsApi.update(this.author).then(response => this.pageChanged());
         this.$uibModalInstance.close(this.author);
     }
     cancel(): void {
@@ -179,7 +209,17 @@ class DeleteAuthor {
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private author: IAuthor,
-                private $uibModal: ng.ui.bootstrap.IModalService) {
+                private $uibModal: ng.ui.bootstrap.IModalService,
+                private authorsAndCountPages: IAuthorsAndCountPages,
+                private currentPage: number) {
+    }
+    offset = 0;
+    limit = 10;
+    search: string;
+    pageChanged() {
+        this.offset = (this.currentPage-1)*this.limit;
+        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+            .then(authorsAndCountPages => {this.authorsAndCountPages.list = authorsAndCountPages.list; this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems; this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))});
     }
     ok() {
         this.authorsApi.delete(this.author.id).then(response => {if (response.data !== '') {this.authors.push(response.data); this.$uibModal.open({
@@ -190,7 +230,8 @@ class DeleteAuthor {
             resolve: {
                 authorsNotRemove: ()=> this.authors
             }
-        })}});
+        })}
+        this.pageChanged()});
         this.$uibModalInstance.close();
     }
     close() {
@@ -210,7 +251,17 @@ class BulkDelete {
                 private authorsApi: IAuthorsApi,
                 private authorsRemove: IAuthor[],
                 private idEntities: number[],
-                private $uibModal: ng.ui.bootstrap.IModalService) {
+                private $uibModal: ng.ui.bootstrap.IModalService,
+                private authorsAndCountPages: IAuthorsAndCountPages,
+                private currentPage: number) {
+    }
+    offset = 0;
+    limit = 10;
+    search: string;
+    pageChanged() {
+        this.offset = (this.currentPage-1)*this.limit;
+        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+            .then(authorsAndCountPages => {this.authorsAndCountPages.list = authorsAndCountPages.list; this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems; this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))});
     }
     ok() {
         this.authorsApi.bulkDelete(this.idEntities).then(response => {if (response.data.length !== 0) {this.authors = response.data; this.$uibModal.open({
@@ -221,7 +272,8 @@ class BulkDelete {
             resolve: {
                 authorsNotRemove: ()=> this.authors
             }
-        })}});
+        })};
+        this.pageChanged();});
         this.$uibModalInstance.close();
     }
     close() {
@@ -232,7 +284,6 @@ class BulkDelete {
 class ErrorDialog {
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsNotRemove: IAuthor[]) {
-        console.log(authorsNotRemove);
     }
     close(): void {
         this.$uibModalInstance.close();

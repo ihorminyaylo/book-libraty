@@ -6,6 +6,8 @@ import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
 import book.library.java.list.SortParams;
 import book.library.java.model.AbstractEntity;
+import book.library.java.model.Book;
+import book.library.java.model.pattern.BookPattern;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,6 +103,25 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
             }
         } else {
             query.append(" ORDER BY create_date");
+        }
+    }
+
+    void addSortParams(ListParams<P> listParams, StringBuilder query) {
+        SortParams sortParams = listParams.getSortParams();
+        if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
+            Field[] fields = entityType.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+            }
+            String checkFieldName = sortParams.getParameter();
+            if (checkFieldName.contains("_")) {
+                checkFieldName = checkFieldName.replace("_", "");
+            }
+            for (Field field : fields) {
+                if (checkFieldName.equalsIgnoreCase(field.getName())) {
+                    query.append(" ORDER BY ").append(sortParams.getParameter()).append(' ').append(sortParams.getType());
+                }
+            }
         }
     }
 }

@@ -15,12 +15,28 @@ public class BookDto {
     private String averageRating;
 
     public BookDto(Book book) {
-        id = book.getId();
-        name = book.getName();
-        publisher = book.getPublisher();
+        if (book.getId() != null) {
+            id = book.getId();
+        }
+        if (book.getName() != null) {
+            name = book.getName();
+        }
+        if (book.getPublisher() != null) {
+            publisher = book.getPublisher();
+        }
+        else {
+            publisher = "";
+        }
         yearPublished = book.getYearPublished();
-        authors = book.getAuthors().stream().map(author -> new AuthorDto(author)).collect(Collectors.toList());
-        averageRating = book.getAverageRating().toString();
+        if (book.getAuthors() != null) {
+            authors = book.getAuthors().stream().map(author -> new AuthorDto(author)).collect(Collectors.toList());
+        }
+        if (book.getAverageRating() != null) {
+            averageRating = book.getAverageRating().toString();
+        }
+        else {
+            averageRating = "0";
+        }
     }
 
     public Integer getId() {

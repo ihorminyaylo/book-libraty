@@ -30,24 +30,24 @@
       <th class="single line">#</th>
       <th>
         <a ng-click="b.sortParams('name')"> Name
-          <span ng-show="b.sortType === 'name' && b.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-          <span ng-show="b.sortType === 'name' && b.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+          <span ng-show="b.sortType === 'name' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+          <span ng-show="b.sortType === 'name' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
         </a>
       </th>
       <th><a ng-click="b.sortParams('publisher')"> Publisher
-        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
       </a></th>
       <th><a ng-click="b.sortParams('year_published')"> Year published
-        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'year_published' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
       </a></th>
       <th>
         Authors
       </th>
       <th><a ng-click="b.sortParams('average_rating')"> Rating
-        <span ng-show="b.sortType === 'average_rating' && b.sortReverse === 'down'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'average_rating' && b.sortReverse === 'up'" class="glyphicon glyphicon-chevron-up"></span>
+        <span ng-show="b.sortType === 'average_rating' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+        <span ng-show="b.sortType === 'average_rating' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
       </a></th>
       <th>Action</th>
     </tr>
@@ -73,7 +73,7 @@
         </div>
       </td>
       <td>
-        <span uib-rating ng-model="book.averageRatingRound" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
+        <span uib-rating ng-model="book.averageRating" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
       </td>
       <td>
         <button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
@@ -82,7 +82,7 @@
         <a type="button" class="btn btn-warning" href="#!/books_show/{{book.id}}">
           <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
         </a>
-        <button type="button" class="btn btn-danger" ng-click="b.delete(book)">
+        <button type="button" class="btn btn-danger" ng-click="b.deleteBook(book)">
           <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
         </button>
       </td>
@@ -115,17 +115,13 @@
               <p ng-show="bookForm.name.$error.maxlength" class="help-block">Name of book is too long.</p>
               <p ng-show="bookForm.name.$error.required && (add.click || !bookForm.name.$pristine)" class="help-block">Your name of book is required.</p>
             </div>
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.publisher.$invalid && (add.click || !bookForm.publisher.$pristine) }">
+            <div class="form-group">
               <label>Publisher</label>
-              <input type="text" name="publisher" class="form-control" ng-model="publisher" ng-maxlength="256" required>
-              <p ng-show="bookForm.publisher.$error.maxlength" class="help-block">Publisher of book is too long.</p>
-              <p ng-show="bookForm.publisher.$error.required && (add.click || !bookForm.publisher.$pristine)" class="help-block">Publisher of book is required.</p>
+              <input type="text" name="publisher" class="form-control" ng-model="publisher" ng-maxlength="256">
             </div>
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.yearPublished.$invalid && (add.click || !bookForm.yearPublished.$pristine) }">
+            <div class="form-group">
               <label>Year published</label>
-              <input type="number" name="yearPublished" class="form-control" ng-model="yearPublished" ng-maxlength="4" required>
-              <p ng-show="bookForm.yearPublished.$error.maxlength" class="help-block">Year publisher is too long.</p>
-              <p ng-show="bookForm.yearPublished.$error.required && (add.click || !bookForm.yearPublished.$pristine)" class="help-block">Year publisher is required.</p>
+              <input type="number" name="yearPublished" class="form-control" ng-model="yearPublished" ng-maxlength="4">
             </div>
             <div class="btn-group" uib-dropdown is-open="status.isopen">
               <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
@@ -199,12 +195,13 @@
               <textarea type="text" name="textArea" class="form-control" ng-model="textArea" required></textarea>
               <p ng-show="reviewForm.textArea.$error.required && (addReview.click || !reviewForm.textArea.$pristine)" class="help-block">Your comment of book is required.</p>
             </div>
-            <div class="form-group">
-              <span uib-rating ng-model="ratingStars" max="addReview.max" on-leave="addReview.overStar = null" ng-model="ratingStars" aria-labelledby="addReview.defaultRating"></span>
+            <div class="form-group" ng-class="{ 'has-error' : reviewForm.span.$invalid && (addReview.click || !reviewForm.span.$pristine)}">
+              <span required name="span" uib-rating ng-model="ratingStars" max="addReview.max" on-leave="addReview.overStar = null" ng-model="ratingStars" aria-labelledby="addReview.defaultRating"></span>
+              <p ng-show="reviewForm.span.$error.required && (addReview.click || !reviewForm.span.$pristine)" class="help-block">Your rating of book is required.</p>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="(addReview.click = true)  && !reviewForm.commentName.$invalid && !reviewForm.textArea.$invalid && addReview.ok(commentName, textArea, ratingStars)">Save</button>
+            <button type="button" class="btn btn-primary" ng-click="(addReview.click = true)  && !reviewForm.commentName.$invalid && !reviewForm.span.$invalid && !reviewForm.textArea.$invalid && addReview.ok(commentName, textArea, ratingStars)">Save</button>
             <button class="btn btn-warning" type="button" ng-click="addReview.cancel()">Cancel</button>
           </div>
         </form>
@@ -353,20 +350,20 @@
 <script type="text/ng-template" id="delete-book.html">
 
   <div class="modal-header" align="center">
-    <label><h3>{{delete.modalOptions.headerText}}</h3></label>
+    <label><h3>{{deleteBook.modalOptions.headerText}}</h3></label>
   </div>
   <div class="modal-body">
     <div class="form-row">
       <div class="col" align="center">
-        <h4>{{delete.modalOptions.bodyText}}</h4>
+        <h4>{{deleteBook.modalOptions.bodyText}}</h4>
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-primary"
-            data-ng-click="delete.ok();">{{delete.modalOptions.actionButtonText}}</button>
+            data-ng-click="deleteBook.ok();">{{deleteBook.modalOptions.actionButtonText}}</button>
     <button type="button" class="btn btn-warning"
-            data-ng-click="delete.close()">{{delete.modalOptions.closeButtonText}}</button>
+            data-ng-click="deleteBook.close()">{{deleteBook.modalOptions.closeButtonText}}</button>
   </div>
 </script>
 

@@ -11,25 +11,25 @@
         <th class="single line">#</th>
         <th>
             <a ng-click="a.sortParams('first_name')"> First name
-                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
             </a>
         </th>
         <th>
         <a ng-click="a.sortParams('second_name')"> Second name
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
         </a>
         </th>
         <th>
             <a ng-click="a.sortParams('create_date')"> Create date
-                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
             </a>
         </th>
         <th><a ng-click="a.sortParams('average_rating')"> Rating
-            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'desc'" class="glyphicon glyphicon-chevron-down"></span>
-            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'asc'" class="glyphicon glyphicon-chevron-up"></span>
+            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
+            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
         </a>
         </th>
         <th>Action</th>
@@ -51,7 +51,7 @@
             {{author.createDate}}
         </td>
         <td>
-            <div><span uib-rating ng-model="author.averageRating" max="5" read-only="true" uib-tooltip="{{author.averageRating}}"></span></div>
+            <div><span uib-rating ng-model="author.averageRatingRound" max="5" read-only="true" uib-tooltip="{{author.averageRating}}"></span></div>
         </td>
         <td>
             <a class="btn btn-primary" href="#!/books/author/{{author.id}}">

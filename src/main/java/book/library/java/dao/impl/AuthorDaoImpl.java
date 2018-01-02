@@ -3,11 +3,13 @@ package book.library.java.dao.impl;
 import book.library.java.dao.AuthorDao;
 import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
+import book.library.java.list.SortParams;
 import book.library.java.model.Author;
 import book.library.java.model.pattern.AuthorPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +18,14 @@ public class AuthorDaoImpl extends AbstractDao<Author, AuthorPattern> implements
 
     @Override
     public List<Author> find(ListParams<AuthorPattern> listParams) {
-        String query = "SELECT * FROM  author ORDER BY average_rating, create_date";
-        Query nativeQuery = (Query) entityManager.createNativeQuery(query, Author.class);
+        StringBuilder query = new StringBuilder("SELECT * FROM  author");
+        if (listParams.getSortParams() != null) {
+            addSortParams(listParams, query);
+        }
+        else {
+            query.append(" ORDER BY average_rating, create_date");
+        }
+        Query nativeQuery = (Query) entityManager.createNativeQuery(query.toString(), Author.class);
         nativeQuery = setParameters(listParams, nativeQuery);
         return nativeQuery.getResultList();
     }

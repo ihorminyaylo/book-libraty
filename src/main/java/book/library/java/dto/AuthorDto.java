@@ -19,7 +19,12 @@ public class AuthorDto {
         id = author.getId();
         firstName = author.getFirstName();
         secondName = author.getSecondName();
-        averageRating = author.getAverageRating().toString();
+        if (author.getAverageRating() != null) {
+            averageRating = author.getAverageRating().toString();
+        }
+        else {
+            averageRating = "0";
+        }
     }
 
     public Integer getId() {

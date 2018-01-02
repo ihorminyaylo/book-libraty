@@ -61,7 +61,10 @@ public class BookServiceImpl extends AbstractService<Book, BookPattern> implemen
         List<BookDto> listEntity;
         try {
             List<Book> books = getDao().find(listParams);
-            books.forEach(book -> book.setAverageRating(book.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
+            books.forEach(book -> {
+                if (book.getAverageRating() != null) {
+                    book.setAverageRating(book.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN));
+                }});
             listEntity = books.stream().map(book -> new BookDto(book)).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BusinessException(e);

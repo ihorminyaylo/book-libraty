@@ -26,7 +26,7 @@ public class Book extends AbstractEntity {
     @Column(name = "name", nullable = false, length = 256)
     private String name;
 
-    @Column(name = "year_published", length = 256)
+    @Column(name = "year_published", length = 4)
     private int yearPublished;
 
     @Column(name = "publisher", length = 256)

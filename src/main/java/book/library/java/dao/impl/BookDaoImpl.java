@@ -4,12 +4,15 @@ import book.library.java.dao.BookDao;
 import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
+import book.library.java.list.SortParams;
 import book.library.java.model.Author;
 import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.Column;
+import java.lang.reflect.Field;
 import java.util.List;
 
 @Repository
@@ -22,6 +25,7 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
             throw new DaoException("AbstractEntity can't be null");
         }
         List<Author> authors = bookWithAuthors.getAuthors();
+        System.out.println(book.getYearPublished());
         book.setAuthors(authors);
         entityManager.persist(book);
         return book.getId();
@@ -51,7 +55,7 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
     @Override
     public List<Book> find(ListParams<BookPattern> listParams) throws DaoException {
         StringBuilder query = new StringBuilder("SELECT * FROM  book");
-        query = generateQueryWithParams(listParams, query);
+        query = generateQueryWithParams(listParams, query, true);
         generateQueryWithSortParams(listParams, query);
         Query nativeQuery = (Query) entityManager.createNativeQuery(query.toString(), Book.class);
         nativeQuery = setParameters(listParams, nativeQuery, true);
@@ -60,7 +64,7 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
         return bookList;
     }
 
-    private StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query) {
+    private StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query, Boolean typeQueryFind) {
         if (listParams.getPattern() != null) {
             BookPattern pattern = listParams.getPattern();
             if (pattern != null) {
@@ -74,6 +78,9 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
                 if (pattern.getRating() != null) {
                     query.append(" AND book.average_rating BETWEEN :ratingSmall AND :ratingBig");
                 }
+            }
+            if (typeQueryFind) {
+                addSortParams(listParams, query);
             }
         } else {
             query.append(" ORDER BY average_rating, create_date");
@@ -105,7 +112,7 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
     @Override
     public Integer totalRecords(ListParams<BookPattern> listParams) {
         StringBuilder query = new StringBuilder("SELECT Count(book.id) FROM book");
-        Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query).toString());
+        Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query, false).toString());
         nativeQuery = setParameters(listParams, nativeQuery, false);
         return Integer.parseInt(nativeQuery.getSingleResult().toString());
     }
