@@ -24,18 +24,16 @@ public class ReviewDaoImpl extends AbstractDao<Review, ReviewPattern> implements
     }
 
     @Override
-    public List<ReviewPageDto> getCountOfEachRating() {
+    public List<ReviewPageDto> getCountOfEachRating() { // todo: wrong table
         return (List<ReviewPageDto>) entityManager.
-            createNativeQuery("SELECT ROUND(average_rating) as rating, count(average_rating) FROM book GROUP BY rating ORDER BY rating")
+            createNativeQuery("SELECT ROUND(average_rating) as rating, count(*) FROM book GROUP BY rating ORDER BY rating")
             .getResultList();
     }
 
     private StringBuilder generateQueryWithParams(ListParams<ReviewPattern> listParams, StringBuilder query) {
         ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
-        if (pattern != null) {
-            if (listParams.getPattern().getBookId() != null) {
-                query.append(" WHERE book_id = :bookId");
-            }
+        if (pattern != null && pattern.getBookId() != null) {
+            query.append(" WHERE book_id = :bookId");
         }
         return query;
     }
@@ -44,7 +42,7 @@ public class ReviewDaoImpl extends AbstractDao<Review, ReviewPattern> implements
         ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
         if (listParams != null && listParams.getLimit() != null && listParams.getOffset() != null) {
             nativeQuery.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
-        }
+        }// todo: to parent
         if (pattern != null) {
             if (pattern.getBookId() != null) {
                 nativeQuery.setParameter("bookId", pattern.getBookId());
@@ -56,7 +54,6 @@ public class ReviewDaoImpl extends AbstractDao<Review, ReviewPattern> implements
     @Override
     public Integer totalRecords(ListParams<ReviewPattern> listParams) {
         String queryString = "SELECT Count(*) FROM review WHERE book_id = :idBook";
-        javax.persistence.Query query = entityManager.createNativeQuery(queryString).setParameter("idBook", listParams.getPattern().getBookId());
-        return Integer.parseInt(query.getSingleResult().toString());
+        return ((Number) entityManager.createNativeQuery(queryString, Long.class).setParameter("idBook", listParams.getPattern().getBookId()).getSingleResult()).intValue();
     }
 }

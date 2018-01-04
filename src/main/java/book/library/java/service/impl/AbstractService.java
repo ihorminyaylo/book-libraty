@@ -15,15 +15,15 @@ import java.util.List;
 
 @Service
 @Transactional
-public abstract class AbstractService<T extends AbstractEntity, P> implements BaseService<T, P> {
+public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEntity, P> implements BaseService<T, P> {
 
-    private Dao<T, P> dao;
+    private D dao;
 
-    AbstractService(Dao<T, P> dao) {
+    AbstractService(D dao) {
         this.dao = dao;
     }
 
-    public Dao<T, P> getDao() {
+    public D getDao() {
         return dao;
     }
 
@@ -39,14 +39,12 @@ public abstract class AbstractService<T extends AbstractEntity, P> implements Ba
 
     @Override
     public ListEntityPage<T> read(ListParams<P> listParams) throws BusinessException {
-        List<T> listEntity = new ArrayList<>();
+        List<T> listEntity;
         Integer totalItems = dao.totalRecords(listParams);
-        if (listParams.getLimit() != null || listParams.getOffset() != null) {
-            try {
-                listEntity = dao.find(listParams);
-            } catch (Exception e) {
-                throw new BusinessException(e);
-            }
+        try {
+            listEntity = dao.find(listParams);
+        } catch (Exception e) {
+            throw new BusinessException(e);
         }
         return new ListEntityPage<>(listEntity, totalItems);
     }

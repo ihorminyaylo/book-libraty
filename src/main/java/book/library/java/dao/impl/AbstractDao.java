@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.math.BigDecimal;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -88,8 +89,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public Integer totalRecords(ListParams<P> listParams) {
         String queryString = "SELECT Count(*) FROM " + entityType.getName();
-        Query query = entityManager.createQuery(queryString);
-        return Integer.parseInt(query.getSingleResult().toString()); // hueta
+        return entityManager.createQuery(queryString, Number.class).getSingleResult().intValue();
     }
 
     void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
@@ -113,6 +113,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
             for (Field field : fields) {
                 field.setAccessible(true);
             }
+            // : todo
             String checkFieldName = sortParams.getParameter();
             if (checkFieldName.contains("_")) {
                 checkFieldName = checkFieldName.replace("_", "");

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BookServiceImpl extends AbstractService<Book, BookPattern> implements BookService {
+public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern> implements BookService {
 
     @Autowired
     public BookServiceImpl(BookDao bookDao) {
@@ -50,7 +50,7 @@ public class BookServiceImpl extends AbstractService<Book, BookPattern> implemen
 
     @Override
     public List<BookDto> readTopFive() {
-        List<Book> books = ((BookDao) getDao()).readTopFive();
+        List<Book> books = getDao().readTopFive();
         books.forEach(book -> book.setAverageRating(book.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
         return books.stream().map(book -> new BookDto(book)).collect(Collectors.toList());
     }

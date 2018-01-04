@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class Book extends AbstractEntity {
     private String name;
 
     @Column(name = "year_published", length = 4)
-    private int yearPublished;
+    private Integer yearPublished;
 
     @Column(name = "publisher", length = 256)
     private String publisher;
@@ -43,10 +44,10 @@ public class Book extends AbstractEntity {
     @JoinTable(name = "author_book",
         joinColumns = {@JoinColumn(name = "book_id", nullable = false)},
         inverseJoinColumns = {@JoinColumn(name = "author_id", nullable = false)})
-    private List<Author> authors;
+    private List<Author> authors = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "book")
-    private List<Review> reviews;
+    private List<Review> reviews = new ArrayList<>();
 
     public Book() {
     }

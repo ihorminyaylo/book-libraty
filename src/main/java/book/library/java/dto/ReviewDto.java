@@ -16,7 +16,7 @@ public class ReviewDto {
         commenterName = review.getCommenterName();
         comment = review.getComment();
         rating = review.getRating();
-        createDate = ((Date) review.getCreateDate()).toString();
+        createDate = review.getCreateDate().toString();
     }
 
     public Integer getId() {

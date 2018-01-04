@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthorServiceImpl extends AbstractService<Author, AuthorPattern> implements AuthorService {
+public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, AuthorPattern> implements AuthorService {
 
     @Autowired
     public AuthorServiceImpl(AuthorDao authorDao) {

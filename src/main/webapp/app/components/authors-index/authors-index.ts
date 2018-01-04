@@ -273,7 +273,8 @@ class BulkDelete {
                 authorsNotRemove: ()=> this.authors
             }
         })};
-        this.pageChanged();});
+            this.pageChanged();
+        });
         this.$uibModalInstance.close();
     }
     close() {

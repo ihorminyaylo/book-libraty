@@ -41,13 +41,12 @@ public class AuthorDaoImpl extends AbstractDao<Author, AuthorPattern> implements
     @Override
     public Integer totalRecords(ListParams<AuthorPattern> listParams) {
         String query = "SELECT Count(author.id) FROM author";
-        Query nativeQuery = (Query) entityManager.createNativeQuery(query);
-        return Integer.parseInt(nativeQuery.getSingleResult().toString());
+        return entityManager.createQuery(query, Number.class).getSingleResult().intValue();
     }
 
     @Override
     public List<Author> readTopFive() throws DaoException {
-        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating", Author.class).setFirstResult(0).setMaxResults(5).getResultList();
+        return entityManager.createNativeQuery("SELECT * FROM author ORDER BY average_rating", Author.class).setMaxResults(5).getResultList();
     }
 
     @Override
@@ -56,17 +55,14 @@ public class AuthorDaoImpl extends AbstractDao<Author, AuthorPattern> implements
             throw new DaoException("AbstractEntity id can't be null");
         }
         Author author = get(idAuthor);
-        if (author == null) {
-            throw new DaoException("Such author doesn't exist");
-        }
         Integer countBook = Integer.parseInt(
-            entityManager.createNativeQuery("SELECT count(1) FROM author_book WHERE author_id = :authorId")
-                .setParameter("authorId", author.getId()).getSingleResult().toString());
+            entityManager.createNativeQuery("SELECT count(*) FROM author_book WHERE author_id = :authorId")
+                .setParameter("authorId", idAuthor).getSingleResult().toString());
         if (countBook != 0) {
             return author;
         }
         try {
-            super.delete(author.getId());
+            delete(idAuthor);
         } catch (Exception e) {
             throw new DaoException(e.getMessage(), e.getCause());
         }

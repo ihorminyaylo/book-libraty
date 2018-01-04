@@ -28,6 +28,7 @@ CREATE TABLE author_book (author_id INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES author(id),
   FOREIGN KEY (book_id) REFERENCES book(id));
 
+// todo: TRIGGER == hueta
 
 CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$
 BEGIN

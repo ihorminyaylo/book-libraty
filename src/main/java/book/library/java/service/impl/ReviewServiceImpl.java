@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ReviewServiceImpl extends AbstractService<Review, ReviewPattern> implements ReviewService {
+public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, ReviewPattern> implements ReviewService {
 
     @Autowired
     public ReviewServiceImpl(ReviewDao reviewDao) {
@@ -43,7 +43,7 @@ public class ReviewServiceImpl extends AbstractService<Review, ReviewPattern> im
 
     @Override
     public List<ReviewPageDto> getCountOfEachRating() {
-        return ((ReviewDao) getDao()).getCountOfEachRating();
+        return getDao().getCountOfEachRating();
     }
 
     @Override

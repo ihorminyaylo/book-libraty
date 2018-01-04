@@ -20,12 +20,11 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
 
     @Override
     public Integer create(BookWithAuthors bookWithAuthors) throws DaoException {
-        Book book = bookWithAuthors.getBook();
         if (null == bookWithAuthors) {
             throw new DaoException("AbstractEntity can't be null");
         }
+        Book book = bookWithAuthors.getBook();
         List<Author> authors = bookWithAuthors.getAuthors();
-        System.out.println(book.getYearPublished());
         book.setAuthors(authors);
         entityManager.persist(book);
         return book.getId();
@@ -33,19 +32,17 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
 
     @Override
     public List<Book> readTopFive() {
-        List<Book> books = entityManager.createNativeQuery("SELECT * FROM book ORDER BY average_rating", Book.class).setFirstResult(0).setMaxResults(5).getResultList();
-        books.forEach(book -> {
-            book.getAuthors().size();
-        });
+        List<Book> books = entityManager.createNativeQuery("SELECT * FROM book ORDER BY average_rating", Book.class).setMaxResults(5).getResultList();
+        books.forEach(book -> book.getAuthors().size());
         return books;
     }
 
     @Override
     public Integer update(BookWithAuthors bookWithAuthors) throws DaoException {
-        Book book = bookWithAuthors.getBook();
         if (null == bookWithAuthors) {
             throw new DaoException("AbstractEntity can't be null");
         }
+        Book book = bookWithAuthors.getBook();
         List<Author> authors = bookWithAuthors.getAuthors();
         book.setAuthors(authors);
         entityManager.merge(book);
@@ -97,8 +94,8 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
         }
         if (pattern != null) {
             if (pattern.getSearch() != null) {
-                nativeQuery.setParameter("search", "%" + pattern.getSearch() + "%");
             }
+            nativeQuery.setParameter("search", "%" + pattern.getSearch() + "%");
             if (pattern.getAuthorId() != null) {
                 nativeQuery.setParameter("authorId", listParams.getPattern().getAuthorId());
             }
@@ -109,12 +106,22 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
         return nativeQuery;
     }
 
-    @Override
+    /*@Override
     public Integer totalRecords(ListParams<BookPattern> listParams) {
         StringBuilder query = new StringBuilder("SELECT Count(book.id) FROM book");
         Query nativeQuery = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, query, false).toString());
         nativeQuery = setParameters(listParams, nativeQuery, false);
         return Integer.parseInt(nativeQuery.getSingleResult().toString());
+    }*/
+
+
+    @Override
+    public Integer totalRecords(ListParams<BookPattern> listParams) {
+        StringBuilder query = new StringBuilder("SELECT Count(*) FROM book");
+        Query nativeQuery = (Query) entityManager.createQuery(generateQueryWithParams(listParams, query, false).toString());
+        nativeQuery = setParameters(listParams, nativeQuery, false);
+        Number number = (Number) nativeQuery.getSingleResult();
+        return number.intValue();
     }
 
     @Override
