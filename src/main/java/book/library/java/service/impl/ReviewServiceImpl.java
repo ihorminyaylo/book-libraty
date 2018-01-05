@@ -42,11 +42,6 @@ public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, Review
     }
 
     @Override
-    public List<ReviewPageDto> getCountOfEachRating() {
-        return getDao().getCountOfEachRating();
-    }
-
-    @Override
     public void update(Review review) throws BusinessException {
         validateEntity(review);
         super.update(review);

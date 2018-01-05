@@ -1,23 +1,20 @@
 package book.library.java.dao.impl;
 
 import book.library.java.dao.Dao;
-import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
 import book.library.java.list.SortParams;
 import book.library.java.model.AbstractEntity;
-import book.library.java.model.Book;
-import book.library.java.model.pattern.BookPattern;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
@@ -59,7 +56,21 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     }
 
     @Override
-    public abstract List<T> find(ListParams<P> listParams) throws DaoException, BusinessException;
+    public List<T> find(ListParams<P> listParams) throws DaoException {
+        StringBuilder queryString = new StringBuilder("SELECT * FROM " + entityType.getSimpleName());
+        generateQueryWithParams(listParams, queryString, true);
+        generateQueryWithSortParams(listParams, queryString);
+        Query query = (Query) entityManager.createNativeQuery(queryString.toString(), entityType);
+        query = setParameters(listParams, query, true);
+        return query.getResultList();
+    }
+
+    @Override
+    public List<T> findTopFive() {
+        StringBuilder query = new StringBuilder("SELECT * FROM " + entityType.getSimpleName() + " ORDER BY average_rating");
+        return entityManager.createNativeQuery(query.toString(), entityType).setMaxResults(5).getResultList();
+    }
+
 
     @Override
     public void update(T entity) throws DaoException {
@@ -87,9 +98,12 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     }
 
     @Override
-    public Integer totalRecords(ListParams<P> listParams) {
-        String queryString = "SELECT Count(*) FROM " + entityType.getName();
-        return entityManager.createQuery(queryString, Number.class).getSingleResult().intValue();
+    public List<Integer> bulkDelete(List<Integer> idEntities) throws DaoException {
+        List<Integer> listId = new ArrayList<>();
+        for (Integer idBook : idEntities) {
+            listId.add(delete(idBook));
+        }
+        return listId;
     }
 
     void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
@@ -124,5 +138,33 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
                 }
             }
         }
+    }
+
+    @Override
+    public Integer totalRecords(ListParams<P> listParams) {
+        StringBuilder queryString = new StringBuilder("SELECT Count(*) FROM " + entityType.getSimpleName());
+        Query query = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, queryString, false).toString());
+        query = setParameters(listParams, query, false);
+        return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
+    public StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) {
+        if (typeQueryFind) {
+            if (listParams.getPattern() != null) {
+                addSortParams(listParams, query);
+            }
+        }
+        return query;
+    }
+
+    @Override
+    public Query setParameters(ListParams<P> listParams, Query query, Boolean typeQueryFind) {
+        if (typeQueryFind) {
+            if (listParams.getLimit() != null && listParams.getOffset() != null) {
+                query.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
+            }
+        }
+        return query;
     }
 }

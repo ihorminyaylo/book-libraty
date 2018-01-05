@@ -35,11 +35,6 @@ public class ReviewController {
         return ResponseEntity.ok(reviewService.readReviews(listParams));
     }
 
-    @GetMapping(value = "/review_detail")
-    public ResponseEntity readDetail() {
-        return ResponseEntity.ok(reviewService.getCountOfEachRating());
-    }
-
     @PutMapping
     public ResponseEntity update(@RequestBody Review review) throws BusinessException {
         reviewService.update(review);

@@ -18,13 +18,6 @@ import java.util.List;
 public interface ReviewService extends BaseService<Review, ReviewPattern> {
 
     /**
-     * This method for get all types rating(stars) and count book of this rating
-     *
-     * @return List of Page DTO where definite next fields: rating and count
-     */
-    List<ReviewPageDto> getCountOfEachRating();
-
-    /**
      * This method for get review by definite parameters.
      *
      * @param listParams

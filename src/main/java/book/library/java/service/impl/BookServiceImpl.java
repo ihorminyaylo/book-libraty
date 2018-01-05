@@ -2,8 +2,8 @@ package book.library.java.service.impl;
 
 import book.library.java.dao.BookDao;
 import book.library.java.dto.BookDto;
-import book.library.java.dto.BookWithAuthors;
 import book.library.java.dto.ListEntityPage;
+import book.library.java.dto.ReviewPageDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
@@ -27,10 +27,10 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern>
     }
 
     @Override
-    public Integer create(BookWithAuthors bookWithAuthors) throws BusinessException {
-        validateEntity(bookWithAuthors.getBook());
+    public Integer create(Book book) throws BusinessException {
+        validateEntity(book);
         try {
-            return ((BookDao) getDao()).create(bookWithAuthors);
+            return getDao().create(book);
 
         } catch (Exception e) {
             throw new BusinessException(e);
@@ -50,9 +50,14 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern>
 
     @Override
     public List<BookDto> readTopFive() {
-        List<Book> books = getDao().readTopFive();
+        List<Book> books = getDao().findTopFive();
         books.forEach(book -> book.setAverageRating(book.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
         return books.stream().map(book -> new BookDto(book)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ReviewPageDto> getCountOfEachRating() {
+        return getDao().getCountOfEachRating();
     }
 
     @Override
@@ -62,9 +67,11 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern>
         try {
             List<Book> books = getDao().find(listParams);
             books.forEach(book -> {
+                book.getAuthors().size();
                 if (book.getAverageRating() != null) {
                     book.setAverageRating(book.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN));
-                }});
+                }
+            });
             listEntity = books.stream().map(book -> new BookDto(book)).collect(Collectors.toList());
         } catch (Exception e) {
             throw new BusinessException(e);
@@ -73,10 +80,10 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern>
     }
 
     @Override
-    public Integer updateBook(BookWithAuthors bookWithAuthors) throws BusinessException {
-        validateEntity(bookWithAuthors.getBook());
+    public void updateBook(Book book) throws BusinessException {
+        validateEntity(book);
         try {
-            return ((BookDao) getDao()).update(bookWithAuthors);
+            getDao().update(book);
 
         } catch (Exception e) {
             throw new BusinessException(e);

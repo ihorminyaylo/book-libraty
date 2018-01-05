@@ -1,8 +1,8 @@
 package book.library.java.service;
 
 import book.library.java.dto.BookDto;
-import book.library.java.dto.BookWithAuthors;
 import book.library.java.dto.ListEntityPage;
+import book.library.java.dto.ReviewPageDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.list.ListParams;
 import book.library.java.model.Book;
@@ -20,13 +20,20 @@ public interface BookService extends BaseService<Book, BookPattern> {
     /**
      * This method for create book, where we get like parameter BooksWithAuthors(Book and authors who wrote this book)
      *
-     * @param bookWithAuthors
+     * @param book
      * @return id of book which we created.
      * @throws BusinessException
      */
-    Integer create(BookWithAuthors bookWithAuthors) throws BusinessException;
+    Integer create(Book book) throws BusinessException;
 
     BookDto readByBookId(Integer idBook) throws BusinessException;
+
+    /**
+     * This method for get all types rating(stars) and count book of this rating
+     *
+     * @return List of Page DTO where definite next fields: rating and count
+     */
+    List<ReviewPageDto> getCountOfEachRating();
 
     /**
      * @param listParams with condition type
@@ -42,7 +49,7 @@ public interface BookService extends BaseService<Book, BookPattern> {
      */
     List<BookDto> readTopFive();
 
-    Integer updateBook(BookWithAuthors bookWithAuthors) throws BusinessException;
+    void updateBook(Book book) throws BusinessException;
 
 
     /**

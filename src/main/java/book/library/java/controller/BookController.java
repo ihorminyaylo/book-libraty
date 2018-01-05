@@ -1,8 +1,8 @@
 package book.library.java.controller;
 
-import book.library.java.dto.BookWithAuthors;
 import book.library.java.exception.BusinessException;
 import book.library.java.list.ListParams;
+import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +31,8 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity create(@RequestBody BookWithAuthors bookWithAuthors) throws BusinessException {
-        return ResponseEntity.ok(bookService.create(bookWithAuthors));
+    public ResponseEntity create(@RequestBody Book book) throws BusinessException {
+        return ResponseEntity.ok(bookService.create(book));
     }
 
     @GetMapping(value = "/byBook")
@@ -50,9 +50,15 @@ public class BookController {
         return ResponseEntity.ok(bookService.readTopFive());
     }
 
+    @GetMapping(value = "/count_books_each_rating")
+    public ResponseEntity readDetail() {
+        return ResponseEntity.ok(bookService.getCountOfEachRating());
+    }
+
     @PutMapping
-    public ResponseEntity update(@RequestBody BookWithAuthors bookWithAuthors) throws BusinessException {
-        return ResponseEntity.ok(bookService.updateBook(bookWithAuthors));
+    public ResponseEntity update(@RequestBody Book book) throws BusinessException {
+        bookService.updateBook(book);
+        return ResponseEntity.ok(book.getId());
     }
 
     @DeleteMapping(value = "/{id}")

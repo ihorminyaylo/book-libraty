@@ -50,7 +50,7 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
     @Override
     public List<AuthorDto> readTopFive() throws BusinessException {
         try {
-            List<Author> authors = ((AuthorDao) getDao()).readTopFive();
+            List<Author> authors = getDao().findTopFive();
             authors.forEach(author -> author.setAverageRating(author.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
             return authors.stream().map(AuthorDto::new).collect(Collectors.toList());
         } catch (Exception e) {
@@ -78,20 +78,20 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
     }
 
     @Override
-    public List<AuthorDto> bulkDelete(List<Integer> idAuthors) throws BusinessException {
+    public List<Integer> bulkDelete(List<Integer> idAuthors) throws BusinessException {
         try {
-            return ((AuthorDao) getDao()).bulkDelete(idAuthors).stream().map(AuthorDto::new).collect(Collectors.toList());
+            return getDao().bulkDelete(idAuthors);
         } catch (Exception e) {
             throw new BusinessException(e);
         }
     }
 
     @Override
-    public AuthorDto deleteAuthor(Integer idAuthor) throws BusinessException {
+    public Integer deleteAuthor(Integer idAuthor) throws BusinessException {
         try {
-            Author author = ((AuthorDao) getDao()).deleteAuthor(idAuthor);
-            if (author != null) {
-                return new AuthorDto(author);
+            Integer id = getDao().delete(idAuthor);
+            if (id != null) {
+                return id;
             }
         } catch (Exception e) {
             throw new BusinessException(e);

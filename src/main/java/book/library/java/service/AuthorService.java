@@ -39,7 +39,7 @@ public interface AuthorService extends BaseService<Author, AuthorPattern> {
      * @return List author DTO which we can't remove
      * @throws BusinessException
      */
-    List<AuthorDto> bulkDelete(List<Integer> idEntities) throws BusinessException;
+    List<Integer> bulkDelete(List<Integer> idEntities) throws BusinessException;
 
     /**
      * This method for delete one author by id
@@ -48,5 +48,5 @@ public interface AuthorService extends BaseService<Author, AuthorPattern> {
      * @return Author DTO which we can't remove
      * @throws BusinessException
      */
-    AuthorDto deleteAuthor(Integer idAuthor) throws BusinessException;
+    Integer deleteAuthor(Integer idAuthor) throws BusinessException;
 }
