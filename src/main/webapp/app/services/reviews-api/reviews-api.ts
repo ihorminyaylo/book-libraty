@@ -13,7 +13,6 @@ export class IReview {
 }
 
 export interface IReviewsApi extends IApi<IReview> {
-    readAll();
     find(listParams: ListParams<ReviewPattern>);
 }
 
@@ -21,9 +20,6 @@ class HttpReviewsApi extends HttpApi<IReview> implements IReviewsApi {
     API_URL = this.REVIEW_URL;
     constructor($http: angular.IHttpService) {
         super($http);
-    }
-    public readAll() {
-        return this.$http.get(this.BASE_URL + this.API_URL + '/review_detail');
     }
     public find(listParams: ListParams<ReviewPattern>) {
         return this.$http.post(this.BASE_URL + this.API_URL + '/find', {limit: listParams.limit, offset: listParams.offset,

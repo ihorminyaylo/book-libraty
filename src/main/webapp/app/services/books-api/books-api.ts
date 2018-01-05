@@ -19,9 +19,10 @@ export class IBook {
 }
 
 export interface IBooksApi extends IApi<IBook> {
-    createBook(book: IBook, authors: IAuthor[]);
-    updateBook(book: IBook, authors: IAuthor[]);
+    createBook(book: IBook);
+    updateBook(book: IBook);
     find(listParams: ListParams<BookPattern>);
+    countBooksOfEachRating();
     findTop();
     getBookByPage(limit, offset, filterBy);
     getByBook(idBook: number);
@@ -35,17 +36,21 @@ class HttpBooksApi extends HttpApi<IBook> implements IBooksApi {
     constructor($http: angular.IHttpService) {
         super($http);
     }
-    public createBook(book: IBook, authors: IAuthor[]) {
-        return this.$http.post(this.BASE_URL + this.API_URL, {book, authors});
+    public createBook(book: IBook) {
+        console.log(book);
+        return this.$http.post(this.BASE_URL + this.API_URL, book);
     }
-    public updateBook(book: IBook, authors: IAuthor[]) {
-        return this.$http.put(this.BASE_URL + this.API_URL, {book, authors});
+    public updateBook(book: IBook) {
+        return this.$http.put(this.BASE_URL + this.API_URL, book);
     }
 
     public find(listParams: ListParams<BookPattern>) {
         return this.$http.post(this.BASE_URL + this.API_URL + '/find', {limit: listParams.limit, offset: listParams.offset,
             pattern: {authorId: listParams.pattern.authorId,rating: listParams.pattern.rating, search: listParams.pattern.search}, sortParams: listParams.sortParams})
             .then(entitiesResponse => entitiesResponse.data);
+    }
+    public countBooksOfEachRating() {
+        return this.$http.get(this.BASE_URL + this.API_URL + '/count_books_each_rating');
     }
 
     public findTop() {

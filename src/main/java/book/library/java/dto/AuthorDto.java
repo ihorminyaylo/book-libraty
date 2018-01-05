@@ -8,15 +8,14 @@ import java.math.BigDecimal;
  * Represent a AuthorDto. This class for convenient transfer of information between front-end and back-end.
  * AuthorDto have id, firstName, secondName, createDate, averageRating
  */
-public class AuthorDto {
-    private Integer id;
+public class AuthorDto extends AbstractDto {
     private String firstName;
     private String secondName;
     private String averageRating;
 
 
     public AuthorDto(Author author) {
-        id = author.getId();
+        super(author);
         firstName = author.getFirstName();
         secondName = author.getSecondName();
         if (author.getAverageRating() != null) {
@@ -25,14 +24,6 @@ public class AuthorDto {
         else {
             averageRating = "0";
         }
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getFirstName() {

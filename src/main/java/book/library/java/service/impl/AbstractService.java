@@ -1,10 +1,13 @@
 package book.library.java.service.impl;
 
 import book.library.java.dao.Dao;
+import book.library.java.dto.AuthorDto;
 import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
+import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
 import book.library.java.model.AbstractEntity;
+import book.library.java.model.Author;
 import book.library.java.service.BaseService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +18,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEntity, P> implements BaseService<T, P> {
+public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEntity, P, U> implements BaseService<T, P, U> {
 
     private D dao;
 
@@ -49,6 +52,19 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
         return new ListEntityPage<>(listEntity, totalItems);
     }
 
+    @Override
+    public List<T> readAll() {
+        return getDao().findAll();
+    }
+
+    @Override
+    public U readById(Integer idEntity) throws BusinessException {
+        try {
+            return (U) getDao().get(idEntity);
+        } catch (DaoException e) {
+            throw new BusinessException(e);
+        }
+    }
 
     @Override
     public void update(T entity) throws BusinessException {
@@ -62,11 +78,19 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
     @Override
     public Integer delete(Integer idEntity) throws BusinessException {
         try {
-            dao.delete(idEntity);
+            return dao.delete(idEntity);
         } catch (Exception e) {
             throw new BusinessException(e);
         }
-        return idEntity;
+    }
+
+    @Override
+    public List<Integer> bulkDelete(List<Integer> idEntities) throws BusinessException {
+        try {
+            return getDao().bulkDelete(idEntities);
+        } catch (Exception e) {
+            throw new BusinessException(e);
+        }
     }
 
     @Override

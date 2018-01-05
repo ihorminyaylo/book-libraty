@@ -43,11 +43,13 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     }
 
     @Override
-    public T get(Integer id) throws DaoException {
-        if (id == null) {
-            throw new DaoException("Id of entity can't be null");
-        }
-        return entityManager.find(entityType, id);
+    public List<T> find(ListParams<P> listParams) throws DaoException {
+        StringBuilder queryString = new StringBuilder("SELECT * FROM " + entityType.getSimpleName());
+        generateQueryWithParams(listParams, queryString, true);
+        generateQueryWithSortParams(listParams, queryString);
+        Query query = (Query) entityManager.createNativeQuery(queryString.toString(), entityType);
+        query = setParameters(listParams, query, true);
+        return query.getResultList();
     }
 
     @Override
@@ -56,13 +58,11 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     }
 
     @Override
-    public List<T> find(ListParams<P> listParams) throws DaoException {
-        StringBuilder queryString = new StringBuilder("SELECT * FROM " + entityType.getSimpleName());
-        generateQueryWithParams(listParams, queryString, true);
-        generateQueryWithSortParams(listParams, queryString);
-        Query query = (Query) entityManager.createNativeQuery(queryString.toString(), entityType);
-        query = setParameters(listParams, query, true);
-        return query.getResultList();
+    public T get(Integer id) throws DaoException {
+        if (id == null) {
+            throw new DaoException("Id of entity can't be null");
+        }
+        return entityManager.find(entityType, id);
     }
 
     @Override
@@ -106,6 +106,34 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
         return listId;
     }
 
+    @Override
+    public Integer totalRecords(ListParams<P> listParams) {
+        StringBuilder queryString = new StringBuilder("SELECT Count(*) FROM " + entityType.getSimpleName());
+        Query query = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, queryString, false).toString());
+        query = setParameters(listParams, query, false);
+        return ((Number) query.getSingleResult()).intValue();
+    }
+
+    @Override
+    public StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) {
+        if (typeQueryFind) {
+            if (listParams.getPattern() != null) {
+                addSortParams(listParams, query);
+            }
+        }
+        return query;
+    }
+
+    @Override
+    public Query setParameters(ListParams<P> listParams, Query query, Boolean typeQueryFind) {
+        if (typeQueryFind) {
+            if (listParams.getLimit() != null && listParams.getOffset() != null) {
+                query.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
+            }
+        }
+        return query;
+    }
+
     void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
         SortParams sortParams = listParams.getSortParams();
         if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
@@ -138,33 +166,5 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
                 }
             }
         }
-    }
-
-    @Override
-    public Integer totalRecords(ListParams<P> listParams) {
-        StringBuilder queryString = new StringBuilder("SELECT Count(*) FROM " + entityType.getSimpleName());
-        Query query = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, queryString, false).toString());
-        query = setParameters(listParams, query, false);
-        return ((Number) query.getSingleResult()).intValue();
-    }
-
-    @Override
-    public StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) {
-        if (typeQueryFind) {
-            if (listParams.getPattern() != null) {
-                addSortParams(listParams, query);
-            }
-        }
-        return query;
-    }
-
-    @Override
-    public Query setParameters(ListParams<P> listParams, Query query, Boolean typeQueryFind) {
-        if (typeQueryFind) {
-            if (listParams.getLimit() != null && listParams.getOffset() != null) {
-                query.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
-            }
-        }
-        return query;
     }
 }

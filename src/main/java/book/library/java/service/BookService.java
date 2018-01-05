@@ -15,7 +15,7 @@ import java.util.List;
  * which extends of BaseService with generic Book(type of entity) and BookPattern(type of Pattern for definite entity)
  * A Book BaseService have such methods: create, readTop, bulkDelete
  */
-public interface BookService extends BaseService<Book, BookPattern> {
+public interface BookService extends BaseService<Book, BookPattern, BookDto> {
 
     /**
      * This method for create book, where we get like parameter BooksWithAuthors(Book and authors who wrote this book)
@@ -25,8 +25,6 @@ public interface BookService extends BaseService<Book, BookPattern> {
      * @throws BusinessException
      */
     Integer create(Book book) throws BusinessException;
-
-    BookDto readByBookId(Integer idBook) throws BusinessException;
 
     /**
      * This method for get all types rating(stars) and count book of this rating
@@ -48,15 +46,4 @@ public interface BookService extends BaseService<Book, BookPattern> {
      * @return List books DTO
      */
     List<BookDto> readTopFive();
-
-    void updateBook(Book book) throws BusinessException;
-
-
-    /**
-     * This method for delete one book by id
-     *
-     * @param idEntities is List of id books which we want remove
-     * @throws BusinessException
-     */
-    void bulkDelete(List<Integer> idEntities) throws BusinessException;
 }

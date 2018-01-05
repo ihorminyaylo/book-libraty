@@ -20,9 +20,9 @@ public class AuthorDaoImpl extends AbstractDao<Author, AuthorPattern> implements
         }
         try {
             super.delete(idAuthor);
+            return null;
         } catch (Exception e) {
             throw new DaoException(e.getMessage(), e.getCause());
         }
-        return null;
     }
 }

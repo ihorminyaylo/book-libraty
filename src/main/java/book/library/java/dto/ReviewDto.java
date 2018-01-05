@@ -4,27 +4,18 @@ import book.library.java.model.Review;
 
 import java.util.Date;
 
-public class ReviewDto {
-    private Integer id;
+public class ReviewDto extends AbstractDto {
     private String commenterName;
     private String createDate;
     private String comment;
     private Integer rating;
 
     public ReviewDto(Review review) {
-        id = review.getId();
+        super(review);
         commenterName = review.getCommenterName();
         comment = review.getComment();
         rating = review.getRating();
         createDate = review.getCreateDate().toString();
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getCommenterName() {

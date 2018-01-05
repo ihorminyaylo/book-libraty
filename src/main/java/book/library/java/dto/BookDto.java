@@ -6,8 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BookDto {
-    private Integer id;
+public class BookDto extends AbstractDto  {
     private String name;
     private String publisher;
     private Integer yearPublished;
@@ -15,16 +14,13 @@ public class BookDto {
     private String averageRating;
 
     public BookDto(Book book) {
-        if (book.getId() != null) {
-            id = book.getId();
-        }
+        super(book);
         if (book.getName() != null) {
             name = book.getName();
         }
         if (book.getPublisher() != null) {
             publisher = book.getPublisher();
-        }
-        else {
+        } else {
             publisher = "";
         }
         yearPublished = book.getYearPublished();
@@ -33,18 +29,9 @@ public class BookDto {
         }
         if (book.getAverageRating() != null) {
             averageRating = book.getAverageRating().toString();
-        }
-        else {
+        } else {
             averageRating = "0";
         }
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {

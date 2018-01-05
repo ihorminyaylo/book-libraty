@@ -1,0 +1,40 @@
+<script type="text/ng-template" id="/dialogChange.html">
+	<div class="modal-header" align="center">
+		<h3 class="modal-title">{{dialogChange.modalOptions.headerText}}</h3>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<form name="authorForm" novalidate>
+					<div class="modal-body">
+						<div class="form-group"
+						     ng-class="{ 'has-error' : authorForm.firstName.$invalid && (dialogChange.clickSave || !authorForm.firstName.$pristine)}">
+							<label>First name</label>
+							<input type="text" name="firstName" class="form-control" ng-model="firstName"
+							       ng-maxlength="256" required>
+							<p ng-show="authorForm.firstName.$error.maxlength && (dialogChange.clickSave || !authorForm.firstName.$pristine)"
+							   class="help-block">First name is too long.</p>
+							<p ng-show="authorForm.firstName.$error.required && (dialogChange.clickSave || !authorForm.firstName.$pristine)"
+							   class="help-block">You first name is required.</p>
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : authorForm.secondName.$invalid && (dialogChange.clickSave || !authorForm.secondName.$pristine)}">
+							<label>Second Name</label>
+							<input type="text" name="secondName" class="form-control" ng-model="secondName"
+							       ng-maxlength="256">
+							<p ng-show="authorForm.secondName.$error.maxlength && (dialogChange.clickSave || !authorForm.firstName.$pristine)"
+							   class="help-block">Second name is too long.</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+						        ng-click="(dialogChange.clickSave = true) && !authorForm.firstName.$invalid && !authorForm.secondName.$invalid && dialogChange.save(firstName, secondName)">
+							{{dialogChange.modalOptions.actionButtonText}}
+						</button>
+						<button class="btn btn-warning" type="button" ng-click="dialogChange.cancel()">{{dialogChange.modalOptions.closeButtonText}}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</script>

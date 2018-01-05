@@ -15,7 +15,7 @@ import java.util.List;
  * which extends of BaseService with generic Review(type of entity) and ReviewPattern(type of Pattern for definite entity)
  * A Review BaseService have such methods: getCountOfEachRating, readReviews
  */
-public interface ReviewService extends BaseService<Review, ReviewPattern> {
+public interface ReviewService extends BaseService<Review, ReviewPattern, ReviewDto> {
 
     /**
      * This method for get review by definite parameters.

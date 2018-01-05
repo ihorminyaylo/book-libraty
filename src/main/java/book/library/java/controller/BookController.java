@@ -35,14 +35,14 @@ public class BookController {
         return ResponseEntity.ok(bookService.create(book));
     }
 
-    @GetMapping(value = "/byBook")
-    public ResponseEntity readByBookId(@RequestParam Integer idBook) throws BusinessException {
-        return ResponseEntity.ok(bookService.readByBookId(idBook));
-    }
-
     @PostMapping(value = "/find")
     public ResponseEntity<?> read(@RequestBody(required = false) ListParams<BookPattern> listParams) throws BusinessException {
         return ResponseEntity.ok(bookService.readBooks(listParams));
+    }
+
+    @GetMapping(value = "/byBook")
+    public ResponseEntity readByBookId(@RequestParam Integer idBook) throws BusinessException {
+        return ResponseEntity.ok(bookService.readById(idBook));
     }
 
     @GetMapping(value = "/findTop")
@@ -51,13 +51,13 @@ public class BookController {
     }
 
     @GetMapping(value = "/count_books_each_rating")
-    public ResponseEntity readDetail() {
+    public ResponseEntity readCountOfEachRating() {
         return ResponseEntity.ok(bookService.getCountOfEachRating());
     }
 
     @PutMapping
     public ResponseEntity update(@RequestBody Book book) throws BusinessException {
-        bookService.updateBook(book);
+        bookService.update(book);
         return ResponseEntity.ok(book.getId());
     }
 

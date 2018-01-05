@@ -35,9 +35,9 @@ public class AuthorController {
         return ResponseEntity.ok(authorService.create(author));
     }
 
-    @GetMapping(value = "/byId")
-    public ResponseEntity readByBookId(@RequestParam Integer idAuthor) throws BusinessException {
-        return ResponseEntity.ok(authorService.readById(idAuthor));
+    @PostMapping(value = "/find")
+    public ResponseEntity read(@RequestBody ListParams<AuthorPattern> listParams) throws BusinessException {
+        return ResponseEntity.ok(authorService.read(listParams));
     }
 
     @GetMapping(value = "/findAll")
@@ -45,14 +45,14 @@ public class AuthorController {
         return ResponseEntity.ok(authorService.readAll());
     }
 
+    @GetMapping(value = "/byId")
+    public ResponseEntity readByBookId(@RequestParam Integer idAuthor) throws BusinessException {
+        return ResponseEntity.ok(authorService.readById(idAuthor));
+    }
+
     @GetMapping(value = "/findTop")
     public ResponseEntity readTopFive() throws BusinessException {
         return ResponseEntity.ok(authorService.readTopFive());
-    }
-
-    @PostMapping(value = "/find")
-    public ResponseEntity read(@RequestBody ListParams<AuthorPattern> listParams) throws BusinessException {
-        return ResponseEntity.ok(authorService.read(listParams));
     }
 
     @PutMapping
@@ -63,7 +63,7 @@ public class AuthorController {
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable("id") Integer idAuthor) throws BusinessException {
-        return ResponseEntity.ok(authorService.deleteAuthor(idAuthor));
+        return ResponseEntity.ok(authorService.delete(idAuthor));
     }
 
     @PutMapping(value = "/delete")

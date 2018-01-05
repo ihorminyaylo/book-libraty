@@ -197,6 +197,7 @@
             </div>
             <div class="form-group" ng-class="{ 'has-error' : reviewForm.span.$invalid && (addReview.click || !reviewForm.span.$pristine)}">
               <span required name="span" uib-rating ng-model="ratingStars" max="addReview.max" on-leave="addReview.overStar = null" ng-model="ratingStars" aria-labelledby="addReview.defaultRating"></span>
+              <button type="button" class="btn btn-sm btn-danger" ng-click="ratingStars = null">Clear</button>
               <p ng-show="reviewForm.span.$error.required && (addReview.click || !reviewForm.span.$pristine)" class="help-block">Your rating of book is required.</p>
             </div>
           </div>

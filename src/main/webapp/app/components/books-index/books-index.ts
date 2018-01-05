@@ -131,6 +131,7 @@ class BooksIndex {
     }
 
     deleteBook(book): void {
+        console.log(book);
         this.dialog = this.$uibModal.open({
             controller: DeleteBook,
             controllerAs: 'deleteBook',
@@ -225,8 +226,9 @@ class AddBook {
         this.book.publisher = publisher;
         console.log(yearPublisher);
         this.book.yearPublished = yearPublisher;
-        console.log(this.book)
-        this.booksApi.createBook(this.book, this.selectAuthors).then(response => this.pageChanged());
+        console.log(this.book);
+        this.book.authors = this.selectAuthors;
+        this.booksApi.createBook(this.book).then(response => this.pageChanged());
         this.$uibModalInstance.close();
     }
     cancel(): void {
@@ -324,6 +326,7 @@ class DeleteBook {
     }
 
     ok() {
+        console.log(this.book.id);
         this.booksApi.delete(this.book.id).then(response => this.pageChanged());
         this.$uibModalInstance.close();
     }

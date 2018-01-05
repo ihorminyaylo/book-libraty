@@ -1,254 +1,281 @@
 <div ng-controller="AuthorsIndex as a">
-<h1 class="ui header" align="center">List of authors</h1>
-    <div align="right">
-    <button type="button" class="btn btn-primary" ng-click="a.add()">AUTHOR <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-    <button type="button" ng-disabled="a.activeDeleteSelected" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
-    </div>
-            <table class="table table-striped">
-    <thead>
-    <tr>
-        <th><input type="checkbox" ng-click="a.checkAllAuthor()" ng-checked="a.checkAll" /></th>
-        <th class="single line">#</th>
-        <th>
-            <a ng-click="a.sortParams('first_name')"> First name
-                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-                <span ng-show="a.sortType === 'first_name' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-            </a>
-        </th>
-        <th>
-        <a ng-click="a.sortParams('second_name')"> Second name
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-            <span ng-show="a.sortType === 'second_name' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-        </a>
-        </th>
-        <th>
-            <a ng-click="a.sortParams('create_date')"> Create date
-                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-                <span ng-show="a.sortType === 'create_date' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-            </a>
-        </th>
-        <th><a ng-click="a.sortParams('average_rating')"> Rating
-            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-            <span ng-show="a.sortType === 'average_rating' && a.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-        </a>
-        </th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody ng-repeat="author in a.authorsAndCountPages.list">
-    <tr>
-        <td><input type="checkbox" ng-click="a.check(author.id)" ng-checked="author.removeStatus"></td>
-        <td>
-            {{$index + (a.currentPage-1)*a.limit + 1}}
-        </td>
-        <td>
-            {{author.firstName}}
-        </td>
-        <td>
-            {{author.secondName}}
-        </td>
-        <td>
-            {{author.createDate}}
-        </td>
-        <td>
-            <div><span uib-rating ng-model="author.averageRatingRound" max="5" read-only="true" uib-tooltip="{{author.averageRating}}"></span></div>
-        </td>
-        <td>
-            <a class="btn btn-primary" href="#!/books/author/{{author.id}}">
-                BOOKS <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
-            </a>
-            <button type="button" class="btn btn-warning" ng-click="a.edit(author)">
-                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-            </button>
-            <button type="button" class="btn btn-danger" ng-click="a.delete(author)">
-                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-            </button>
-        </td>
-    </tr>
-    </tbody>
-    <tfoot>
-    </tfoot>
-</table>
-    <ul uib-pagination total-items="a.authorsAndCountPages.totalItems" ng-model="a.currentPage" ng-change="a.pageChanged(a.currentPage)" max-size="a.maxPages" class="pagination-sm" boundary-links="true" rotate="false"></ul>
+	<h1 class="ui header" align="center">List of authors</h1>
+	<div align="right">
+		<button type="button" class="btn btn-primary" ng-click="a.addAuthor()">AUTHOR <span
+				class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+		<button type="button" ng-disabled="a.disableBulkDelete" class="btn btn-danger" ng-click="a.bulkDeleteAuthors()">
+			SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+	</div>
+	<table class="table table-striped">
+		<thead>
+		<tr>
+			<th><input type="checkbox" ng-click="a.checkAllAuthor()" ng-checked="a.checkAll"/></th>
+			<th class="single line">#</th>
+			<th>
+				<a ng-click="a.sortBy('first_name')"> First name
+					<span ng-show="a.sortParam.parameter === 'first_name' && a.sortParam.type === 'DESC'"
+					      class="glyphicon glyphicon-chevron-down"></span>
+					<span ng-show="a.sortParam.parameter === 'first_name' && a.sortParam.type === 'ASC'"
+					      class="glyphicon glyphicon-chevron-up"></span>
+				</a>
+			</th>
+			<th>
+				<a ng-click="a.sortBy('second_name')"> Second name
+					<span ng-show="a.sortParam.parameter === 'second_name' && a.sortParam.type === 'DESC'"
+					      class="glyphicon glyphicon-chevron-down"></span>
+					<span ng-show="a.sortParam.parameter === 'second_name' && a.sortParam.type === 'ASC'"
+					      class="glyphicon glyphicon-chevron-up"></span>
+				</a>
+			</th>
+			<th>
+				<a ng-click="a.sortBy('create_date')"> Create date
+					<span ng-show="a.sortParam.parameter === 'create_date' && a.sortParam.type === 'DESC'"
+					      class="glyphicon glyphicon-chevron-down"></span>
+					<span ng-show="a.sortParam.parameter === 'create_date' && a.sortParam.type === 'ASC'"
+					      class="glyphicon glyphicon-chevron-up"></span>
+				</a>
+			</th>
+			<th><a ng-click="a.sortBy('average_rating')"> Rating
+				<span ng-show="a.sortParam.parameter === 'average_rating' && a.sortParam.type === 'DESC'"
+				      class="glyphicon glyphicon-chevron-down"></span>
+				<span ng-show="a.sortParam.parameter === 'average_rating' && a.sortParam.type === 'ASC'"
+				      class="glyphicon glyphicon-chevron-up"></span>
+			</a>
+			</th>
+			<th>Action</th>
+		</tr>
+		</thead>
+		<tbody ng-repeat="author in a.authorsAndCountPages.list">
+		<tr>
+			<td><input type="checkbox" ng-click="a.checkAuthor(author.id)" ng-checked="author.removeStatus"></td>
+			<td>
+				{{$index + (a.currentPage-1)*a.limit + 1}}
+			</td>
+			<td>
+				{{author.firstName}}
+			</td>
+			<td>
+				{{author.secondName}}
+			</td>
+			<td>
+				{{author.createDate}}
+			</td>
+			<td>
+				<div><span uib-rating titles="false" ng-model="author.averageRatingRound" max="5" read-only="true"
+				           uib-tooltip="{{author.averageRating}}"></span></div>
+			</td>
+			<td>
+				<a class="btn btn-primary" href="#!/books/author/{{author.id}}">
+					BOOKS <span class="glyphicon glyphicon-book" aria-hidden="true"></span>
+				</a>
+				<button type="button" class="btn btn-warning" ng-click="a.editAuthor(author)">
+					<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+				</button>
+				<button type="button" class="btn btn-danger" ng-click="a.deleteAuthor(author)">
+					<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+				</button>
+			</td>
+		</tr>
+		</tbody>
+		<tfoot>
+		</tfoot>
+	</table>
+	<ul uib-pagination total-items="a.authorsAndCountPages.totalItems" ng-model="a.currentPage"
+	    ng-change="a.pageChanged(a.currentPage)" max-size="a.maxPages" class="pagination-sm" boundary-links="true"
+	    rotate="false"></ul>
 </div>
 
 
 <!--Dialog Add author-->
 <script type="text/ng-template" id="add-author.html">
-    <div class="modal-header">
-        <h3 class="modal-title">Add new author</h3>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <!-- FORM ============ -->
-
-                <form name="authorForm" novalidate>
-                    <!-- First name -->
-                    <div class="modal-body">
-                    <div class="form-group" ng-class="{ 'has-error' : authorForm.firstName.$invalid && (addAuthor.click || !authorForm.firstName.$pristine)}">
-                        <label>First name</label>
-                        <input type="text" name="firstName" class="form-control" ng-model="firstName" ng-maxlength="256" required>
-                        <p ng-show="authorForm.firstName.$error.maxlength" class="help-block">First name is too long.</p>
-                        <p ng-show="authorForm.firstName.$error.required && (addAuthor.click || !authorForm.firstName.$pristine)" class="help-block">You first name is required.</p>
-                    </div>
-
-                    <!-- Second name -->
-                    <div class="form-group" ng-class="{ 'has-error' : authorForm.secondName.$invalid && (addAuthor.click || !authorForm.secondName.$pristine)}">
-                        <label>Second Name</label>
-                        <input type="text" name="secondName" class="form-control" ng-model="secondName" ng-maxlength="256">
-                        <p ng-show="authorForm.secondName.$error.maxlength" class="help-block">Second name is too long.</p>
-                    </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" ng-click="(addAuthor.click = true) && !authorForm.firstName.$invalid && !authorForm.secondName.$invalid && addAuthor.ok(firstName, secondName)">Save</button>
-                        <button class="btn btn-warning" type="button" ng-click="addAuthor.cancel()">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+	<div class="modal-header" align="center">
+		<h3 class="modal-title">{{addAuthor.modalOptions.headerText}}</h3>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<form name="authorForm" novalidate>
+					<div class="modal-body">
+						<div class="form-group"
+						     ng-class="{ 'has-error' : authorForm.firstName.$invalid && (addAuthor.clickSave || !authorForm.firstName.$pristine)}">
+							<label>First name</label>
+							<input type="text" name="firstName" class="form-control" ng-model="firstName"
+							       ng-maxlength="256" required>
+							<p ng-show="authorForm.firstName.$error.maxlength && (addAuthor.clickSave || !authorForm.firstName.$pristine)"
+							   class="help-block">First name is too long.</p>
+							<p ng-show="authorForm.firstName.$error.required && (addAuthor.clickSave || !authorForm.firstName.$pristine)"
+							   class="help-block">You first name is required.</p>
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : authorForm.secondName.$invalid && (addAuthor.clickSave || !authorForm.secondName.$pristine)}">
+							<label>Second Name</label>
+							<input type="text" name="secondName" class="form-control" ng-model="secondName"
+							       ng-maxlength="256">
+							<p ng-show="authorForm.secondName.$error.maxlength && (addAuthor.clickSave || !authorForm.firstName.$pristine)"
+							   class="help-block">Second name is too long.</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+						        ng-click="(addAuthor.clickSave = true) && !authorForm.firstName.$invalid && !authorForm.secondName.$invalid && addAuthor.save(firstName, secondName)">
+							{{addAuthor.modalOptions.actionButtonText}}
+						</button>
+						<button class="btn btn-warning" type="button" ng-click="addAuthor.cancel()">{{addAuthor.modalOptions.closeButtonText}}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </script>
 
 <!--Dialog Edit author-->
 <script type="text/ng-template" id="edit-author.html">
-    <div class="modal-header" align="center">
-        <h3 class="modal-title">{{editAuthor.modalOptions.headerText}}</h3>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <!-- FORM ============ -->
-
-                <form name="authorForm" novalidate>
-                    <!-- First name -->
-                    <div class="modal-body">
-                        <div class="form-group" ng-class="{ 'has-error' : authorForm.firstName.$invalid && (editAuthor.click || !authorForm.firstName.$pristine)}">
-                            <label>First name</label>
-                            <input type="text" name="firstName" class="form-control" ng-model="editAuthor.firstName" ng-maxlength="256" required ng-value="editAuthor.author.firstName">
-                            <p ng-show="authorForm.firstName.$error.maxlength" class="help-block">First name is too long.</p>
-                            <p ng-show="authorForm.firstName.$error.required && (editAuthor.click || !authorForm.firstName.$pristine)" class="help-block">You first name is required.</p>
-                        </div>
-
-                        <!-- Second name -->
-                        <div class="form-group" ng-class="{ 'has-error' : authorForm.secondName.$invalid && (editAuthor.click || !authorForm.secondName.$pristine)}">
-                            <label>Second Name</label>
-                            <input type="text" name="secondName" class="form-control" ng-model="editAuthor.secondName" ng-maxlength="256" ng-value="editAuthor.author.secondName">
-                            <p ng-show="authorForm.secondName.$error.maxlength" class="help-block">Second name is too long.</p>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" ng-click="(editAuthor.click = true) && !authorForm.firstName.$invalid && !authorForm.secondName.$invalid && editAuthor.ok(editAuthor.firstName, editAuthor.secondName)">Save</button>
-                        <button class="btn btn-warning" type="button" ng-click="editAuthor.cancel()">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+	<div class="modal-header" align="center">
+		<h3 class="modal-title">{{editAuthor.modalOptions.headerText}}</h3>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<form name="authorForm" novalidate>
+					<div class="modal-body">
+						<div class="form-group"
+						     ng-class="{ 'has-error' : authorForm.firstName.$invalid && !authorForm.firstName.$pristine}">
+							<label>First name</label>
+							<input type="text" name="firstName" class="form-control" ng-model="editAuthor.firstName"
+							       ng-maxlength="256" required ng-value="editAuthor.author.firstName">
+							<p ng-show="authorForm.firstName.$error.maxlength && !authorForm.firstName.$pristine" class="help-block">First name is too
+								long.</p>
+							<p ng-show="authorForm.firstName.$error.required && !authorForm.firstName.$pristine"
+							   class="help-block">You first name is required.</p>
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : authorForm.secondName.$invalid && !authorForm.secondName.$pristine}">
+							<label>Second Name</label>
+							<input type="text" name="secondName" class="form-control" ng-model="editAuthor.secondName"
+							       ng-maxlength="256" ng-value="editAuthor.author.secondName">
+							<p ng-show="authorForm.secondName.$error.maxlength && !authorForm.firstName.$pristine" class="help-block">Second name is too
+								long.</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+						        ng-click="!authorForm.firstName.$invalid && !authorForm.secondName.$invalid && editAuthor.save(editAuthor.firstName, editAuthor.secondName)">
+							{{editAuthor.modalOptions.actionButtonText}}
+						</button>
+						<button class="btn btn-warning" type="button" ng-click="editAuthor.cancel()">{{editAuthor.modalOptions.closeButtonText}}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </script>
 
 <!--Delete Dialog-->
 <script type="text/ng-template" id="delete-author.html">
 
 
-    <div class="modal-header">
-        <label><h3>{{delete.modalOptions.headerText}}</h3></label>
-    </div>
-    <div class="modal-body">
-        <div class="form-row">
-            <div class="col" align="center">
-                <h4>{{delete.modalOptions.bodyText}}</h4>
-            </div>
-        </div>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary"
-                data-ng-click="delete.ok();">{{delete.modalOptions.actionButtonText}}</button>
-        <button type="button" class="btn btn-warning"
-        data-ng-click="delete.close()">{{delete.modalOptions.closeButtonText}}</button>
-    </div>
+	<div class="modal-header">
+		<label><h3>{{delete.modalOptions.headerText}}</h3></label>
+	</div>
+	<div class="modal-body">
+		<div class="form-row">
+			<div class="col" align="center">
+				<h4>{{delete.modalOptions.bodyText}}</h4>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+		        data-ng-click="delete.ok();">{{delete.modalOptions.actionButtonText}}
+		</button>
+		<button type="button" class="btn btn-warning"
+		        data-ng-click="delete.close()">{{delete.modalOptions.closeButtonText}}
+		</button>
+	</div>
 </script>
 
 <!--Bulk Delete Dialog-->
 <script type="text/ng-template" id="bulk-delete-author.html">
 
 
-    <div class="modal-header">
-        <label><h3>{{bulkDelete.modalOptions.headerText}}</h3></label>
-    </div>
-    <div class="modal-body">
-        <div class="form-row">
-            <div class="col" align="center">
-                <h4>{{bulkDelete.modalOptions.bodyText}}</h4>
-            </div>
-        </div>
-        <table class="table">
-            <thead>
-            <thead>
-            <tr>
-                <th class="single line">#</th>
-                <th>Full name</th>
-            </tr>
-            </thead>
-            </thead>
-            <tbody ng-repeat="author in bulkDelete.authorsRemove">
-                <tr>
-                    <td>
-                        {{$index + 1}}
-                    </td>
-                    <td>
-                        {{author.secondName}} {{author.firstName}}
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-primary"
-                data-ng-click="bulkDelete.ok();">{{bulkDelete.modalOptions.actionButtonText}}</button>
-        <button type="button" class="btn btn-warning"
-                data-ng-click="bulkDelete.close()">{{bulkDelete.modalOptions.closeButtonText}}</button>
-    </div>
+	<div class="modal-header">
+		<label><h3>{{bulkDelete.modalOptions.headerText}}</h3></label>
+	</div>
+	<div class="modal-body">
+		<div class="form-row">
+			<div class="col" align="center">
+				<h4>{{bulkDelete.modalOptions.bodyText}}</h4>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+			<thead>
+			<tr>
+				<th class="single line">#</th>
+				<th>Full name</th>
+			</tr>
+			</thead>
+			</thead>
+			<tbody ng-repeat="author in bulkDelete.authorsRemove">
+			<tr>
+				<td>
+					{{$index + 1}}
+				</td>
+				<td>
+					{{author.secondName}} {{author.firstName}}
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+		        data-ng-click="bulkDelete.ok();">{{bulkDelete.modalOptions.actionButtonText}}
+		</button>
+		<button type="button" class="btn btn-warning"
+		        data-ng-click="bulkDelete.close()">{{bulkDelete.modalOptions.closeButtonText}}
+		</button>
+	</div>
 </script>
 
 <!--Error Dialog-->
 <script type="text/ng-template" id="error.html">
-    <div draggable=".modal-header">
-        <div class="modal-header">
-            <h3 class="modal-title">Warning!</h3>
-        </div>
-        <div class="modal-body">
-            <form>
-                <div class="form-row">
-                    <div class="col" align="center">
-                        <label>Can't delete authors: </label>
-                        <table class="table table-striped">
-                            <thead>
-                            <th>#</th>
-                            <th>Second name</th>
-                            <th>First name</th>
-                            </thead>
-                            <tbody ng-repeat="author in errorDialog.authorsNotRemove">
-                            <tr>
-                                <td>
-                                    {{$index + 1}}
-                                </td>
-                                <td>
-                                    {{author.firstName}}
-                                </td>
-                                <td>
-                                    {{author.secondName}}
-                                </td>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div align="center" class="modal-footer">
-            <button class="btn btn-danger" type="button" ng-click="errorDialog.close()">CLOSE</button>
-        </div>
-    </div>
+	<div draggable=".modal-header">
+		<div class="modal-header">
+			<h3 class="modal-title">Warning!</h3>
+		</div>
+		<div class="modal-body">
+			<form>
+				<div class="form-row">
+					<div class="col" align="center">
+						<label>Can't delete authors: </label>
+						<table class="table table-striped">
+							<thead>
+							<th>#</th>
+							<th>Second name</th>
+							<th>First name</th>
+							</thead>
+							<tbody ng-repeat="author in errorDialog.authorsNotRemove">
+							<tr>
+								<td>
+									{{$index + 1}}
+								</td>
+								<td>
+									{{author.firstName}}
+								</td>
+								<td>
+									{{author.secondName}}
+								</td>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div align="center" class="modal-footer">
+			<button class="btn btn-danger" type="button" ng-click="errorDialog.close()">CLOSE</button>
+		</div>
+	</div>
 </script>
 
 

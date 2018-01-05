@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, AuthorPattern> implements AuthorService {
+public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, AuthorPattern, AuthorDto> implements AuthorService {
 
     @Autowired
     public AuthorServiceImpl(AuthorDao authorDao) {
@@ -43,11 +43,6 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
     }
 
     @Override
-    public List<Author> readAll() {
-        return getDao().findAll();
-    }
-
-    @Override
     public List<AuthorDto> readTopFive() throws BusinessException {
         try {
             List<Author> authors = getDao().findTopFive();
@@ -56,47 +51,6 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
         } catch (Exception e) {
             throw new BusinessException(e);
         }
-    }
-
-    @Override
-    public AuthorDto readById(Integer idAuthor) throws BusinessException {
-        try {
-            return new AuthorDto(getDao().get(idAuthor));
-        } catch (DaoException e) {
-            throw new BusinessException(e);
-        }
-    }
-
-    @Override
-    public void update(Author author) throws BusinessException {
-        validateEntity(author);
-        try {
-            getDao().update(author);
-        } catch (Exception e) {
-            throw new BusinessException(e);
-        }
-    }
-
-    @Override
-    public List<Integer> bulkDelete(List<Integer> idAuthors) throws BusinessException {
-        try {
-            return getDao().bulkDelete(idAuthors);
-        } catch (Exception e) {
-            throw new BusinessException(e);
-        }
-    }
-
-    @Override
-    public Integer deleteAuthor(Integer idAuthor) throws BusinessException {
-        try {
-            Integer id = getDao().delete(idAuthor);
-            if (id != null) {
-                return id;
-            }
-        } catch (Exception e) {
-            throw new BusinessException(e);
-        }
-        return null;
     }
 
     @Override

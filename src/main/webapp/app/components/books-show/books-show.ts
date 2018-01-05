@@ -40,7 +40,7 @@ class BooksShow {
     }
 
     saveChange() {
-        this.booksApi.updateBook(this.book, this.book.authors).then(response => { this.dialog = this.$uibModal.open({
+        this.booksApi.updateBook(this.book).then(response => { this.dialog = this.$uibModal.open({
             controller: MessageDialog,
             controllerAs: 'message',
             templateUrl: 'message.html',

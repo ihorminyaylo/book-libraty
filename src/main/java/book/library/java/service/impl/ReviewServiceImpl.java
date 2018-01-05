@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, ReviewPattern> implements ReviewService {
+public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, ReviewPattern, ReviewDto> implements ReviewService {
 
     @Autowired
     public ReviewServiceImpl(ReviewDao reviewDao) {
@@ -39,12 +39,6 @@ public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, Review
         }
         List<ReviewDto> reviewDtoList = reviewList.stream().map(ReviewDto::new).collect(Collectors.toList());
         return new ListEntityPage<>(reviewDtoList, totalItems);
-    }
-
-    @Override
-    public void update(Review review) throws BusinessException {
-        validateEntity(review);
-        super.update(review);
     }
 
     @Override

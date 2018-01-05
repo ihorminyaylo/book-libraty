@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern> implements BookService {
+public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern, BookDto> implements BookService {
 
     @Autowired
     public BookServiceImpl(BookDao bookDao) {
@@ -38,7 +38,7 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern>
     }
 
     @Override
-    public BookDto readByBookId(Integer idBook) throws BusinessException {
+    public BookDto readById(Integer idBook) throws BusinessException {
         try {
             Book book = getDao().get(idBook);
             book.getAuthors().size();
@@ -77,26 +77,6 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern>
             throw new BusinessException(e);
         }
         return new ListEntityPage<>(listEntity, totalItems);
-    }
-
-    @Override
-    public void updateBook(Book book) throws BusinessException {
-        validateEntity(book);
-        try {
-            getDao().update(book);
-
-        } catch (Exception e) {
-            throw new BusinessException(e);
-        }
-    }
-
-    @Override
-    public void bulkDelete(List<Integer> idBooks) throws BusinessException {
-        try {
-            ((BookDao) getDao()).bulkDelete(idBooks);
-        } catch (Exception e) {
-            throw new BusinessException(e);
-        }
     }
 
     @Override

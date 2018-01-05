@@ -22,13 +22,13 @@ public interface Dao<T, P> {
     Integer create(T entity) throws DaoException;
 
     /**
-     * This method for get one entity by id from Data Base
+     * This method for get entities with condition from user
      *
-     * @param entityId
-     * @return entity
+     * @param listParams
+     * @return List entities
      * @throws DaoException
      */
-    T get(Integer entityId) throws DaoException;
+    List<T> find(ListParams<P> listParams) throws DaoException;
 
     /**
      * This method for get all entities from Data Base
@@ -38,13 +38,13 @@ public interface Dao<T, P> {
     List<T> findAll();
 
     /**
-     * This method for get entities with condition from user
+     * This method for get one entity by id from Data Base
      *
-     * @param listParams
-     * @return List entities
+     * @param entityId
+     * @return entity
      * @throws DaoException
      */
-    List<T> find(ListParams<P> listParams) throws DaoException;
+    T get(Integer entityId) throws DaoException;
 
 
     /**
