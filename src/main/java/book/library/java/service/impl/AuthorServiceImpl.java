@@ -2,6 +2,7 @@ package book.library.java.service.impl;
 
 import book.library.java.dao.AuthorDao;
 import book.library.java.dto.AuthorDto;
+import book.library.java.dto.BookDto;
 import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
@@ -32,7 +33,7 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
 
 
     @Override
-    public ListEntityPage<Author> read(ListParams<AuthorPattern> listParams) throws BusinessException {
+    public ListEntityPage<AuthorDto> readAuthor(ListParams<AuthorPattern> listParams) throws BusinessException {
         List<Author> listEntity = new ArrayList<>();
         Integer totalItems = null;
         try {
@@ -50,7 +51,7 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
                 throw new BusinessException(e);
             }
         }
-        return new ListEntityPage<>(listEntity, totalItems);
+        return new ListEntityPage<>(listEntity.stream().map(author -> new AuthorDto(author)).collect(Collectors.toList()), totalItems);
     }
 
     @Override

@@ -42,7 +42,7 @@ public class AuthorController {
     @PostMapping(value = "/find")
     public ResponseEntity read(@RequestBody ListParams<AuthorPattern> listParams) throws BusinessException {
         log.info("In read(listParams=[{}])", listParams);
-        return ResponseEntity.ok(authorService.read(listParams));
+        return ResponseEntity.ok(authorService.readAuthor(listParams));
     }
 
     @GetMapping(value = "/findAll")

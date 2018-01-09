@@ -39,7 +39,7 @@ $calculates$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER bookAvgRating
-AFTER INSERT OR UPDATE OR DELETE ON review
+AFTER INSERT ON review
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_book();
 
 CREATE FUNCTION calculate_average_rating_author() RETURNS TRIGGER AS $calculates$
@@ -54,8 +54,23 @@ $calculates$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER authorAvgRating
-AFTER INSERT OR UPDATE OR DELETE ON book
+AFTER UPDATE ON book
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author();
+
+CREATE FUNCTION calculate_average_rating_author_delete_book() RETURNS TRIGGER AS $calculates$
+BEGIN
+	UPDATE author
+	SET average_rating = (SELECT AVG(average_rating) FROM book
+		JOIN author_book ON book.id = author_book.book_id
+	WHERE author.id =  author_book.author_id) WHERE old.author_id = author.id;
+	RETURN NEW;
+END;
+$calculates$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER authorAvgRating
+AFTER DELETE ON author_book
+FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author_delete_book();
 
 
 INSERT INTO author VALUES (DEFAULT , 'Ihor', 'Miniailo');
