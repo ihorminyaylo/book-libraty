@@ -2,7 +2,6 @@ import * as angular from 'angular'
 
 import authorsApiModule, {IAuthor, IAuthorsAndCountPages, IAuthorsApi} from '../../services/authors-api/authors-api'
 import {ListParams, SortParams} from "../../services/service-api";
-import {DialogChange} from "./dialog/dialog";
 
 class AuthorsIndex {
     private sortParam: SortParams = new SortParams(null, null);
@@ -72,7 +71,6 @@ class AuthorsIndex {
             resolve: {
                 authorsAndCountPages: () => this.authorsAndCountPages,
                 listParams: () => this.listParams,
-                currentPage: () => this.currentPage,
             }
         });
         this.checkAll = false;
@@ -90,7 +88,6 @@ class AuthorsIndex {
                 author: () => author,
                 authorsAndCountPages: () => this.authorsAndCountPages,
                 listParams: () => this.listParams,
-                currentPage: () => this.currentPage
             },
         });
         this.checkAll = false;
@@ -107,7 +104,7 @@ class AuthorsIndex {
             resolve: {
                 author: () => author,
                 authorsAndCountPages: () => this.authorsAndCountPages,
-                currentPage: () => this.currentPage
+                listParams: () => this.listParams,
             }
         });
         this.checkAll = false;
@@ -133,7 +130,7 @@ class AuthorsIndex {
                 authorsRemove: () => entitiesRemove,
                 idEntities: () => idEntities,
                 authorsAndCountPages: () => this.authorsAndCountPages,
-                currentPage: () => this.currentPage
+                listParams: () => this.listParams,
             }
         });
         this.checkAll = false;
@@ -161,17 +158,18 @@ class AddAuthor {
         actionButtonText: 'SAVE',
         headerText: `Add new author`,
     };
+
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private authorsAndCountPages: IAuthorsAndCountPages,
-                private currentPage: number,
                 private listParams: ListParams<IAuthor>) {
     }
 
     private reloadDates(): void {
         this.authorsApi.find(this.listParams)
             .then(authorsAndCountPages => {
-                this.authorsAndCountPages = authorsAndCountPages;
+                this.authorsAndCountPages.list = authorsAndCountPages.list;
+                this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems;
                 this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))
             });
     }
@@ -196,11 +194,11 @@ class EditAuthor {
         actionButtonText: 'SAVE',
         headerText: `Edit author: ${this.author.firstName} ${this.author.secondName}`,
     };
+
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private author: IAuthor,
                 private authorsAndCountPages: IAuthorsAndCountPages,
-                private currentPage: number,
                 private listParams: ListParams<IAuthor>) {
         this.firstName = author.firstName;
         this.secondName = author.secondName;
@@ -209,7 +207,8 @@ class EditAuthor {
     private reloadDates(): void {
         this.authorsApi.find(this.listParams)
             .then(authorsAndCountPages => {
-                this.authorsAndCountPages = authorsAndCountPages;
+                this.authorsAndCountPages.list = authorsAndCountPages.list;
+                this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems;
                 this.authorsAndCountPages.list.forEach(author => author.averageRatingRound = Math.round(author.averageRating))
             });
     }
@@ -226,7 +225,6 @@ class EditAuthor {
     }
 }
 
-// todo: continue
 class DeleteAuthor {
     modalOptions = {
         closeButtonText: 'CLOSE',
@@ -235,22 +233,18 @@ class DeleteAuthor {
         bodyText: `Are you sure to delete author: ${this.author.firstName} ${this.author.secondName}?`
     };
     authors: IAuthor[] = [];
+    notRemove: IAuthor[] = [];
 
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private author: IAuthor,
                 private $uibModal: ng.ui.bootstrap.IModalService,
                 private authorsAndCountPages: IAuthorsAndCountPages,
-                private currentPage: number) {
+                private listParams: ListParams<IAuthor>) {
     }
 
-    offset = 0;
-    limit = 10;
-    notRemove: IAuthor[] = [];
-
-    pageChanged() {
-        this.offset = (this.currentPage - 1) * this.limit;
-        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+    private reloadDates(): void {
+        this.authorsApi.find(this.listParams)
             .then(authorsAndCountPages => {
                 this.authorsAndCountPages.list = authorsAndCountPages.list;
                 this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems;
@@ -274,7 +268,7 @@ class DeleteAuthor {
                     }
                 })
             }
-            this.pageChanged()
+            this.reloadDates();
         });
         this.$uibModalInstance.close();
     }
@@ -292,6 +286,7 @@ class BulkDelete {
         bodyText: `Are you sure to delete selected authors?`
     };
     authors: IAuthor[] = [];
+    notRemove: IAuthor[] = [];
 
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
@@ -299,16 +294,11 @@ class BulkDelete {
                 private idEntities: number[],
                 private $uibModal: ng.ui.bootstrap.IModalService,
                 private authorsAndCountPages: IAuthorsAndCountPages,
-                private currentPage: number) {
+                private listParams: ListParams<IAuthor>) {
     }
 
-    offset = 0;
-    limit = 10;
-    notRemove: IAuthor[] = [];
-
-    pageChanged() {
-        this.offset = (this.currentPage - 1) * this.limit;
-        this.authorsApi.find(new ListParams(this.limit, this.offset, null, null))
+    private reloadDates(): void {
+        this.authorsApi.find(this.listParams)
             .then(authorsAndCountPages => {
                 this.authorsAndCountPages.list = authorsAndCountPages.list;
                 this.authorsAndCountPages.totalItems = authorsAndCountPages.totalItems;
@@ -337,7 +327,7 @@ class BulkDelete {
                 })
             }
             ;
-            this.pageChanged();
+            this.reloadDates();
         });
         this.$uibModalInstance.close();
     }

@@ -120,7 +120,9 @@
 						        ng-click="(addAuthor.clickSave = true) && !authorForm.firstName.$invalid && !authorForm.secondName.$invalid && addAuthor.save(firstName, secondName)">
 							{{addAuthor.modalOptions.actionButtonText}}
 						</button>
-						<button class="btn btn-warning" type="button" ng-click="addAuthor.cancel()">{{addAuthor.modalOptions.closeButtonText}}</button>
+						<button class="btn btn-warning" type="button" ng-click="addAuthor.cancel()">
+							{{addAuthor.modalOptions.closeButtonText}}
+						</button>
 					</div>
 				</form>
 			</div>
@@ -143,7 +145,8 @@
 							<label>First name</label>
 							<input type="text" name="firstName" class="form-control" ng-model="editAuthor.firstName"
 							       ng-maxlength="256" required ng-value="editAuthor.author.firstName">
-							<p ng-show="authorForm.firstName.$error.maxlength && !authorForm.firstName.$pristine" class="help-block">First name is too
+							<p ng-show="authorForm.firstName.$error.maxlength && !authorForm.firstName.$pristine"
+							   class="help-block">First name is too
 								long.</p>
 							<p ng-show="authorForm.firstName.$error.required && !authorForm.firstName.$pristine"
 							   class="help-block">You first name is required.</p>
@@ -153,7 +156,8 @@
 							<label>Second Name</label>
 							<input type="text" name="secondName" class="form-control" ng-model="editAuthor.secondName"
 							       ng-maxlength="256" ng-value="editAuthor.author.secondName">
-							<p ng-show="authorForm.secondName.$error.maxlength && !authorForm.firstName.$pristine" class="help-block">Second name is too
+							<p ng-show="authorForm.secondName.$error.maxlength && !authorForm.firstName.$pristine"
+							   class="help-block">Second name is too
 								long.</p>
 						</div>
 					</div>
@@ -162,7 +166,9 @@
 						        ng-click="!authorForm.firstName.$invalid && !authorForm.secondName.$invalid && editAuthor.save(editAuthor.firstName, editAuthor.secondName)">
 							{{editAuthor.modalOptions.actionButtonText}}
 						</button>
-						<button class="btn btn-warning" type="button" ng-click="editAuthor.cancel()">{{editAuthor.modalOptions.closeButtonText}}</button>
+						<button class="btn btn-warning" type="button" ng-click="editAuthor.cancel()">
+							{{editAuthor.modalOptions.closeButtonText}}
+						</button>
 					</div>
 				</form>
 			</div>
@@ -172,8 +178,6 @@
 
 <!--Delete Dialog-->
 <script type="text/ng-template" id="delete-author.html">
-
-
 	<div class="modal-header">
 		<label><h3>{{delete.modalOptions.headerText}}</h3></label>
 	</div>
@@ -196,8 +200,6 @@
 
 <!--Bulk Delete Dialog-->
 <script type="text/ng-template" id="bulk-delete-author.html">
-
-
 	<div class="modal-header">
 		<label><h3>{{bulkDelete.modalOptions.headerText}}</h3></label>
 	</div>
