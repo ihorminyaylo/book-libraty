@@ -60,11 +60,11 @@ public class Book extends AbstractEntity {
         this.name = name;
     }
 
-    public int getYearPublished() {
+    public Integer getYearPublished() {
         return yearPublished;
     }
 
-    public void setYearPublished(int yearPublished) {
+    public void setYearPublished(Integer yearPublished) {
         this.yearPublished = yearPublished;
     }
 
