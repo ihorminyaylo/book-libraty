@@ -46,4 +46,9 @@ public class ListParams<P> {
     public void setSortParams(SortParams sortParams) {
         this.sortParams = sortParams;
     }
+
+    @Override
+    public String toString() {
+        return "limit - " + limit + ", offset - " + offset + ", sortParams - {sortParams}" + sortParams;
+    }
 }

@@ -21,42 +21,40 @@ CREATE TABLE review (id SERIAL PRIMARY KEY,
                      rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
                      create_date TIMESTAMP NOT NULL DEFAULT current_timestamp,
                      book_id INTEGER NOT NULL ,
-FOREIGN KEY (book_id) REFERENCES book(id));
+	FOREIGN KEY (book_id) REFERENCES book(id));
 
 CREATE TABLE author_book (author_id INTEGER NOT NULL,
                           book_id INTEGER NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES author(id),
-  FOREIGN KEY (book_id) REFERENCES book(id));
-
-// todo: TRIGGER == hueta
+	FOREIGN KEY (author_id) REFERENCES author(id),
+	FOREIGN KEY (book_id) REFERENCES book(id));
 
 CREATE FUNCTION calculate_average_rating_book() RETURNS TRIGGER AS $calculates$
 BEGIN
-UPDATE book
-SET average_rating = (SELECT AVG(rating) FROM review
-WHERE book.id = review.book_id AND rating > 0);
-RETURN NEW;
+	UPDATE book
+	SET average_rating = (SELECT AVG(rating) FROM review
+	WHERE book.id = review.book_id) WHERE new.book_id = book.id;
+	RETURN NEW;
 END;
 $calculates$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER bookAvgRating
-AFTER INSERT ON review
+AFTER INSERT OR UPDATE OR DELETE ON review
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_book();
-
 
 CREATE FUNCTION calculate_average_rating_author() RETURNS TRIGGER AS $calculates$
 BEGIN
-UPDATE author
-SET average_rating = (SELECT AVG(average_rating) FROM book JOIN author_book ON book.id = author_book.book_id
-WHERE author.id = author_book.author_id AND average_rating > 0);
-  RETURN NEW;
+	UPDATE author
+	SET average_rating = (SELECT AVG(average_rating) FROM book
+		JOIN author_book ON book.id = author_book.book_id
+	WHERE author.id =  author_book.author_id) WHERE new.id = (SELECT DISTINCT book_id FROM author_book WHERE author_id = author.id AND book_id = new.id);
+	RETURN NEW;
 END;
 $calculates$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER authorAvgRating
-AFTER INSERT ON review
+AFTER INSERT OR UPDATE OR DELETE ON book
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author();
 
 

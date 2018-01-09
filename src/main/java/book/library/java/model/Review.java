@@ -78,4 +78,8 @@ public class Review extends AbstractEntity {
         this.createDate = createDate;
     }
 
+    @Override
+    public String toString() {
+        return "id - " + getId() + ", book - " + getBook().getName() + ", rating - " + rating;
+    }
 }

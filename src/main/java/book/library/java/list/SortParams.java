@@ -23,4 +23,9 @@ public class SortParams {
     public void setType(TypeSort type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "parameter - " + parameter + ", type - " + type;
+    }
 }

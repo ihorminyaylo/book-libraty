@@ -3,13 +3,15 @@ package book.library.java.service.impl;
 import book.library.java.dao.ReviewDao;
 import book.library.java.dto.ListEntityPage;
 import book.library.java.dto.ReviewDto;
-import book.library.java.dto.ReviewPageDto;
 import book.library.java.exception.BusinessException;
+import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
 import book.library.java.model.Review;
 import book.library.java.model.pattern.ReviewPattern;
 import book.library.java.service.ReviewService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, ReviewPattern, ReviewDto> implements ReviewService {
 
+    private static final Logger log = LoggerFactory.getLogger(ReviewServiceImpl.class);
+
     @Autowired
     public ReviewServiceImpl(ReviewDao reviewDao) {
         super(reviewDao);
@@ -27,11 +31,18 @@ public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, Review
     @Override
     public ListEntityPage<ReviewDto> readReviews(ListParams<ReviewPattern> listParams) throws BusinessException {
         List<Review> reviewList;
-        Integer totalItems = getDao().totalRecords(listParams);
+        Integer totalItems;
+        try {
+            totalItems = getDao().totalRecords(listParams);
+        } catch (DaoException e) {
+            log.error("in readReviews() exception - [{}] ", e);
+            throw new BusinessException(e);
+        }
         if (listParams.getLimit() != null && listParams.getOffset() != null) {
             try {
                 reviewList = getDao().find(listParams);
             } catch (Exception e) {
+                log.error("in readReviews() exception - [{}] ", e);
                 throw new BusinessException(e);
             }
         } else {
@@ -44,12 +55,15 @@ public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, Review
     @Override
     public void validateEntity(Review review) throws BusinessException {
         if (StringUtils.isBlank(review.getComment())) {
+            log.error("in validateEntity() exception - Comment of book isn't correct");
             throw new BusinessException("Comment of book isn't correct");
         }
         if (StringUtils.isBlank(review.getCommenterName())) {
+            log.error("in validateEntity() exception - Comment of book isn't correct");
             throw new BusinessException("Comment name of book isn't correct");
         }
         if (review.getRating() == null || review.getRating() < 1 || review.getRating() > 5) {
+            log.error("in validateEntity() exception - Comment of book isn't correct");
             throw new BusinessException("Comment name of book isn't correct");
         }
     }

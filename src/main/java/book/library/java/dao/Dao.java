@@ -86,7 +86,7 @@ public interface Dao<T, P> {
      * @param listParams
      * @return count of entity in Data Base
      */
-    Integer totalRecords(ListParams<P> listParams);
+    Integer totalRecords(ListParams<P> listParams) throws DaoException;
 
     /**
      * This method for generate query with our parammeters
@@ -96,7 +96,7 @@ public interface Dao<T, P> {
      * @param typeQueryFind
      * @return StringBuilder query
      */
-    StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind);
+    StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException;
 
     /**
      * This method for set parameters in our query

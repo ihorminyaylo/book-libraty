@@ -2,6 +2,7 @@ package book.library.java.dao.impl;
 
 import book.library.java.dao.BookDao;
 import book.library.java.dto.ReviewPageDto;
+import book.library.java.exception.DaoException;
 import book.library.java.list.ListParams;
 import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
@@ -20,7 +21,7 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
     }
 
     @Override
-    public StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query, Boolean typeQueryFind) {
+    public StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException {
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
         if (pattern != null) {
             if (pattern.getAuthorId() != null) {

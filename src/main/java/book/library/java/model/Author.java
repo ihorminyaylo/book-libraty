@@ -63,4 +63,9 @@ public class Author extends AbstractEntity {
     public void setAverageRating(BigDecimal averageRating) {
         this.averageRating = averageRating;
     }
+
+    @Override
+    public String toString() {
+        return "id - " + getId() + ", full name - " + firstName + ' ' + secondName;
+    }
 }

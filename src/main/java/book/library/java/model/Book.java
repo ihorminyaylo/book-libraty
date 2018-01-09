@@ -108,4 +108,9 @@ public class Book extends AbstractEntity {
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
     }
+
+    @Override
+    public String toString() {
+        return "id - " + getId() + ", name - " + name;
+    }
 }

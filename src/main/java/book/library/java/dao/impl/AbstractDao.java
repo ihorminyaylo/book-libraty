@@ -6,12 +6,16 @@ import book.library.java.list.ListParams;
 import book.library.java.list.SortParams;
 import book.library.java.model.AbstractEntity;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Column;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -22,6 +26,7 @@ import java.util.List;
 @Transactional(propagation = Propagation.MANDATORY)
 public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T, P> {
 
+    private static final Logger log = LoggerFactory.getLogger(AbstractDao.class);
     private final Class<T> entityType;
     @PersistenceContext
     EntityManager entityManager;
@@ -33,9 +38,11 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public Integer create(T entity) throws DaoException {
         if (entity == null) {
+            log.error("in create() exception - AbstractEntity can't be null");
             throw new DaoException("AbstractEntity can't be null");
         }
         if (entity.getId() != null) {
+            log.error("in create() exception - Can't set id. Id generated in Data Base");
             throw new DaoException("Can't set id. Id generated in Data Base");
         }
         entityManager.persist(entity);
@@ -60,6 +67,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public T get(Integer id) throws DaoException {
         if (id == null) {
+            log.error("in get(id) exception - Id of entity can't be null");
             throw new DaoException("Id of entity can't be null");
         }
         return entityManager.find(entityType, id);
@@ -75,6 +83,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public void update(T entity) throws DaoException {
         if (entity == null || entity.getId() == null) {
+            log.error("in get(id) exception - Id of entity can't be null");
             throw new DaoException("AbstractEntity can't be null");
         }
         entityManager.merge(entity);
@@ -83,15 +92,18 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public Integer delete(Integer idEntity) throws DaoException {
         if (idEntity == null) {
+            log.error("in delete(id) exception - AbstractEntity id can't be null");
             throw new DaoException("AbstractEntity id can't be null");
         }
         T entity = get(idEntity);
         if (entity == null) {
+            log.error("in delete(id) exception - Entity with this id does not exist");
             throw new DaoException("Entity with this id does not exist");
         }
         try {
             entityManager.remove(entity);
         } catch (Exception e) {
+            log.error("in delete(id) exception - [{}]", e);
             throw new DaoException(e.getMessage(), e.getCause());
         }
         return idEntity;
@@ -107,7 +119,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     }
 
     @Override
-    public Integer totalRecords(ListParams<P> listParams) {
+    public Integer totalRecords(ListParams<P> listParams) throws DaoException {
         StringBuilder queryString = new StringBuilder("SELECT Count(*) FROM " + entityType.getSimpleName());
         Query query = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, queryString, false).toString());
         query = setParameters(listParams, query, false);
@@ -115,7 +127,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     }
 
     @Override
-    public StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) {
+    public StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException {
         if (typeQueryFind) {
             if (listParams.getPattern() != null) {
                 addSortParams(listParams, query);
@@ -148,23 +160,22 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
         }
     }
 
-    void addSortParams(ListParams<P> listParams, StringBuilder query) {
+    void addSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
         SortParams sortParams = listParams.getSortParams();
         if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
-            Field[] fields = entityType.getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-            }
-            // : todo
-            String checkFieldName = sortParams.getParameter();
-            if (checkFieldName.contains("_")) {
-                checkFieldName = checkFieldName.replace("_", "");
-            }
-            for (Field field : fields) {
-                if (checkFieldName.equalsIgnoreCase(field.getName())) {
-                    query.append(" ORDER BY ").append(sortParams.getParameter()).append(' ').append(sortParams.getType());
+            String columnName = sortParams.getParameter();
+            try {
+                Field field = entityType.getDeclaredField(sortParams.getParameter());
+                Annotation annotation = field.getAnnotation(Column.class);
+                if (annotation != null) {
+                    columnName = ((Column) annotation).name();
                 }
+            } catch (NoSuchFieldException e) {
+                throw new DaoException(e.getMessage(), e.getCause());
             }
+            query.append(" ORDER BY ").append(columnName).append(' ').append(sortParams.getType());
+
         }
     }
+
 }

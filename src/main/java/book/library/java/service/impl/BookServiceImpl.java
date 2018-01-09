@@ -11,6 +11,8 @@ import book.library.java.model.Book;
 import book.library.java.model.pattern.BookPattern;
 import book.library.java.service.BookService;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern, BookDto> implements BookService {
+
+    private static final Logger log = LoggerFactory.getLogger(BookServiceImpl.class);
 
     @Autowired
     public BookServiceImpl(BookDao bookDao) {
@@ -33,6 +37,7 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern,
             return getDao().create(book);
 
         } catch (Exception e) {
+            log.error("in create() exception - [{}] ", e);
             throw new BusinessException(e);
         }
     }
@@ -44,6 +49,7 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern,
             book.getAuthors().size();
             return new BookDto(book);
         } catch (DaoException e) {
+            log.error("in readById() exception - [{}] ", e);
             throw new BusinessException(e);
         }
     }
@@ -62,7 +68,13 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern,
 
     @Override
     public ListEntityPage<BookDto> readBooks(ListParams<BookPattern> listParams) throws BusinessException {
-        Integer totalItems = getDao().totalRecords(listParams);
+        Integer totalItems;
+        try {
+            totalItems = getDao().totalRecords(listParams);
+        } catch (DaoException e) {
+            log.error("in readBooks() exception - [{}] ", e);
+            throw new BusinessException(e);
+        }
         List<BookDto> listEntity;
         try {
             List<Book> books = getDao().find(listParams);
@@ -74,6 +86,7 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern,
             });
             listEntity = books.stream().map(book -> new BookDto(book)).collect(Collectors.toList());
         } catch (Exception e) {
+            log.error("in readBooks() exception - [{}] ", e);
             throw new BusinessException(e);
         }
         return new ListEntityPage<>(listEntity, totalItems);
@@ -82,6 +95,7 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern,
     @Override
     public void validateEntity(Book book) throws BusinessException {
         if (StringUtils.isBlank(book.getName())) {
+            log.error("in validateEntity() exception - Name of book isn't correct");
             throw new BusinessException("Name of book isn't correct");
         }
     }

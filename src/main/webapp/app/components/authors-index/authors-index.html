@@ -12,33 +12,33 @@
 			<th><input type="checkbox" ng-click="a.checkAllAuthor()" ng-checked="a.checkAll"/></th>
 			<th class="single line">#</th>
 			<th>
-				<a ng-click="a.sortBy('first_name')"> First name
-					<span ng-show="a.sortParam.parameter === 'first_name' && a.sortParam.type === 'DESC'"
+				<a ng-click="a.sortBy('firstName')"> First name
+					<span ng-show="a.sortParam.parameter === 'firstName' && a.sortParam.type === 'DESC'"
 					      class="glyphicon glyphicon-chevron-down"></span>
-					<span ng-show="a.sortParam.parameter === 'first_name' && a.sortParam.type === 'ASC'"
+					<span ng-show="a.sortParam.parameter === 'firstName' && a.sortParam.type === 'ASC'"
 					      class="glyphicon glyphicon-chevron-up"></span>
 				</a>
 			</th>
 			<th>
-				<a ng-click="a.sortBy('second_name')"> Second name
-					<span ng-show="a.sortParam.parameter === 'second_name' && a.sortParam.type === 'DESC'"
+				<a ng-click="a.sortBy('secondName')"> Second name
+					<span ng-show="a.sortParam.parameter === 'secondName' && a.sortParam.type === 'DESC'"
 					      class="glyphicon glyphicon-chevron-down"></span>
-					<span ng-show="a.sortParam.parameter === 'second_name' && a.sortParam.type === 'ASC'"
+					<span ng-show="a.sortParam.parameter === 'secondName' && a.sortParam.type === 'ASC'"
 					      class="glyphicon glyphicon-chevron-up"></span>
 				</a>
 			</th>
 			<th>
-				<a ng-click="a.sortBy('create_date')"> Create date
-					<span ng-show="a.sortParam.parameter === 'create_date' && a.sortParam.type === 'DESC'"
+				<a ng-click="a.sortBy('createDate')"> Create date
+					<span ng-show="a.sortParam.parameter === 'createDate' && a.sortParam.type === 'DESC'"
 					      class="glyphicon glyphicon-chevron-down"></span>
-					<span ng-show="a.sortParam.parameter === 'create_date' && a.sortParam.type === 'ASC'"
+					<span ng-show="a.sortParam.parameter === 'createDate' && a.sortParam.type === 'ASC'"
 					      class="glyphicon glyphicon-chevron-up"></span>
 				</a>
 			</th>
-			<th><a ng-click="a.sortBy('average_rating')"> Rating
-				<span ng-show="a.sortParam.parameter === 'average_rating' && a.sortParam.type === 'DESC'"
+			<th><a ng-click="a.sortBy('averageRating')"> Rating
+				<span ng-show="a.sortParam.parameter === 'averageRating' && a.sortParam.type === 'DESC'"
 				      class="glyphicon glyphicon-chevron-down"></span>
-				<span ng-show="a.sortParam.parameter === 'average_rating' && a.sortParam.type === 'ASC'"
+				<span ng-show="a.sortParam.parameter === 'averageRating' && a.sortParam.type === 'ASC'"
 				      class="glyphicon glyphicon-chevron-up"></span>
 			</a>
 			</th>
