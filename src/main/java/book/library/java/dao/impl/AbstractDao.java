@@ -26,7 +26,7 @@ import java.util.List;
 @Transactional(propagation = Propagation.MANDATORY)
 public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T, P> {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDao.class);
     private final Class<T> entityType;
     @PersistenceContext
     EntityManager entityManager;
@@ -38,11 +38,11 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public Integer create(T entity) throws DaoException {
         if (entity == null) {
-            log.error("in create() exception - AbstractEntity can't be null");
+            LOGGER.error("in create() exception - AbstractEntity can't be null");
             throw new DaoException("AbstractEntity can't be null");
         }
         if (entity.getId() != null) {
-            log.error("in create() exception - Can't set id. Id generated in Data Base");
+            LOGGER.error("in create() exception - Can't set id. Id generated in Data Base");
             throw new DaoException("Can't set id. Id generated in Data Base");
         }
         entityManager.persist(entity);
@@ -67,7 +67,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public T get(Integer id) throws DaoException {
         if (id == null) {
-            log.error("in get(id) exception - Id of entity can't be null");
+            LOGGER.error("in get(id) exception - Id of entity can't be null");
             throw new DaoException("Id of entity can't be null");
         }
         return entityManager.find(entityType, id);
@@ -75,15 +75,15 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
 
     @Override
     public List<T> findTopFive() {
-        StringBuilder query = new StringBuilder("SELECT * FROM " + entityType.getSimpleName() + " ORDER BY average_rating");
-        return entityManager.createNativeQuery(query.toString(), entityType).setMaxResults(5).getResultList();
+        return entityManager.createNativeQuery("SELECT * FROM " + entityType.getSimpleName() + " ORDER BY average_rating", entityType)
+            .setMaxResults(5).getResultList();
     }
 
 
     @Override
     public void update(T entity) throws DaoException {
         if (entity == null || entity.getId() == null) {
-            log.error("in get(id) exception - Id of entity can't be null");
+            LOGGER.error("in get(id) exception - Id of entity can't be null");
             throw new DaoException("AbstractEntity can't be null");
         }
         entityManager.merge(entity);
@@ -92,19 +92,19 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public Integer delete(Integer idEntity) throws DaoException {
         if (idEntity == null) {
-            log.error("in delete(id) exception - AbstractEntity id can't be null");
+            LOGGER.error("in delete(id) exception - AbstractEntity id can't be null");
             throw new DaoException("AbstractEntity id can't be null");
         }
         T entity = get(idEntity);
         if (entity == null) {
-            log.error("in delete(id) exception - Entity with this id does not exist");
+            LOGGER.error("in delete(id) exception - Entity with this id does not exist");
             throw new DaoException("Entity with this id does not exist");
         }
         try {
             entityManager.remove(entity);
         } catch (Exception e) {
-            log.error("in delete(id) exception - [{}]", e);
-            throw new DaoException(e.getMessage(), e.getCause());
+            LOGGER.error("in delete(id) exception - [{}]", e);
+            throw new DaoException(e);
         }
         return idEntity;
     }
@@ -152,7 +152,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
             for (Field field : entityType.getFields()) {
                 if (sortParams.getParameter().equalsIgnoreCase(field.getName())) {
                     query.append(" ORDER BY ").append(sortParams.getParameter()).append(' ').append(sortParams.getType());
-                    return;
+                    break;
                 }
             }
         } else {
@@ -171,7 +171,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
                     columnName = ((Column) annotation).name();
                 }
             } catch (NoSuchFieldException e) {
-                throw new DaoException(e.getMessage(), e.getCause());
+                throw new DaoException(e);
             }
             query.append(" ORDER BY ").append(columnName).append(' ').append(sortParams.getType());
 

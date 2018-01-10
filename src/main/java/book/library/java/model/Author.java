@@ -47,7 +47,6 @@ public class Author extends AbstractEntity {
         this.secondName = secondName;
     }
 
-
     public Date getCreateDate() {
         return createDate;
     }
@@ -57,9 +56,6 @@ public class Author extends AbstractEntity {
     }
 
     public BigDecimal getAverageRating() {
-        if (averageRating == null) {
-            averageRating = BigDecimal.valueOf(0);
-        }
         return averageRating;
     }
 

@@ -18,15 +18,6 @@ import java.util.List;
 public interface BookService extends BaseService<Book, BookPattern, BookDto> {
 
     /**
-     * This method for create book, where we get like parameter BooksWithAuthors(Book and authors who wrote this book)
-     *
-     * @param book
-     * @return id of book which we created.
-     * @throws BusinessException
-     */
-    Integer create(Book book) throws BusinessException;
-
-    /**
      * This method for get all types rating(stars) and count book of this rating
      *
      * @return List of Page DTO where definite next fields: rating and count
@@ -35,8 +26,8 @@ public interface BookService extends BaseService<Book, BookPattern, BookDto> {
 
     /**
      * @param listParams with condition type
-     * @return
-     * @throws BusinessException
+     * @return ListEntityPage
+     * @throws BusinessException on error
      */
     ListEntityPage readBooks(ListParams<BookPattern> listParams) throws BusinessException;
 

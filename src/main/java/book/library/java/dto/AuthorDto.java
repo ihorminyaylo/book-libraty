@@ -2,8 +2,6 @@ package book.library.java.dto;
 
 import book.library.java.model.Author;
 
-import java.math.BigDecimal;
-
 /**
  * Represent a AuthorDto. This class for convenient transfer of information between front-end and back-end.
  * AuthorDto have id, firstName, secondName, createDate, averageRating
@@ -20,8 +18,7 @@ public class AuthorDto extends AbstractDto {
         secondName = author.getSecondName();
         if (author.getAverageRating() != null) {
             averageRating = author.getAverageRating().toString();
-        }
-        else {
+        } else {
             averageRating = "0";
         }
     }

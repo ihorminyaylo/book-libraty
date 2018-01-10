@@ -22,7 +22,7 @@ public interface AuthorService extends BaseService<Author, AuthorPattern, Author
      *
      * @param listParams with condition type
      * @return ListEntityPage with condition type
-     * @throws BusinessException
+     * @throws BusinessException on error
      */
     ListEntityPage<AuthorDto> readAuthor(ListParams<AuthorPattern> listParams) throws BusinessException;
 
@@ -30,7 +30,7 @@ public interface AuthorService extends BaseService<Author, AuthorPattern, Author
      * This method for read top authors.
      *
      * @return List authors DTO
-     * @throws BusinessException
+     * @throws BusinessException on error
      */
     List<AuthorDto> readTopFive() throws BusinessException;
 }

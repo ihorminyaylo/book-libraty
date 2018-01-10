@@ -13,10 +13,11 @@ import java.util.List;
 
 @Repository
 public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookDao {
+    @SuppressWarnings("unchecked")
     @Override
     public List<ReviewPageDto> getCountOfEachRating() {
         return (List<ReviewPageDto>) entityManager.
-            createNativeQuery("SELECT ROUND(average_rating) as rating, count(*) FROM book GROUP BY rating ORDER BY rating")
+            createNativeQuery("SELECT ROUND(average_rating) AS rating, count(*) FROM book GROUP BY rating ORDER BY rating")
             .getResultList();
     }
 
@@ -48,12 +49,13 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
         super.setParameters(listParams, nativeQuery, typeQueryFind);
         if (pattern != null) {
-            nativeQuery.setParameter("search", "%" + pattern.getSearch() + "%");
+            nativeQuery.setParameter("search", '%' + pattern.getSearch() + '%');
             if (pattern.getAuthorId() != null) {
                 nativeQuery.setParameter("authorId", listParams.getPattern().getAuthorId());
             }
             if (pattern.getRating() != null) {
-                nativeQuery.setParameter("ratingSmall", listParams.getPattern().getRating() - 0.5).setParameter("ratingBig", listParams.getPattern().getRating() + 0.5);
+                nativeQuery.setParameter("ratingSmall", listParams.getPattern().getRating() - 0.5)
+                    .setParameter("ratingBig", listParams.getPattern().getRating() + 0.5);
             }
         }
         return nativeQuery;

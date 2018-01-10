@@ -11,23 +11,22 @@ import org.springframework.stereotype.Repository;
 @Repository
 public class AuthorDaoImpl extends AbstractDao<Author, AuthorPattern> implements AuthorDao {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthorDaoImpl.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorDaoImpl.class);
 
     @Override
     public Integer delete(Integer idAuthor) throws DaoException {
-        Integer countBook = Integer.parseInt(
+        Integer countBook = ((Number)
             entityManager.createNativeQuery("SELECT count(*) FROM author_book WHERE author_id = :authorId")
-                .setParameter("authorId", idAuthor).getSingleResult().toString());
+                .setParameter("authorId", idAuthor)
+                .getSingleResult()).intValue();
         if (countBook != 0) {
             return idAuthor;
         }
         try {
-            super.delete(idAuthor);
-            return null;
+            return super.delete(idAuthor);
         } catch (Exception e) {
-            log.error("in delete(id) exception - [{}]", e);
-            throw new DaoException(e.getMessage(), e.getCause());
+            LOGGER.error("in delete(id) exception!", e);
+            throw new DaoException(e);
         }
     }
 }

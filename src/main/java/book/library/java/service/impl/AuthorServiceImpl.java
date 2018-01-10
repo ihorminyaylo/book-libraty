@@ -2,7 +2,6 @@ package book.library.java.service.impl;
 
 import book.library.java.dao.AuthorDao;
 import book.library.java.dto.AuthorDto;
-import book.library.java.dto.BookDto;
 import book.library.java.dto.ListEntityPage;
 import book.library.java.exception.BusinessException;
 import book.library.java.exception.DaoException;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, AuthorPattern, AuthorDto> implements AuthorService {
 
-    private static final Logger log = LoggerFactory.getLogger(AuthorServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImpl.class);
 
     @Autowired
     public AuthorServiceImpl(AuthorDao authorDao) {
@@ -35,11 +34,11 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
     @Override
     public ListEntityPage<AuthorDto> readAuthor(ListParams<AuthorPattern> listParams) throws BusinessException {
         List<Author> listEntity = new ArrayList<>();
-        Integer totalItems = null;
+        Integer totalItems;
         try {
             totalItems = getDao().totalRecords(listParams);
         } catch (DaoException e) {
-            log.error("in read() exception - [{}] ", e);
+            LOGGER.error("in read() exception!", e);
             throw new BusinessException(e);
         }
         if (listParams.getLimit() != null || listParams.getOffset() != null) {
@@ -47,11 +46,11 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
                 listEntity = getDao().find(listParams);
                 listEntity.forEach(author -> author.setAverageRating(author.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
             } catch (Exception e) {
-                log.error("in read() exception - [{}] ", e);
+                LOGGER.error("in read() exception!", e);
                 throw new BusinessException(e);
             }
         }
-        return new ListEntityPage<>(listEntity.stream().map(author -> new AuthorDto(author)).collect(Collectors.toList()), totalItems);
+        return new ListEntityPage<>(listEntity.stream().map(AuthorDto::new).collect(Collectors.toList()), totalItems);
     }
 
     @Override
@@ -61,7 +60,7 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
             authors.forEach(author -> author.setAverageRating(author.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
             return authors.stream().map(AuthorDto::new).collect(Collectors.toList());
         } catch (Exception e) {
-            log.error("in readTopFive() exception - [{}] ", e);
+            LOGGER.error("in readTopFive() exception!", e);
             throw new BusinessException(e);
         }
     }
@@ -69,7 +68,7 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
     @Override
     public void validateEntity(Author author) throws BusinessException {
         if (StringUtils.isBlank(author.getFirstName())) {
-            log.error("in validateEntity() exception - First name isn't correct");
+            LOGGER.error("in validateEntity() exception!");
             throw new BusinessException("First name isn't correct");
         }
     }

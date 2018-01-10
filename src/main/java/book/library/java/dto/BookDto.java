@@ -2,11 +2,10 @@ package book.library.java.dto;
 
 import book.library.java.model.Book;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BookDto extends AbstractDto  {
+public class BookDto extends AbstractDto {
     private String name;
     private String publisher;
     private Integer yearPublished;

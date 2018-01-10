@@ -326,7 +326,6 @@ class BulkDelete {
                     }
                 })
             }
-            ;
             this.reloadDates();
         });
         this.$uibModalInstance.close();

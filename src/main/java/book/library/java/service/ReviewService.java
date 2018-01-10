@@ -2,13 +2,10 @@ package book.library.java.service;
 
 import book.library.java.dto.ListEntityPage;
 import book.library.java.dto.ReviewDto;
-import book.library.java.dto.ReviewPageDto;
 import book.library.java.exception.BusinessException;
 import book.library.java.list.ListParams;
 import book.library.java.model.Review;
 import book.library.java.model.pattern.ReviewPattern;
-
-import java.util.List;
 
 /**
  * Represent a Review BaseService
@@ -20,9 +17,9 @@ public interface ReviewService extends BaseService<Review, ReviewPattern, Review
     /**
      * This method for get review by definite parameters.
      *
-     * @param listParams
+     * @param listParams params foe search
      * @return Review DTO
-     * @throws BusinessException
+     * @throws BusinessException on error
      */
     ListEntityPage<ReviewDto> readReviews(ListParams<ReviewPattern> listParams) throws BusinessException;
 }

@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, ReviewPattern, ReviewDto> implements ReviewService {
 
-    private static final Logger log = LoggerFactory.getLogger(ReviewServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReviewServiceImpl.class);
 
     @Autowired
     public ReviewServiceImpl(ReviewDao reviewDao) {
@@ -35,14 +35,14 @@ public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, Review
         try {
             totalItems = getDao().totalRecords(listParams);
         } catch (DaoException e) {
-            log.error("in readReviews() exception - [{}] ", e);
+            LOGGER.error("in readReviews() exception!", e);
             throw new BusinessException(e);
         }
         if (listParams.getLimit() != null && listParams.getOffset() != null) {
             try {
                 reviewList = getDao().find(listParams);
             } catch (Exception e) {
-                log.error("in readReviews() exception - [{}] ", e);
+                LOGGER.error("in readReviews() exception!", e);
                 throw new BusinessException(e);
             }
         } else {
@@ -55,15 +55,15 @@ public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, Review
     @Override
     public void validateEntity(Review review) throws BusinessException {
         if (StringUtils.isBlank(review.getComment())) {
-            log.error("in validateEntity() exception - Comment of book isn't correct");
+            LOGGER.error("in validateEntity() exception!");
             throw new BusinessException("Comment of book isn't correct");
         }
         if (StringUtils.isBlank(review.getCommenterName())) {
-            log.error("in validateEntity() exception - Comment of book isn't correct");
+            LOGGER.error("in validateEntity() exception!");
             throw new BusinessException("Comment name of book isn't correct");
         }
         if (review.getRating() == null || review.getRating() < 1 || review.getRating() > 5) {
-            log.error("in validateEntity() exception - Comment of book isn't correct");
+            LOGGER.error("in validateEntity() exception!");
             throw new BusinessException("Comment name of book isn't correct");
         }
     }

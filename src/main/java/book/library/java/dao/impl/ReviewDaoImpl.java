@@ -1,14 +1,11 @@
 package book.library.java.dao.impl;
 
 import book.library.java.dao.ReviewDao;
-import book.library.java.dto.ReviewPageDto;
 import book.library.java.list.ListParams;
 import book.library.java.model.Review;
 import book.library.java.model.pattern.ReviewPattern;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public class ReviewDaoImpl extends AbstractDao<Review, ReviewPattern> implements ReviewDao {
@@ -30,8 +27,8 @@ public class ReviewDaoImpl extends AbstractDao<Review, ReviewPattern> implements
 
     @Override
     public Query setParameters(ListParams<ReviewPattern> listParams, Query nativeQuery, Boolean typeQueryFind) {
-        ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
         super.setParameters(listParams, nativeQuery, typeQueryFind);
+        ReviewPattern pattern = listParams != null ? listParams.getPattern() : null;
         if (pattern != null) {
             if (pattern.getBookId() != null) {
                 nativeQuery.setParameter("bookId", pattern.getBookId());

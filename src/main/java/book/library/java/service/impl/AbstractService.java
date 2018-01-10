@@ -14,13 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-
 @Service
 @Transactional
-public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEntity, P, U> implements BaseService<T, P, U> {
+public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEntity, P, DTO> implements BaseService<T, P, DTO> {
 
-    private static final Logger log = LoggerFactory.getLogger(AbstractService.class);
-    private D dao;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractService.class);
+    private final D dao;
 
     AbstractService(D dao) {
         this.dao = dao;
@@ -36,7 +35,7 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
         try {
             return dao.create(entity);
         } catch (Exception e) {
-            log.error("in create() exception - [{}] ", e);
+            LOGGER.error("in create() exception!", e);
             throw new BusinessException(e);
         }
     }
@@ -44,17 +43,17 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
     @Override
     public ListEntityPage<T> read(ListParams<P> listParams) throws BusinessException {
         List<T> listEntity;
-        Integer totalItems = null;
+        Integer totalItems;
         try {
             totalItems = dao.totalRecords(listParams);
         } catch (DaoException e) {
-            log.error("in read() exception - [{}] ", e);
+            LOGGER.error("in read() exception!", e);
             throw new BusinessException(e);
         }
         try {
             listEntity = dao.find(listParams);
         } catch (Exception e) {
-            log.error("in read() exception - [{}] ", e);
+            LOGGER.error("in read() exception!", e);
             throw new BusinessException(e);
         }
         return new ListEntityPage<>(listEntity, totalItems);
@@ -65,12 +64,13 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
         return getDao().findAll();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public U readById(Integer idEntity) throws BusinessException {
+    public DTO readById(Integer idEntity) throws BusinessException {
         try {
-            return (U) getDao().get(idEntity);
+            return (DTO) getDao().get(idEntity);
         } catch (DaoException e) {
-            log.error("in readAll() exception - [{}] ", e);
+            LOGGER.error("in readAll() exception!", e);
             throw new BusinessException(e);
         }
     }
@@ -80,7 +80,7 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
         try {
             dao.update(entity);
         } catch (Exception e) {
-            log.error("in update() exception - [{}] ", e);
+            LOGGER.error("in update() exception - [{}] ", e);
             throw new BusinessException(e);
         }
     }
@@ -90,7 +90,7 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
         try {
             return dao.delete(idEntity);
         } catch (Exception e) {
-            log.error("in delete() exception - [{}] ", e);
+            LOGGER.error("in delete() exception - [{}] ", e);
             throw new BusinessException(e);
         }
     }
@@ -98,9 +98,9 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
     @Override
     public List<Integer> bulkDelete(List<Integer> idEntities) throws BusinessException {
         try {
-            return getDao().bulkDelete(idEntities);
+            return dao.bulkDelete(idEntities);
         } catch (Exception e) {
-            log.error("in bulkDelete() exception - [{}] ", e);
+            LOGGER.error("in bulkDelete() exception - [{}] ", e);
             throw new BusinessException(e);
         }
     }

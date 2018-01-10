@@ -2,8 +2,6 @@ package book.library.java.dto;
 
 import book.library.java.model.Review;
 
-import java.util.Date;
-
 public class ReviewDto extends AbstractDto {
     private String commenterName;
     private String createDate;
