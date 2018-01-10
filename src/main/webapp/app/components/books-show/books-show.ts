@@ -18,6 +18,7 @@ class BooksShow {
     offset: number = 0;
     authors: IAuthor[] = [];
     click: boolean = false;
+    listParam;
 
     constructor(private booksApi: IBooksApi, private reviewsApi: IReviewsApi, private authorsApi: IAuthorsApi, private $routeParams: IRouteParams, private $uibModal: ng.ui.bootstrap.IModalService) {
         if (!isNaN(parseInt($routeParams.idBook))) {
@@ -33,7 +34,8 @@ class BooksShow {
             this.book = book
         });
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
-        return this.reviewsApi.find(new ListParams(this.limit, this.offset, new ReviewPattern(this.book.id), null))
+        this.listParam = new ListParams(this.limit, this.offset, new ReviewPattern(this.book.id), null);
+        return this.reviewsApi.find(this.listParam)
             .then(reviewsAndCountPages => {
                 this.reviewsAndCountPages = reviewsAndCountPages;
             });
@@ -77,7 +79,9 @@ class BooksShow {
             templateUrl: 'add-review.html',
             scope: '',
             resolve: {
-                book: () => this.book
+                book: () => this.book,
+                reviewsAndCountPages: () => this.reviewsAndCountPages,
+                listParam: () => this.listParam
             }
         });
 
@@ -122,7 +126,10 @@ class AddReview {
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private booksApi: IBooksApi,
                 private $uibModal: ng.ui.bootstrap.IModalService,
-                private book: IBook) {
+                private book: IBook,
+                private reviewsAndCountPages: IReviewsAndCountPages,
+                private reviewsApi: IReviewsApi,
+                private listParam) {
     }
 
     ok(commenterName, comment, rating): void {
@@ -136,7 +143,10 @@ class AddReview {
             });
             return;
         }
-        this.booksApi.createReview(commenterName, comment, rating, this.book);
+        this.booksApi.createReview(commenterName, comment, rating, this.book).then(response => {console.log('start');this.reviewsApi.find(this.listParam)
+            .then(reviewsAndCountPages => {
+                this.reviewsAndCountPages.list = reviewsAndCountPages.list; this.reviewsAndCountPages.totalItems = reviewsAndCountPages.totalItems
+            })});
         this.$uibModalInstance.close(true);
     }
 
