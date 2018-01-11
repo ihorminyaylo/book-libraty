@@ -75,7 +75,7 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
 
     @Override
     public List<T> findTopFive() {
-        return entityManager.createNativeQuery("SELECT * FROM " + entityType.getSimpleName() + " ORDER BY average_rating", entityType)
+        return entityManager.createNativeQuery("SELECT * FROM " + entityType.getSimpleName() + " ORDER BY average_rating DESC", entityType)
             .setMaxResults(5).getResultList();
     }
 
