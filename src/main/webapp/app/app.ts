@@ -12,11 +12,9 @@ import booksShow from './components/books-show/books-show'
 import authorsIndex from './components/authors-index/authors-index'
 import reviewsIndex from './components/reviews-index/reviews-index'
 import homeIndex from './components/home-index/home-index'
-import app from './components/authors-index/modal/modal'
 
 angular.module('myApp', [
   'ngRoute',
-    app,
   routes,
   navigation,
   homeIndex,

@@ -44,7 +44,6 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
         if (listParams.getLimit() != null || listParams.getOffset() != null) {
             try {
                 listEntity = getDao().find(listParams);
-                listEntity.forEach(author -> author.setAverageRating(author.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
             } catch (Exception e) {
                 LOGGER.error("in read() exception!", e);
                 throw new BusinessException(e);
@@ -57,7 +56,6 @@ public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, Author
     public List<AuthorDto> readTopFive() throws BusinessException {
         try {
             List<Author> authors = getDao().findTopFive();
-            authors.forEach(author -> author.setAverageRating(author.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN)));
             return authors.stream().map(AuthorDto::new).collect(Collectors.toList());
         } catch (Exception e) {
             LOGGER.error("in readTopFive() exception!", e);

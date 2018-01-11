@@ -20,7 +20,7 @@ public class AuthorDaoImpl extends AbstractDao<Author, AuthorPattern> implements
                 .setParameter("authorId", idAuthor)
                 .getSingleResult()).intValue();
         if (countBook != 0) {
-            return idAuthor;
+            return null;
         }
         try {
             return super.delete(idAuthor);

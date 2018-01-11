@@ -31,7 +31,9 @@ class BooksShow {
         this.currentPage = page;
         this.offset = (this.currentPage - 1) * this.limit;
         this.booksApi.getByBook(this.book.id).then(book => {
-            this.book = book
+            this.book = book;
+            /*this.book.authors = book.authors;
+            this.book.authors.forEach(book => book.createDate = null);*/
         });
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
         this.listParam = new ListParams(this.limit, this.offset, new ReviewPattern(this.book.id), null);
@@ -143,10 +145,10 @@ class AddReview {
             });
             return;
         }
-        this.booksApi.createReview(commenterName, comment, rating, this.book).then(response => {console.log('start');this.reviewsApi.find(this.listParam)
+        this.booksApi.createReview(commenterName, comment, rating, this.book).then(response => this.reviewsApi.find(this.listParam)
             .then(reviewsAndCountPages => {
                 this.reviewsAndCountPages.list = reviewsAndCountPages.list; this.reviewsAndCountPages.totalItems = reviewsAndCountPages.totalItems
-            })});
+            }));
         this.$uibModalInstance.close(true);
     }
 

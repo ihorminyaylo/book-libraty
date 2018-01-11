@@ -241,6 +241,7 @@ class DeleteAuthor {
                 private $uibModal: ng.ui.bootstrap.IModalService,
                 private authorsAndCountPages: IAuthorsAndCountPages,
                 private listParams: ListParams<IAuthor>) {
+        this.notRemove.push(author);
     }
 
     private reloadDates(): void {
@@ -254,10 +255,16 @@ class DeleteAuthor {
 
     ok() {
         this.authorsApi.delete(this.author.id).then(response => {
+            console.log(response.data);
             if (response.data !== '') {
                 if (this.author.id === response.data) {
-                    this.notRemove.push(this.author);
+                    let index = this.notRemove.indexOf(this.author, 0);
+                    if (index > -1) {
+                        this.notRemove.splice(index, 1);
+                    }
                 }
+            }
+            if (this.notRemove.length > 0) {
                 this.$uibModal.open({
                     backdrop: false,
                     controller: ErrorDialog,
@@ -266,7 +273,7 @@ class DeleteAuthor {
                     resolve: {
                         authorsNotRemove: () => this.notRemove
                     }
-                })
+                });
             }
             this.reloadDates();
         });
@@ -285,9 +292,8 @@ class BulkDelete {
         headerText: 'Warning!',
         bodyText: `Are you sure to delete selected authors?`
     };
-    authors: IAuthor[] = [];
-    notRemove: IAuthor[] = [];
-
+    notRemoves: IAuthor[] = [];
+    removes: IAuthor[] = [];
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private authorsRemove: IAuthor[],
@@ -295,6 +301,7 @@ class BulkDelete {
                 private $uibModal: ng.ui.bootstrap.IModalService,
                 private authorsAndCountPages: IAuthorsAndCountPages,
                 private listParams: ListParams<IAuthor>) {
+        //this.notRemoves = authorsRemove;
     }
 
     private reloadDates(): void {
@@ -312,19 +319,26 @@ class BulkDelete {
                 this.authorsRemove.forEach(author => {
                     response.data.forEach(id => {
                         if (author.id === id) {
-                            this.notRemove.push(author)
+                            this.removes.push(author);
+                            /*let index = this.notRemoves.indexOf(author);
+                            if (index > -1) {
+                                this.notRemoves.splice(index, 1);
+                            }*/
                         }
                     })
                 });
+                this.authorsRemove.forEach(author => {if (this.removes.indexOf(author) < 0) {this.notRemoves.push(author)}})
+            }
+            if (this.notRemoves.length > 0) {
                 this.$uibModal.open({
                     backdrop: false,
                     controller: ErrorDialog,
                     controllerAs: 'errorDialog',
                     templateUrl: 'error.html',
                     resolve: {
-                        authorsNotRemove: () => this.notRemove
+                        authorsNotRemove: () => this.notRemoves
                     }
-                })
+                });
             }
             this.reloadDates();
         });

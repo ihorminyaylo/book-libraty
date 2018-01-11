@@ -37,7 +37,6 @@ class HttpBooksApi extends HttpApi<IBook> implements IBooksApi {
         super($http);
     }
     public createBook(book: IBook) {
-        console.log(book);
         return this.$http.post(this.BASE_URL + this.API_URL, book);
     }
     public updateBook(book: IBook) {

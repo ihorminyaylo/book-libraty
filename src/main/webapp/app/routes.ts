@@ -22,7 +22,4 @@ angular.module(moduleName, [])
       .when('/books_show/:idBook', {
         template: '<books-show></books-show>'
       })
-        .when('/modal', {
-            template: '<app></app>'
-        })
   })
