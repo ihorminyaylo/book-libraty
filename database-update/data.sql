@@ -36,7 +36,7 @@ CREATE TABLE author_book (
   FOREIGN KEY (book_id) REFERENCES book (id)
 );
 
-CREATE FUNCTION calculate_average_rating_book()
+CREATE FUNCTION calculate_average_rating()
   RETURNS TRIGGER AS $calculates$
 BEGIN
   UPDATE book
@@ -44,38 +44,31 @@ BEGIN
                         FROM review
                         WHERE book.id = review.book_id)
   WHERE new.book_id = book.id;
-  RETURN NEW;
-END;
-$calculates$
-LANGUAGE plpgsql;
-
-CREATE TRIGGER bookAvgRating
-AFTER INSERT ON review
-FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_book();
-
-CREATE FUNCTION calculate_average_rating_author()
-  RETURNS TRIGGER AS $calculates$
-BEGIN
   UPDATE author
-  SET average_rating = (SELECT AVG(average_rating)
-                        FROM book
-                          JOIN author_book ON book.id = author_book.book_id
-                        WHERE author.id IN (SELECT author_id
-                                            FROM author_book
-                                            WHERE book_id = new.id))
-  WHERE new.id = (SELECT DISTINCT book_id
-                  FROM author_book
-                  WHERE author_id = author.id AND book_id = new.id);
+  SET average_rating = (SELECT AVG(rating)
+                        FROM review
+                          JOIN author_book ON review.book_id = author_book.book_id
+                        WHERE author_book.book_id IN (SELECT author_book.book_id
+                                                      FROM author_book
+                                                      WHERE author_id IN (SELECT author_id
+                                                                          FROM author_book
+                                                                            JOIN review
+                                                                              ON review.book_id = author_book.book_id
+                                                                          WHERE review.book_id = new.book_id)))
+  WHERE author.id IN (SELECT author_id
+                      FROM author_book
+                      WHERE book_id = new.book_id);
   RETURN NEW;
 END;
 $calculates$
 LANGUAGE plpgsql;
 
-CREATE TRIGGER authorAvgRating
-AFTER UPDATE ON book
-FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author();
+CREATE TRIGGER avgRating
+AFTER INSERT ON review
+FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating();
 
-CREATE FUNCTION calculate_average_rating_author_delete_book()
+
+CREATE OR REPLACE FUNCTION calculate_average_rating_author_delete_book()
   RETURNS TRIGGER AS $calculates$
 BEGIN
   UPDATE author
@@ -83,8 +76,8 @@ BEGIN
                         FROM book
                           JOIN author_book ON book.id = author_book.book_id
                         WHERE author_book.book_id = old.book_id)
-  WHERE old.author_id = author.id;
-  RETURN NEW;
+  WHERE author.id = old.author_id;
+  RETURN OLD;
 END;
 $calculates$
 LANGUAGE plpgsql;
