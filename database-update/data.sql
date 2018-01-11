@@ -60,7 +60,9 @@ BEGIN
   SET average_rating = (SELECT AVG(average_rating)
                         FROM book
                           JOIN author_book ON book.id = author_book.book_id
-                        WHERE author.id IN (SELECT author_id FROM author_book WHERE book_id = new.id))
+                        WHERE author.id IN (SELECT author_id
+                                            FROM author_book
+                                            WHERE book_id = new.id))
   WHERE new.id = (SELECT DISTINCT book_id
                   FROM author_book
                   WHERE author_id = author.id AND book_id = new.id);
