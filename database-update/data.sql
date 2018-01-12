@@ -44,6 +44,7 @@ BEGIN
                         FROM review
                         WHERE book.id = review.book_id)
   WHERE new.book_id = book.id;
+
   UPDATE author
   SET average_rating = (SELECT AVG(rating)
                         FROM review
@@ -52,9 +53,7 @@ BEGIN
                                                       FROM author_book
                                                       WHERE author_id IN (SELECT author_id
                                                                           FROM author_book
-                                                                            JOIN review
-                                                                              ON review.book_id = author_book.book_id
-                                                                          WHERE review.book_id = new.book_id)))
+                                                                          WHERE author_book.book_id = new.book_id)))
   WHERE author.id IN (SELECT author_id
                       FROM author_book
                       WHERE book_id = new.book_id);
@@ -83,7 +82,7 @@ $calculates$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER authorAvgRating
-AFTER DELETE ON author_book
+AFTER INSERT OR UPDATE OR DELETE ON author_book
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author_delete_book();
 
 
