@@ -77,6 +77,7 @@ public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEnt
 
     @Override
     public void update(T entity) throws BusinessException {
+        validateEntity(entity);
         try {
             dao.update(entity);
         } catch (Exception e) {

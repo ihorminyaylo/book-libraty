@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookDto extends AbstractDto {
+    private String isbn;
     private String name;
     private String publisher;
     private Integer yearPublished;
@@ -14,6 +15,9 @@ public class BookDto extends AbstractDto {
 
     public BookDto(Book book) {
         super(book);
+        if (book.getIsbn() != null) {
+            isbn = book.getIsbn();
+        }
         if (book.getName() != null) {
             name = book.getName();
         }
@@ -71,5 +75,13 @@ public class BookDto extends AbstractDto {
 
     public void setAuthors(List<AuthorDto> authors) {
         this.authors = authors;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 }

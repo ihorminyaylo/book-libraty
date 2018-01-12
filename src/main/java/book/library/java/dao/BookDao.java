@@ -17,4 +17,6 @@ public interface BookDao extends Dao<Book, BookPattern> {
      * @return List of ReviewPageDto
      */
     List<ReviewPageDto> getCountOfEachRating();
+
+    Boolean checkISBN(String isbn);
 }

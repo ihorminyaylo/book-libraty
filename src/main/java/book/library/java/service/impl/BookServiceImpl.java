@@ -18,12 +18,15 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern, BookDto> implements BookService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImpl.class);
+    private static final Pattern PATTERN = Pattern.compile("^[0-9]{3}-[0-9]-[0-9]{2}-[0-9]{6}-[0-9]");
 
     @Autowired
     public BookServiceImpl(BookDao bookDao) {
@@ -95,8 +98,20 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern,
     @Override
     public void validateEntity(Book book) throws BusinessException {
         if (StringUtils.isBlank(book.getName())) {
-            LOGGER.error("in validateEntity() exception - Name of book isn't correct");
+            LOGGER.error("in validateEntity() exception!");
             throw new BusinessException("Name of book isn't correct");
+        }
+        String isbn = book.getIsbn();
+        if (!StringUtils.isBlank(isbn)) {
+            Matcher matcher = PATTERN.matcher(isbn);
+            if (!matcher.matches()) {
+                LOGGER.error("in validateEntity() exception!");
+                throw new BusinessException("The ISBN must be like XXX-X-XX-XXXXXX-X where \"X\" - number.");
+            }
+            if (getDao().checkISBN(isbn)) {
+                LOGGER.error("in validateEntity() exception!");
+                throw new BusinessException("The isbn already exist");
+            }
         }
     }
 }

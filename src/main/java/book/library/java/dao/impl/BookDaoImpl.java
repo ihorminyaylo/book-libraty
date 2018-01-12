@@ -22,7 +22,7 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
     }
 
     @Override
-    public StringBuilder generateQueryWithParams(ListParams<BookPattern> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException {
+    public StringBuilder createOrderWithParams(ListParams<BookPattern> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException {
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
         if (pattern != null) {
             if (pattern.getAuthorId() != null) {
@@ -36,18 +36,16 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
                 query.append(" AND book.average_rating BETWEEN :ratingSmall AND :ratingBig");
             }
             if (typeQueryFind) {
-                addSortParams(listParams, query);
+                createOrderWithSortParams(listParams, query);
             }
-        } else {
-            query.append(" ORDER BY average_rating, create_date");
         }
         return query;
     }
 
     @Override
-    public Query setParameters(ListParams<BookPattern> listParams, Query nativeQuery, Boolean typeQueryFind) {
+    public Query addParameters(ListParams<BookPattern> listParams, Query nativeQuery, Boolean typeQueryFind) {
         BookPattern pattern = listParams != null ? listParams.getPattern() : null;
-        super.setParameters(listParams, nativeQuery, typeQueryFind);
+        super.addParameters(listParams, nativeQuery, typeQueryFind);
         if (pattern != null) {
             nativeQuery.setParameter("search", '%' + pattern.getSearch() + '%');
             if (pattern.getAuthorId() != null) {
@@ -59,5 +57,10 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
             }
         }
         return nativeQuery;
+    }
+
+    @Override
+    public Boolean checkISBN(String isbn) {
+        return (Boolean) entityManager.createNativeQuery("SELECT exists(SELECT 1 FROM book where isbn = :isbn)").setParameter("isbn", isbn).getSingleResult();
     }
 }

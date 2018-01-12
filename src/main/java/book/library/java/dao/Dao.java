@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Represent a Abstract DAO with generic T(type of entity) and P(type of Pattern for definite entity)
  * A Abstract DAO have CRUD methods(create, read(find), update, delete) and get(Integer id), findAll,
- * findTopFive, totalRecords, bulkDelete(List<Integer> idEntities), generateQueryWithParams, setParameters
+ * findTopFive, totalRecords, bulkDelete(List<Integer> idEntities), createOrderWithParams, addParameters
  */
 public interface Dao<T, P> {
     /**
@@ -96,7 +96,7 @@ public interface Dao<T, P> {
      * @param typeQueryFind type query is find - true, else - false
      * @return StringBuilder query
      */
-    StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException;
+    StringBuilder createOrderWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException;
 
     /**
      * This method for set parameters in our query
@@ -106,5 +106,12 @@ public interface Dao<T, P> {
      * @param typeQueryFind type query is find - true, else - false
      * @return Query
      */
-    Query setParameters(ListParams<P> listParams, Query query, Boolean typeQueryFind);
+    Query addParameters(ListParams<P> listParams, Query query, Boolean typeQueryFind);
+
+    /**
+     * This method for add sort params
+     * @param listParams has property sortParams
+     * @param query for add order
+     */
+    void createOrderWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException;
 }

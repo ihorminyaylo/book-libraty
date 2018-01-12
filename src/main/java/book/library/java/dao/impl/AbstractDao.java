@@ -52,10 +52,9 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public List<T> find(ListParams<P> listParams) throws DaoException {
         StringBuilder queryString = new StringBuilder("SELECT * FROM " + entityType.getSimpleName());
-        generateQueryWithParams(listParams, queryString, true);
-        generateQueryWithSortParams(listParams, queryString);
+        createOrderWithParams(listParams, queryString, true);
         Query query = (Query) entityManager.createNativeQuery(queryString.toString(), entityType);
-        query = setParameters(listParams, query, true);
+        query = addParameters(listParams, query, true);
         return query.getResultList();
     }
 
@@ -119,23 +118,23 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
     @Override
     public Integer totalRecords(ListParams<P> listParams) throws DaoException {
         StringBuilder queryString = new StringBuilder("SELECT Count(*) FROM " + entityType.getSimpleName());
-        Query query = (Query) entityManager.createNativeQuery(generateQueryWithParams(listParams, queryString, false).toString());
-        query = setParameters(listParams, query, false);
+        Query query = (Query) entityManager.createNativeQuery(createOrderWithParams(listParams, queryString, false).toString());
+        query = addParameters(listParams, query, false);
         return ((Number) query.getSingleResult()).intValue();
     }
 
     @Override
-    public StringBuilder generateQueryWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException {
+    public StringBuilder createOrderWithParams(ListParams<P> listParams, StringBuilder query, Boolean typeQueryFind) throws DaoException {
         if (typeQueryFind) {
             if (listParams.getPattern() != null) {
-                addSortParams(listParams, query);
+                createOrderWithSortParams(listParams, query);
             }
         }
         return query;
     }
 
     @Override
-    public Query setParameters(ListParams<P> listParams, Query query, Boolean typeQueryFind) {
+    public Query addParameters(ListParams<P> listParams, Query query, Boolean typeQueryFind) {
         if (typeQueryFind) {
             if (listParams.getLimit() != null && listParams.getOffset() != null) {
                 query.setFirstResult(listParams.getOffset()).setMaxResults(listParams.getLimit());
@@ -144,21 +143,8 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
         return query;
     }
 
-    void generateQueryWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
-        SortParams sortParams = listParams.getSortParams();
-        if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
-            for (Field field : entityType.getFields()) {
-                if (sortParams.getParameter().equalsIgnoreCase(field.getName())) {
-                    query.append(" ORDER BY ").append(sortParams.getParameter()).append(' ').append(sortParams.getType());
-                    break;
-                }
-            }
-        } else {
-            query.append(" ORDER BY create_date");
-        }
-    }
-
-    void addSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
+    @Override
+    public void createOrderWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
         SortParams sortParams = listParams.getSortParams();
         if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
             String columnName = sortParams.getParameter();
@@ -173,6 +159,9 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
             }
             query.append(" ORDER BY ").append(columnName).append(' ').append(sortParams.getType());
 
+        }
+        else {
+            query.append(" ORDER BY create_date");
         }
     }
 

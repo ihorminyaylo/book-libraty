@@ -24,6 +24,9 @@ import java.util.List;
 public class Book extends AbstractEntity {
     private static final long serialVersionUID = 645377494231112540L;
 
+    @Column(name = "isbn", length = 17)
+    private String isbn;
+
     @Column(name = "name", nullable = false, length = 256)
     private String name;
 
@@ -112,5 +115,13 @@ public class Book extends AbstractEntity {
     @Override
     public String toString() {
         return "id - " + getId() + ", name - " + name;
+    }
+
+    public String getIsbn() {
+        return isbn;
+    }
+
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 }

@@ -12,6 +12,7 @@ CREATE TABLE author (
 
 CREATE TABLE book (
   id             SERIAL PRIMARY KEY,
+  isbn           VARCHAR(17) UNIQUE,
   name           VARCHAR(256) NOT NULL,
   publisher      VARCHAR(256),
   year_published INTEGER,
@@ -110,13 +111,13 @@ INSERT INTO author VALUES (DEFAULT, 'Christina', 'Maksimchuk');
 INSERT INTO author VALUES (DEFAULT, 'Stanislav', 'Obshankiy');
 INSERT INTO author VALUES (DEFAULT, 'Andriy', 'Vakarchuk');
 
-INSERT INTO book VALUES (DEFAULT, 'Java', 'SoftServe', 2017);
-INSERT INTO book VALUES (DEFAULT, 'AngularJS', 'SoftServe', 2015);
-INSERT INTO book VALUES (DEFAULT, 'Angular 2', 'SoftServe Academy', 2009);
-INSERT INTO book VALUES (DEFAULT, 'SQL', 'Chernivtsi Print Office', 2000);
-INSERT INTO book VALUES (DEFAULT, 'Hibernate', 'SoftServe', 2016);
-INSERT INTO book VALUES (DEFAULT, 'Spring MVC', 'Chernivtsi Print Office', 2017);
-INSERT INTO book VALUES (DEFAULT, 'JDBC', 'SoftServe', 2014);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-1', 'Java', 'SoftServe', 2017);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-2', 'AngularJS', 'SoftServe', 2015);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-3', 'Angular 2', 'SoftServe Academy', 2009);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-4', 'SQL', 'Chernivtsi Print Office', 2000);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-5', 'Hibernate', 'SoftServe', 2016);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-6', 'Spring MVC', 'Chernivtsi Print Office', 2017);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-7', 'JDBC', 'SoftServe', 2014);
 
 INSERT INTO author_book VALUES (2, 1);
 INSERT INTO author_book VALUES (2, 2);
