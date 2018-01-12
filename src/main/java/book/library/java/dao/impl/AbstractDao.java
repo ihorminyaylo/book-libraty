@@ -96,15 +96,13 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
             throw new DaoException("AbstractEntity id can't be null");
         }
         T entity = get(idEntity);
-        if (entity == null) {
-            LOGGER.error("in delete(id) exception - Entity with this id does not exist");
-            throw new DaoException("Entity with this id does not exist");
-        }
-        try {
-            entityManager.remove(entity);
-        } catch (Exception e) {
-            LOGGER.error("in delete(id) exception - [{}]", e);
-            throw new DaoException(e);
+        if (entity != null) {
+            try {
+                entityManager.remove(entity);
+            } catch (Exception e) {
+                LOGGER.error("in delete(id) exception - [{}]", e);
+                throw new DaoException(e);
+            }
         }
         return idEntity;
     }

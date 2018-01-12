@@ -1,1 +1,1 @@
-CREATE DATABASE library WITH encoding='UTF8';
+CREATE DATABASE library WITH encoding=  'UTF8';

@@ -5,7 +5,7 @@ package book.library.java.list;
  * A ListParams have parameter for sort and have type field. Type field is enum.
  */
 public class SortParams {
-    private String parameter;
+    private String parameter; // todo: propertyName
     private TypeSort type;
 
     public String getParameter() {

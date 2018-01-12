@@ -82,9 +82,8 @@ $calculates$
 LANGUAGE plpgsql;
 
 CREATE TRIGGER authorAvgRating
-AFTER INSERT OR UPDATE OR DELETE ON author_book
+AFTER DELETE ON author_book
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author_delete_book();
-
 
 INSERT INTO author VALUES (DEFAULT, 'Ihor', 'Miniailo');
 INSERT INTO author VALUES (DEFAULT, 'Mykola', 'Halchuk');
