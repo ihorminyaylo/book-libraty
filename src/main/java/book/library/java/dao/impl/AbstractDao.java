@@ -143,12 +143,15 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
         return query;
     }
 
+    @SuppressWarnings("LiteralAsArgToStringEquals")
     @Override
     public void createOrderWithSortParams(ListParams<P> listParams, StringBuilder query) throws DaoException {
         SortParams sortParams = listParams.getSortParams();
         if (sortParams != null && sortParams.getParameter() != null && sortParams.getType() != null) {
             String columnName = sortParams.getParameter();
             try {
+                //todo: Dosen't work sort by createDate
+
                 Field field = entityType.getDeclaredField(sortParams.getParameter());
                 Annotation annotation = field.getAnnotation(Column.class);
                 if (annotation != null) {
@@ -159,9 +162,13 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
             }
             query.append(" ORDER BY ").append(columnName).append(' ').append(sortParams.getType());
 
+            //todo: Dosen't work sort by createDate
+            if (!columnName.equals("create_date")) {
+                query.append(", create_date DESC");
+            }
         }
         else {
-            query.append(" ORDER BY create_date");
+            query.append(" ORDER BY create_date DESC");
         }
     }
 

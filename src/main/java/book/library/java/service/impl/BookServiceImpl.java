@@ -108,7 +108,7 @@ public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern,
                 LOGGER.error("in validateEntity() exception!");
                 throw new BusinessException("The ISBN must be like XXX-X-XX-XXXXXX-X where \"X\" - number.");
             }
-            if (getDao().checkISBN(isbn)) {
+            if (getDao().checkISBN(book)) {
                 LOGGER.error("in validateEntity() exception!");
                 throw new BusinessException("The isbn already exist");
             }

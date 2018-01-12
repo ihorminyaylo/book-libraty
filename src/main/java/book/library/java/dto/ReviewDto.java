@@ -4,7 +4,6 @@ import book.library.java.model.Review;
 
 public class ReviewDto extends AbstractDto {
     private String commenterName;
-    private String createDate;
     private String comment;
     private Integer rating;
 
@@ -13,7 +12,6 @@ public class ReviewDto extends AbstractDto {
         commenterName = review.getCommenterName();
         comment = review.getComment();
         rating = review.getRating();
-        createDate = review.getCreateDate().toString();
     }
 
     public String getCommenterName() {
@@ -40,11 +38,4 @@ public class ReviewDto extends AbstractDto {
         this.rating = rating;
     }
 
-    public String getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
-    }
 }

@@ -23,10 +23,6 @@ public class Author extends AbstractEntity {
     @Column(name = "second_name", length = 256)
     private String secondName;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date", updatable = false, insertable = false)
-    private Date createDate;
-
     @Column(name = "average_rating", updatable = false, insertable = false)
     private BigDecimal averageRating;
 
@@ -45,14 +41,6 @@ public class Author extends AbstractEntity {
 
     public void setSecondName(String secondName) {
         this.secondName = secondName;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 
     public BigDecimal getAverageRating() {

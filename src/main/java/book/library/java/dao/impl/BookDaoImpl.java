@@ -60,7 +60,7 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
     }
 
     @Override
-    public Boolean checkISBN(String isbn) {
-        return (Boolean) entityManager.createNativeQuery("SELECT exists(SELECT 1 FROM book where isbn = :isbn)").setParameter("isbn", isbn).getSingleResult();
+    public Boolean checkISBN(Book book) {
+        return (Boolean) entityManager.createNativeQuery("SELECT exists(SELECT 1 FROM book where isbn = :isbn AND book.id <> :bookId)").setParameter("isbn", book.getIsbn()).setParameter("bookId", book.getId()).getSingleResult();
     }
 }

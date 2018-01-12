@@ -27,10 +27,6 @@ public class Review extends AbstractEntity {
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "create_date", updatable = false, insertable = false)
-    private Date createDate;
-
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
@@ -68,14 +64,6 @@ public class Review extends AbstractEntity {
 
     public void setRating(Integer rating) {
         this.rating = rating;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 
     @Override
