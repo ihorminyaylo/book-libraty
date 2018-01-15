@@ -79,6 +79,9 @@ BEGIN
                                                  FROM author_book
                                                  WHERE author_book.author_id = old.author_id))
   WHERE author.id = old.author_id;
+  UPDATE author
+  SET average_rating = 0
+  WHERE author.average_rating IS NULL;
   RETURN OLD;
 END;
 $calculates$
@@ -114,12 +117,16 @@ INSERT INTO author VALUES (DEFAULT, 'Stanislav', 'Obshankiy', '2015-07-18 12:31:
 INSERT INTO author VALUES (DEFAULT, 'Andriy', 'Vakarchuk', '2015-03-02 12:31:27.374594');
 
 INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-5', 'Hibernate', 'SoftServe', 2016, '2016-09-07 12:31:27.405848', 1);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-2', 'AngularJS', 'SoftServe', 2015, '2015-11-04 12:31:27.374594', 4.857142857142857);
+INSERT INTO book
+VALUES (DEFAULT, '123-1-12-123456-2', 'AngularJS', 'SoftServe', 2015, '2015-11-04 12:31:27.374594', 4.857142857142857);
 INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-7', 'JDBC', 'SoftServe', 2014, '2017-06-24 12:31:27.437101', 2);
 INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-1', 'Java', 'SoftServe', 2017, '2018-01-03 12:31:27.358964', 3.8);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-6', 'Spring MVC', 'Chernivtsi Print Office', 2017, '2011-12-28 12:31:27.405848', 1);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-4', 'SQL', 'Chernivtsi Print Office', 2000, '2014-05-14 12:31:27.405848', 2);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-3', 'Angular 2', 'SoftServe Academy', 2009, '2012-10-14 12:31:27.374594', 3);
+INSERT INTO book
+VALUES (DEFAULT, '123-1-12-123456-6', 'Spring MVC', 'Chernivtsi Print Office', 2017, '2011-12-28 12:31:27.405848', 1);
+INSERT INTO book
+VALUES (DEFAULT, '123-1-12-123456-4', 'SQL', 'Chernivtsi Print Office', 2000, '2014-05-14 12:31:27.405848', 2);
+INSERT INTO book
+VALUES (DEFAULT, '123-1-12-123456-3', 'Angular 2', 'SoftServe Academy', 2009, '2012-10-14 12:31:27.374594', 3);
 
 INSERT INTO author_book VALUES (2, 1);
 INSERT INTO author_book VALUES (2, 2);
