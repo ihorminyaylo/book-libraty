@@ -21,7 +21,7 @@ public class AuthorDto extends AbstractDto {
         if (author.getAverageRating() != null) {
             averageRating = author.getAverageRating().setScale(2, BigDecimal.ROUND_HALF_EVEN).toString();
         } else {
-            averageRating = "0";
+            averageRating = "0.00";
         }
         createDate = author.getCreateDate().toString();
     }
