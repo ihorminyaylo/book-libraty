@@ -15,12 +15,4 @@ public class WebConfiguration extends WebMvcConfigurerAdapter {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("/");
     }
-
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://127.0.0.1:8080")
-            .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
-            .allowedHeaders("Authorization", "Content-Type")
-            .allowCredentials(false).maxAge(4800);
-    }
 }
