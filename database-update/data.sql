@@ -72,10 +72,12 @@ CREATE OR REPLACE FUNCTION calculate_average_rating_author_delete_book()
   RETURNS TRIGGER AS $calculates$
 BEGIN
   UPDATE author
-  SET average_rating = (SELECT AVG(average_rating)
-                        FROM book
-                          JOIN author_book ON book.id = author_book.book_id
-                        WHERE author_book.book_id = old.book_id)
+  SET average_rating = (SELECT AVG(rating)
+                        FROM review
+                          JOIN author_book ON review.book_id = author_book.book_id
+                        WHERE author_book.author_id IN (SELECT author_id
+                                                        FROM author_book
+                                                        WHERE author_book.book_id = old.book_id))
   WHERE author.id = old.author_id;
   RETURN OLD;
 END;
@@ -111,13 +113,20 @@ INSERT INTO author VALUES (DEFAULT, 'Christina', 'Maksimchuk');
 INSERT INTO author VALUES (DEFAULT, 'Stanislav', 'Obshankiy');
 INSERT INTO author VALUES (DEFAULT, 'Andriy', 'Vakarchuk');
 
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-1', 'Java', 'SoftServe', 2017);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-2', 'AngularJS', 'SoftServe', 2015);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-3', 'Angular 2', 'SoftServe Academy', 2009);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-4', 'SQL', 'Chernivtsi Print Office', 2000);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-5', 'Hibernate', 'SoftServe', 2016);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-6', 'Spring MVC', 'Chernivtsi Print Office', 2017);
-INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-7', 'JDBC', 'SoftServe', 2014);
+INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
+VALUES (5, '123-1-12-123456-5', 'Hibernate', 'SoftServe', 2016, '2016-09-07 12:31:27.405848', 1);
+INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
+VALUES (2, '123-1-12-123456-2', 'AngularJS', 'SoftServe', 2015, '2015-11-04 12:31:27.374594', 4.857142857142857);
+INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
+VALUES (7, '123-1-12-123456-7', 'JDBC', 'SoftServe', 2014, '2017-06-24 12:31:27.437101', 2);
+INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
+VALUES (1, '123-1-12-123456-1', 'Java', 'SoftServe', 2017, '2018-01-03 12:31:27.358964', 3.8);
+INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
+VALUES (6, '123-1-12-123456-6', 'Spring MVC', 'Chernivtsi Print Office', 2017, '2011-12-28 12:31:27.405848', 1);
+INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
+VALUES (4, '123-1-12-123456-4', 'SQL', 'Chernivtsi Print Office', 2000, '2014-05-14 12:31:27.405848', 2);
+INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
+VALUES (3, '123-1-12-123456-3', 'Angular 2', 'SoftServe Academy', 2009, '2012-10-14 12:31:27.374594', 3);
 
 INSERT INTO author_book VALUES (2, 1);
 INSERT INTO author_book VALUES (2, 2);

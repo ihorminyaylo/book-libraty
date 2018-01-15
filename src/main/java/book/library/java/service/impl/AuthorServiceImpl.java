@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AuthorServiceImpl extends AbstractService<AuthorDao, Author, AuthorPattern, AuthorDto> implements AuthorService {
+public class AuthorServiceImpl extends BaseServiceImpl<AuthorDao, Author, AuthorPattern, AuthorDto> implements AuthorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImpl.class);
 

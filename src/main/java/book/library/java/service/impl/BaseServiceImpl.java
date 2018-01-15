@@ -16,12 +16,12 @@ import java.util.List;
 
 @Service
 @Transactional
-public abstract class AbstractService<D extends Dao<T, P>, T extends AbstractEntity, P, DTO> implements BaseService<T, P, DTO> {
+public abstract class BaseServiceImpl<D extends Dao<T, P>, T extends AbstractEntity, P, DTO> implements BaseService<T, P, DTO> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractService.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseServiceImpl.class);
     private final D dao;
 
-    AbstractService(D dao) {
+    BaseServiceImpl(D dao) {
         this.dao = dao;
     }
 

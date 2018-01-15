@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class AuthorDaoImpl extends AbstractDao<Author, AuthorPattern> implements AuthorDao {
+public class AuthorDaoImpl extends DaoImpl<Author, AuthorPattern> implements AuthorDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorDaoImpl.class);
 

@@ -4,7 +4,7 @@ import authorsApiModule, {IAuthor, IAuthorsAndCountPages, IAuthorsApi} from '../
 import {ListParams, SortParams} from "../../services/service-api";
 
 class AuthorsIndex {
-    private sortParam: SortParams = new SortParams(null, null);
+    private sortParam: SortParams = new SortParams('createDate', 'ASC');
     private maxPages: number = 3;
     private checkAll: boolean = false;
     private disableBulkDelete: boolean = true;
@@ -295,6 +295,7 @@ class BulkDelete {
     };
     notRemoves: IAuthor[] = [];
     removes: IAuthor[] = [];
+
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
                 private authorsApi: IAuthorsApi,
                 private authorsRemove: IAuthor[],
@@ -321,14 +322,14 @@ class BulkDelete {
                     response.data.forEach(id => {
                         if (author.id === id) {
                             this.removes.push(author);
-                            /*let index = this.notRemoves.indexOf(author);
-                            if (index > -1) {
-                                this.notRemoves.splice(index, 1);
-                            }*/
                         }
                     })
                 });
-                this.authorsRemove.forEach(author => {if (this.removes.indexOf(author) < 0) {this.notRemoves.push(author)}})
+                this.authorsRemove.forEach(author => {
+                    if (this.removes.indexOf(author) < 0) {
+                        this.notRemoves.push(author)
+                    }
+                })
             }
             if (this.notRemoves.length > 0) {
                 this.$uibModal.open({

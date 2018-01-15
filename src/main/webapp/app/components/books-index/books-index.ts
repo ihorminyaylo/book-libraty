@@ -12,9 +12,9 @@ interface IRouteParams extends angular.route.IRouteParamsService {
 
 class BooksIndex {
     maxPages: number = 3;
-    sortType = 'name';
+    sortType = 'createDate';
     sortParam: SortParams;
-    sortReverse: string;
+    sortReverse: string = 'ASC';
 
     sortParams(type) {
         this.sortType = type;
@@ -238,6 +238,7 @@ class AddBook {
     }
 
     addAuthorForBook(author: IAuthor) {
+        author.createDate = null;
         this.selectAuthors.push(author);
         let index = this.authors.indexOf(author, 0);
         if (index > -1) {
@@ -259,6 +260,7 @@ class AddBook {
         this.book.publisher = publisher;
         this.book.yearPublished = yearPublisher;
         this.book.authors = this.selectAuthors;
+        this.book.authors.forEach(author => author.createDate = null);
         this.booksApi.createBook(this.book).then(response => {this.pageChanged()}).catch(error => {
             this.$uibModal.open({
                 animation: true,
@@ -340,8 +342,10 @@ class AddReview {
             });
             return;
         }
+        this.book.authors.forEach(author => author.createDate = null);
+        this.book.createDate = null;
+        console.log('hahahahah');
         this.booksApi.createReview(commenterName, comment, rating, this.book).then(response => this.pageChanged());
-        ;
         this.$uibModalInstance.close(true);
     }
 

@@ -24,14 +24,14 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 @Repository
 @Transactional(propagation = Propagation.MANDATORY)
-public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T, P> {
+public abstract class DaoImpl<T extends AbstractEntity, P> implements Dao<T, P> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractDao.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DaoImpl.class);
     private final Class<T> entityType;
     @PersistenceContext
     EntityManager entityManager;
 
-    AbstractDao() {
+    DaoImpl() {
         entityType = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
     }
 

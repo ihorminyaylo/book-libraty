@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class ReviewServiceImpl extends AbstractService<ReviewDao, Review, ReviewPattern, ReviewDto> implements ReviewService {
+public class ReviewServiceImpl extends BaseServiceImpl<ReviewDao, Review, ReviewPattern, ReviewDto> implements ReviewService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReviewServiceImpl.class);
 

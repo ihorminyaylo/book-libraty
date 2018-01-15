@@ -9,7 +9,7 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class ReviewDaoImpl extends AbstractDao<Review, ReviewPattern> implements ReviewDao {
+public class ReviewDaoImpl extends DaoImpl<Review, ReviewPattern> implements ReviewDao {
 
     @Override
     public Integer totalRecords(ListParams<ReviewPattern> listParams) {

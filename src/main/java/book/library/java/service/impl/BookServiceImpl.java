@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
-public class BookServiceImpl extends AbstractService<BookDao, Book, BookPattern, BookDto> implements BookService {
+public class BookServiceImpl extends BaseServiceImpl<BookDao, Book, BookPattern, BookDto> implements BookService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImpl.class);
     private static final Pattern PATTERN = Pattern.compile("^[0-9]{3}-[0-9]-[0-9]{2}-[0-9]{6}-[0-9]");

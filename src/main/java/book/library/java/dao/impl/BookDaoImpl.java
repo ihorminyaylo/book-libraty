@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookDao {
+public class BookDaoImpl extends DaoImpl<Book, BookPattern> implements BookDao {
     @SuppressWarnings("unchecked")
     @Override
     public List<ReviewPageDto> getCountOfEachRating() {
@@ -61,6 +61,10 @@ public class BookDaoImpl extends AbstractDao<Book, BookPattern> implements BookD
 
     @Override
     public Boolean checkISBN(Book book) {
-        return (Boolean) entityManager.createNativeQuery("SELECT exists(SELECT 1 FROM book where isbn = :isbn AND book.id <> :bookId)").setParameter("isbn", book.getIsbn()).setParameter("bookId", book.getId()).getSingleResult();
+        if (book.getId() != null) {
+            return (Boolean) entityManager.createNativeQuery("SELECT exists(SELECT 1 FROM book WHERE isbn = :isbn AND book.id <> :bookId)").setParameter("isbn", book.getIsbn()).setParameter("bookId", book.getId()).getSingleResult();
+        } else {
+            return (Boolean) entityManager.createNativeQuery("SELECT exists(SELECT 1 FROM book WHERE isbn = :isbn)").setParameter("isbn", book.getIsbn()).getSingleResult();
+        }
     }
 }
