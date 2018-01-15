@@ -24,7 +24,7 @@ import java.util.List;
 public class Book extends AbstractEntity {
     private static final long serialVersionUID = 645377494231112540L;
 
-    @Column(name = "isbn", length = 17)
+    @Column(name = "isbn", length = 17, unique = true)
     private String isbn;
 
     @Column(name = "name", nullable = false, length = 256)
