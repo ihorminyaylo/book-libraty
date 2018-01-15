@@ -75,9 +75,9 @@ BEGIN
   SET average_rating = (SELECT AVG(rating)
                         FROM review
                           JOIN author_book ON review.book_id = author_book.book_id
-                        WHERE author_book.author_id IN (SELECT author_id
-                                                        FROM author_book
-                                                        WHERE author_book.book_id = old.book_id))
+                        WHERE review.book_id IN (SELECT author_book.book_id
+                                                 FROM author_book
+                                                 WHERE author_book.author_id = old.author_id))
   WHERE author.id = old.author_id;
   RETURN OLD;
 END;
