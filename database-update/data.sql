@@ -88,45 +88,38 @@ CREATE TRIGGER authorAvgRating
 AFTER DELETE ON author_book
 FOR EACH ROW EXECUTE PROCEDURE calculate_average_rating_author_delete_book();
 
-INSERT INTO author VALUES (DEFAULT, 'Ihor', 'Miniailo');
-INSERT INTO author VALUES (DEFAULT, 'Mykola', 'Halchuk');
-INSERT INTO author VALUES (DEFAULT, 'Sergiy', 'Shumeyko');
-INSERT INTO author VALUES (DEFAULT, 'Karina', 'Miniailo');
-INSERT INTO author VALUES (DEFAULT, 'Vasiliy', 'Nahirnyak');
-INSERT INTO author VALUES (DEFAULT, 'Artem', 'Krais');
-INSERT INTO author VALUES (DEFAULT, 'Vasiliy', 'Mirnuy');
-INSERT INTO author VALUES (DEFAULT, 'Miroslava', 'Leshcenko');
-INSERT INTO author VALUES (DEFAULT, 'Sergiy', 'Beluy');
-INSERT INTO author VALUES (DEFAULT, 'Marko', 'Gichko');
-INSERT INTO author VALUES (DEFAULT, 'Vatilay', 'Paladiy');
-INSERT INTO author VALUES (DEFAULT, 'Irina', 'Romannuk');
-INSERT INTO author VALUES (DEFAULT, 'Petro', 'Petrovych');
-INSERT INTO author VALUES (DEFAULT, 'Nikola', 'Zayzev');
-INSERT INTO author VALUES (DEFAULT, 'Garik', 'Martirosyan');
-INSERT INTO author VALUES (DEFAULT, 'Leo', 'Kleyman');
-INSERT INTO author VALUES (DEFAULT, 'Leonid', 'Milman');
-INSERT INTO author VALUES (DEFAULT, 'Igor', 'Krais');
-INSERT INTO author VALUES (DEFAULT, 'Mihaela', 'Durda');
-INSERT INTO author VALUES (DEFAULT, 'Roman', 'Khrestek');
-INSERT INTO author VALUES (DEFAULT, 'Anna', 'Suhetskaya');
-INSERT INTO author VALUES (DEFAULT, 'Christina', 'Maksimchuk');
-INSERT INTO author VALUES (DEFAULT, 'Stanislav', 'Obshankiy');
-INSERT INTO author VALUES (DEFAULT, 'Andriy', 'Vakarchuk');
+INSERT INTO author VALUES (DEFAULT, 'Ihor', 'Miniailo', '2017-10-14 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Mykola', 'Halchuk', '2016-08-12 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Sergiy', 'Shumeyko', '2015-09-04 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Karina', 'Miniailo', '2016-08-11 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Vasiliy', 'Nahirnyak', '2018-01-03 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Artem', 'Krais', '2017-11-05 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Vasiliy', 'Mirnuy', '2017-09-25 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Miroslava', 'Leshcenko', '2016-07-17 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Sergiy', 'Beluy', '2015-06-07 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Marko', 'Gichko', '2015-08-01 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Vatilay', 'Paladiy', '2017-02-14 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Irina', 'Romannuk', '2016-03-08 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Petro', 'Petrovych', '2017-05-24 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Nikola', 'Zayzev', '2016-06-09 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Garik', 'Martirosyan', '2018-01-06 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Leo', 'Kleyman', '2017-07-05 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Leonid', 'Milman', '2016-08-12 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Igor', 'Krais', '2015-09-23 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Mihaela', 'Durda', '2017-10-07 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Roman', 'Khrestek', '2016-11-16 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Anna', 'Suhetskaya', '2015-12-25 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Christina', 'Maksimchuk', '2017-09-30 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Stanislav', 'Obshankiy', '2015-07-18 12:31:27.374594');
+INSERT INTO author VALUES (DEFAULT, 'Andriy', 'Vakarchuk', '2015-03-02 12:31:27.374594');
 
-INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
-VALUES (5, '123-1-12-123456-5', 'Hibernate', 'SoftServe', 2016, '2016-09-07 12:31:27.405848', 1);
-INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
-VALUES (2, '123-1-12-123456-2', 'AngularJS', 'SoftServe', 2015, '2015-11-04 12:31:27.374594', 4.857142857142857);
-INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
-VALUES (7, '123-1-12-123456-7', 'JDBC', 'SoftServe', 2014, '2017-06-24 12:31:27.437101', 2);
-INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
-VALUES (1, '123-1-12-123456-1', 'Java', 'SoftServe', 2017, '2018-01-03 12:31:27.358964', 3.8);
-INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
-VALUES (6, '123-1-12-123456-6', 'Spring MVC', 'Chernivtsi Print Office', 2017, '2011-12-28 12:31:27.405848', 1);
-INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
-VALUES (4, '123-1-12-123456-4', 'SQL', 'Chernivtsi Print Office', 2000, '2014-05-14 12:31:27.405848', 2);
-INSERT INTO public.book (id, isbn, name, publisher, year_published, create_date, average_rating)
-VALUES (3, '123-1-12-123456-3', 'Angular 2', 'SoftServe Academy', 2009, '2012-10-14 12:31:27.374594', 3);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-5', 'Hibernate', 'SoftServe', 2016, '2016-09-07 12:31:27.405848', 1);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-2', 'AngularJS', 'SoftServe', 2015, '2015-11-04 12:31:27.374594', 4.857142857142857);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-7', 'JDBC', 'SoftServe', 2014, '2017-06-24 12:31:27.437101', 2);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-1', 'Java', 'SoftServe', 2017, '2018-01-03 12:31:27.358964', 3.8);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-6', 'Spring MVC', 'Chernivtsi Print Office', 2017, '2011-12-28 12:31:27.405848', 1);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-4', 'SQL', 'Chernivtsi Print Office', 2000, '2014-05-14 12:31:27.405848', 2);
+INSERT INTO book VALUES (DEFAULT, '123-1-12-123456-3', 'Angular 2', 'SoftServe Academy', 2009, '2012-10-14 12:31:27.374594', 3);
 
 INSERT INTO author_book VALUES (2, 1);
 INSERT INTO author_book VALUES (2, 2);
