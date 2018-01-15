@@ -12,6 +12,7 @@ public class AuthorDto extends AbstractDto {
     private String firstName;
     private String secondName;
     private String averageRating;
+    private String createDate;
 
     public AuthorDto(Author author) {
         super(author);
@@ -22,6 +23,7 @@ public class AuthorDto extends AbstractDto {
         } else {
             averageRating = "0";
         }
+        createDate = author.getCreateDate().toString();
     }
 
     public String getFirstName() {
@@ -48,4 +50,11 @@ public class AuthorDto extends AbstractDto {
         this.averageRating = averageRating;
     }
 
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
 }

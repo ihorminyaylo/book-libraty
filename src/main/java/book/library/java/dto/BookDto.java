@@ -11,6 +11,7 @@ public class BookDto extends AbstractDto {
     private String publisher;
     private Integer yearPublished;
     private List<AuthorDto> authors;
+    private String createDate;
     private String averageRating;
 
     public BookDto(Book book) {
@@ -35,6 +36,7 @@ public class BookDto extends AbstractDto {
         } else {
             averageRating = "0";
         }
+        createDate = book.getCreateDate().toString();
     }
 
     public String getName() {
@@ -83,5 +85,13 @@ public class BookDto extends AbstractDto {
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 }

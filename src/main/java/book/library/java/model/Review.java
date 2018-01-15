@@ -27,6 +27,10 @@ public class Review extends AbstractEntity {
     @Column(name = "rating", nullable = false)
     private Integer rating;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "create_date", updatable = false, insertable = false)
+    private Date createDate;
+
     @ManyToOne
     @JoinColumn(name = "book_id")
     private Book book;
@@ -66,8 +70,15 @@ public class Review extends AbstractEntity {
         this.rating = rating;
     }
 
-    @Override
     public String toString() {
         return "id - " + getId() + ", book - " + getBook().getName() + ", rating - " + rating;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 }

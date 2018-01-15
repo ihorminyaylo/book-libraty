@@ -6,12 +6,14 @@ public class ReviewDto extends AbstractDto {
     private String commenterName;
     private String comment;
     private Integer rating;
+    private String createDate;
 
     public ReviewDto(Review review) {
         super(review);
         commenterName = review.getCommenterName();
         comment = review.getComment();
         rating = review.getRating();
+        createDate = review.getCreateDate().toString();
     }
 
     public String getCommenterName() {
@@ -38,4 +40,11 @@ public class ReviewDto extends AbstractDto {
         this.rating = rating;
     }
 
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
 }
