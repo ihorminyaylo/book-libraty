@@ -7,8 +7,8 @@ export class IAuthor {
     id: number;
     firstName: string;
     secondName: string;
-    createDate: string;
     averageRating: number;
+    createDate: string;
     averageRatingRound: number;
     books: string[];
     removeStatus: boolean;

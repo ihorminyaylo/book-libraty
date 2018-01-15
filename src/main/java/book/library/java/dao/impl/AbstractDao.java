@@ -159,10 +159,6 @@ public abstract class AbstractDao<T extends AbstractEntity, P> implements Dao<T,
                 throw new DaoException(e);
             }
             query.append(" ORDER BY ").append(columnName).append(' ').append(sortParams.getType());
-
-            if (!columnName.equals("create_date")) {
-                query.append(", create_date ASC");
-            }
         } else {
             query.append(" ORDER BY create_date ASC");
         }

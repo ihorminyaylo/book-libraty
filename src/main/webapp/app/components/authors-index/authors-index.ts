@@ -216,6 +216,7 @@ class EditAuthor {
     private save(firstName, secondName): void {
         this.author.firstName = firstName;
         this.author.secondName = secondName;
+        this.author.createDate = null;
         this.authorsApi.update(this.author).then(response => this.reloadDates());
         this.$uibModalInstance.close();
     }

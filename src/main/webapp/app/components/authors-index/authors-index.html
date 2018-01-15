@@ -27,14 +27,14 @@
 					      class="glyphicon glyphicon-chevron-up"></span>
 				</a>
 			</th>
-			<!--<th>
+			<th>
 				<a ng-click="a.sortBy('createDate')"> Create date
 					<span ng-show="a.sortParam.parameter === 'createDate' && a.sortParam.type === 'DESC'"
 					      class="glyphicon glyphicon-chevron-down"></span>
 					<span ng-show="a.sortParam.parameter === 'createDate' && a.sortParam.type === 'ASC'"
 					      class="glyphicon glyphicon-chevron-up"></span>
 				</a>
-			</th>-->
+			</th>
 			<th><a ng-click="a.sortBy('averageRating')"> Rating
 				<span ng-show="a.sortParam.parameter === 'averageRating' && a.sortParam.type === 'DESC'"
 				      class="glyphicon glyphicon-chevron-down"></span>
@@ -57,9 +57,9 @@
 			<td>
 				{{author.secondName}}
 			</td>
-			<!--<td>
-				{{author.getCreateDate()}}
-			</td>-->
+			<td>
+				{{author.createDate.substr(0, 10)}}
+			</td>
 			<td>
 				<div><span uib-rating titles="false" ng-model="author.averageRatingRound" max="5" read-only="true"
 				           uib-tooltip="{{author.averageRating}}"></span></div>

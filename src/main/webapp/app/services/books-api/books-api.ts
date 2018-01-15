@@ -7,6 +7,7 @@ export interface IBooksAndCountPages extends IEntitiesAndCountPages<IBook>{}
 
 export class IBook {
   id: number;
+  isbn: string;
   name: string;
   publisher: string;
   yearPublished: string;

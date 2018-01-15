@@ -32,8 +32,6 @@ class BooksShow {
         this.offset = (this.currentPage - 1) * this.limit;
         this.booksApi.getByBook(this.book.id).then(book => {
             this.book = book;
-            /*this.book.authors = book.authors;
-            this.book.authors.forEach(book => book.createDate = null);*/
         });
         this.authorsApi.readAll().then(authors => this.authors = authors.data);
         this.listParam = new ListParams(this.limit, this.offset, new ReviewPattern(this.book.id), null);
@@ -44,6 +42,8 @@ class BooksShow {
     }
 
     saveChange() {
+        this.book.createDate = null;
+        this.book.authors.forEach(author => author.createDate = null);
         this.booksApi.updateBook(this.book).then(response => { this.dialog = this.$uibModal.open({
             controller: MessageDialog,
             controllerAs: 'message',
@@ -51,7 +51,19 @@ class BooksShow {
             resolve: {
                 data: response.data
             }
-        }); this.pageChanged(this.currentPage)});
+        }); this.pageChanged(this.currentPage)}).catch(error => {
+            console.log(error);
+            console.log(error);
+            this.$uibModal.open({
+                animation: true,
+                backdrop: false,
+                controller: Error,
+                controllerAs: 'error',
+                templateUrl: 'error-dialog.html',
+                resolve: {
+                    message: () => error.data.message
+                }
+            })});;
     }
     cancelChange() {
         this.pageChanged(this.currentPage);
@@ -145,6 +157,8 @@ class AddReview {
             });
             return;
         }
+        this.book.createDate = null;
+        this.book.authors.forEach(author => author.createDate = null);
         this.booksApi.createReview(commenterName, comment, rating, this.book).then(response => this.reviewsApi.find(this.listParam)
             .then(reviewsAndCountPages => {
                 this.reviewsAndCountPages.list = reviewsAndCountPages.list; this.reviewsAndCountPages.totalItems = reviewsAndCountPages.totalItems
@@ -178,6 +192,16 @@ class MessageDialog {
             this.messageTitle = 'Warning!';
             this.message = data;
         }
+    }
+
+    close() {
+        this.$uibModalInstance.close();
+    }
+}
+
+class Error {
+    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
+                private message: string) {
     }
 
     close() {

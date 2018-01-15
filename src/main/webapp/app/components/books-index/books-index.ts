@@ -213,7 +213,8 @@ class AddBook {
                 private booksAndCountPages: IBooksAndCountPages,
                 private authorId: number,
                 private authors: IAuthor[],
-                private currentPage: number) {
+                private currentPage: number,
+                private $uibModal: ng.ui.bootstrap.IModalService) {
         authorsApi.readAll().then(authors => this.authors = authors.data);
         if (selectAuthor !== null) {
             this.addAuthorForBook(this.selectAuthor);
@@ -251,12 +252,24 @@ class AddBook {
         }
     }
 
-    ok(name, publisher, yearPublisher) {
+    ok(isbn, name, publisher, yearPublisher) {
+        console.log(isbn);
+        this.book.isbn = isbn;
         this.book.name = name;
         this.book.publisher = publisher;
         this.book.yearPublished = yearPublisher;
         this.book.authors = this.selectAuthors;
-        this.booksApi.createBook(this.book).then(response => this.pageChanged());
+        this.booksApi.createBook(this.book).then(response => {this.pageChanged()}).catch(error => {
+            this.$uibModal.open({
+                animation: true,
+                backdrop: false,
+                controller: Error,
+                controllerAs: 'error',
+                templateUrl: 'error-dialog.html',
+                resolve: {
+                    message: () => error.data.message
+                }
+            })});//.then(response => {console.log('dasdas'); console.log(response)});
         this.$uibModalInstance.close();
     }
 
@@ -430,6 +443,16 @@ class BulkDelete {
 
 class ErrorDialog {
     constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance) {
+    }
+
+    close() {
+        this.$uibModalInstance.close();
+    }
+}
+
+class Error {
+    constructor(private $uibModalInstance: ng.ui.bootstrap.IModalServiceInstance,
+                private message: string) {
     }
 
     close() {

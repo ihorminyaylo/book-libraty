@@ -1,16 +1,17 @@
-<div ng-controller="BooksIndex as b">
-  <h1 class="ui header" align="center">List of books
-  </h1>
-  <br>
-  <table class="table table-striped">
-    <thead>
-    <tr>
-      <div class="input-group">
-        <input ng-model="filter" type="text" class="form-control" placeholder="Search ...">
-        <span class="input-group-btn">
+<div ng-controller="BooksIndex as b" xmlns="http://www.w3.org/1999/html">
+	<h1 class="ui header" align="center">List of books
+	</h1>
+	<br>
+	<table class="table table-striped">
+		<thead>
+		<tr>
+			<div class="input-group">
+				<input ng-model="filter" type="text" class="form-control" placeholder="Search ...">
+				<span class="input-group-btn">
         <button class="btn btn-primary" ng-click="b.searchBy(filter)" type="button">SEARCH</button>
           <div uib-dropdown style="display: inline">
-            <button id="author-button" style="margin-left: 5px;" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+            <button id="author-button" style="margin-left: 5px;" type="button" class="btn btn-primary"
+                    uib-dropdown-toggle ng-disabled="disabled">
             <div ng-if="b.authorWithBooks === null">SELECT AUTHOR <span class="caret"></span></div>{{b.authorWithBooks.firstName}} {{b.authorWithBooks.secondName}}
             </button>
             <ul class="dropdown-menu" uib-dropdown-menu>
@@ -19,276 +20,366 @@
               </li>
             </ul>
             </div>
-        <a href="#!/books" ng-click="(filter = null)"><button type="button" style="margin-left: 5px;" class="btn btn-default" aria-label="Left Align" ng-click="(b.clearFilters())">CLEAR</button></a>
-            <button type="button" style="margin-left: 80px;" class="btn btn-primary" ng-click="b.add()">BOOK <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
-            <button type="button" style="margin-left: 5px;" ng-disabled="b.activeDeleteSelected" class="btn btn-danger" ng-click="b.bulkDeleteBooks()">SELECTED <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>
+        <a href="#!/books" ng-click="(filter = null)"><button type="button" style="margin-left: 5px;"
+                                                              class="btn btn-default" aria-label="Left Align"
+                                                              ng-click="(b.clearFilters())">CLEAR</button></a>
+            <button type="button" style="margin-left: 80px;" class="btn btn-primary" ng-click="b.add()">BOOK <span
+		            class="glyphicon glyphicon-plus" aria-hidden="true"></span></button>
+            <button type="button" style="margin-left: 5px;" ng-disabled="b.activeDeleteSelected" class="btn btn-danger"
+                    ng-click="b.bulkDeleteBooks()">SELECTED <span class="glyphicon glyphicon-trash"
+                                                                  aria-hidden="true"></span></button>
         </span>
-      </div>
-    </tr>
-    <tr>
-      <th><input type="checkbox" ng-click="b.checkAllBook()" ng-checked="b.checkAll" /></th>
-      <th class="single line">#</th>
-      <th>
-        <a ng-click="b.sortParams('name')"> Name
-          <span ng-show="b.sortType === 'name' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-          <span ng-show="b.sortType === 'name' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-        </a>
-      </th>
-      <th><a ng-click="b.sortParams('publisher')"> Publisher
-        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'publisher' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-      </a></th>
-      <th><a ng-click="b.sortParams('yearPublished')"> Year published
-        <span ng-show="b.sortType === 'yearPublished' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'yearPublished' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-      </a></th>
-      <th>
-        Authors
-      </th>
-      <th><a ng-click="b.sortParams('averageRating')"> Rating
-        <span ng-show="b.sortType === 'averageRating' && b.sortReverse === 'DESC'" class="glyphicon glyphicon-chevron-down"></span>
-        <span ng-show="b.sortType === 'averageRating' && b.sortReverse === 'ASC'" class="glyphicon glyphicon-chevron-up"></span>
-      </a></th>
-      <th>Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr ng-repeat="book in b.booksAndCountPages.list">
-      <td><input type="checkbox" ng-click="b.check(book.id)" ng-checked="book.removeStatus"></td>
-      <td>
-        {{$index + (b.currentPage-1)*b.limit + 1}}
-      </td>
-      <td class="single line">
-        {{book.name}}
-      </td>
-      <td>
-        {{book.publisher}}
-      </td>
-      <td>
-        {{book.yearPublished}}
-      </td>
-      <td>
-        <div ng-repeat="author in book.authors">
-          {{author.firstName}} {{author.secondName}}
-        </div>
-      </td>
-      <td>
-        <span uib-rating ng-model="book.averageRatingRound" max="5" read-only="true" uib-tooltip="{{book.averageRating}}"></span>
-      </td>
-      <td>
-        <button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
-          REVIEW <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        </button>
-        <a type="button" class="btn btn-warning" href="#!/books_show/{{book.id}}">
-          <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-        </a>
-        <button type="button" class="btn btn-danger" ng-click="b.deleteBook(book)">
-          <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-        </button>
-      </td>
-    </tr>
-    </tbody>
-    <tfoot>
-    </tfoot>
-  </table>
-  <ul uib-pagination total-items="b.booksAndCountPages.totalItems" ng-model="b.currentPage" ng-change="b.pageChanged(b.currentPage)" max-size="b.maxPages" class="pagination-sm" boundary-links="true" rotate="false"></ul>
+			</div>
+		</tr>
+		<tr>
+			<th><input type="checkbox" ng-click="b.checkAllBook()" ng-checked="b.checkAll"/></th>
+			<th class="single line">#</th>
+			<th>
+				<a ng-click="b.sortParams('isbn')"> isbn
+					<span ng-show="b.sortType === 'isbn' && b.sortReverse === 'DESC'"
+					      class="glyphicon glyphicon-chevron-down"></span>
+					<span ng-show="b.sortType === 'isbn' && b.sortReverse === 'ASC'"
+					      class="glyphicon glyphicon-chevron-up"></span>
+				</a>
+			</th>
+			<th>
+				<a ng-click="b.sortParams('name')"> Name
+					<span ng-show="b.sortType === 'name' && b.sortReverse === 'DESC'"
+					      class="glyphicon glyphicon-chevron-down"></span>
+					<span ng-show="b.sortType === 'name' && b.sortReverse === 'ASC'"
+					      class="glyphicon glyphicon-chevron-up"></span>
+				</a>
+			</th>
+			<th><a ng-click="b.sortParams('publisher')"> Publisher
+				<span ng-show="b.sortType === 'publisher' && b.sortReverse === 'DESC'"
+				      class="glyphicon glyphicon-chevron-down"></span>
+				<span ng-show="b.sortType === 'publisher' && b.sortReverse === 'ASC'"
+				      class="glyphicon glyphicon-chevron-up"></span>
+			</a></th>
+			<th><a ng-click="b.sortParams('yearPublished')"> Year published
+				<span ng-show="b.sortType === 'yearPublished' && b.sortReverse === 'DESC'"
+				      class="glyphicon glyphicon-chevron-down"></span>
+				<span ng-show="b.sortType === 'yearPublished' && b.sortReverse === 'ASC'"
+				      class="glyphicon glyphicon-chevron-up"></span>
+			</a></th>
+			<th><a ng-click="b.sortParams('createDate')"> Create date
+				<span ng-show="b.sortType === 'createDate' && b.sortReverse === 'DESC'"
+				      class="glyphicon glyphicon-chevron-down"></span>
+				<span ng-show="b.sortType === 'createDate' && b.sortReverse === 'ASC'"
+				      class="glyphicon glyphicon-chevron-up"></span>
+			</a></th>
+			<th>
+				Authors
+			</th>
+			<th><a ng-click="b.sortParams('averageRating')"> Rating
+				<span ng-show="b.sortType === 'averageRating' && b.sortReverse === 'DESC'"
+				      class="glyphicon glyphicon-chevron-down"></span>
+				<span ng-show="b.sortType === 'averageRating' && b.sortReverse === 'ASC'"
+				      class="glyphicon glyphicon-chevron-up"></span>
+			</a></th>
+			<th>Action</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="book in b.booksAndCountPages.list">
+			<td><input type="checkbox" ng-click="b.check(book.id)" ng-checked="book.removeStatus"></td>
+			<td>
+				{{$index + (b.currentPage-1)*b.limit + 1}}
+			</td>
+			<td>
+				{{book.isbn}}
+			</td>
+			<td>
+				{{book.name}}
+			</td>
+			<td>
+				{{book.publisher}}
+			</td>
+			<td>
+				{{book.yearPublished}}
+			</td>
+			<td>
+				{{book.createDate.substr(0, 10)}}
+			</td>
+			<td>
+				<div ng-repeat="author in book.authors">
+					{{author.firstName}} {{author.secondName}}
+				</div>
+			</td>
+			<td>
+				<span uib-rating ng-model="book.averageRatingRound" max="5" read-only="true"
+				      uib-tooltip="{{book.averageRating}}"></span>
+			</td>
+			<td>
+				<a type="button" class="btn btn-warning" href="#!/books_show/{{book.id}}">
+					<span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+				</a>
+				<button type="button" class="btn btn-danger" ng-click="b.deleteBook(book)">
+					<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+				</button>
+				<button type="button" class="btn btn-primary" ng-click="b.addReview(book)">
+					REVIEW<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				</button>
+			</td>
+		</tr>
+		</tbody>
+		<tfoot>
+		</tfoot>
+	</table>
+	<ul uib-pagination total-items="b.booksAndCountPages.totalItems" ng-model="b.currentPage"
+	    ng-change="b.pageChanged(b.currentPage)" max-size="b.maxPages" class="pagination-sm" boundary-links="true"
+	    rotate="false"></ul>
 </div>
 
 
 <!--Dialog Add book-->
 <script type="text/ng-template" id="add-book.html">
-  <div class="modal-header" align="center">
-    <label><h3>Add new book</h3></label>
-  </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-6">
-        <!-- FORM ============ -->
+	<div class="modal-header" align="center">
+		<label><h3>Add new book</h3></label>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<!-- FORM ============ -->
 
-        <form name="bookForm" novalidate>
+				<form name="bookForm" novalidate>
 
-          <!-- Name -->
-          <div class="modal-body">
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.name.$invalid && (add.click || !bookForm.name.$pristine)}">
-              <label>Name</label>
-              <input type="text" name="name" class="form-control" ng-model="name" ng-maxlength="256" required>
-              <p ng-show="bookForm.name.$error.maxlength" class="help-block">Name of book is too long.</p>
-              <p ng-show="bookForm.name.$error.required && (add.click || !bookForm.name.$pristine)" class="help-block">Your name of book is required.</p>
-            </div>
-            <div class="form-group">
-              <label>Publisher</label>
-              <input type="text" name="publisher" class="form-control" ng-model="publisher" ng-maxlength="256">
-            </div>
-            <div class="form-group">
-              <label>Year published</label>
-              <input type="number" name="yearPublished" class="form-control" ng-model="yearPublished" ng-maxlength="4">
-            </div>
-            <div class="btn-group" uib-dropdown is-open="status.isopen">
-              <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-                Select author
-              </button>
-              <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                  <li role="menuitem" ng-click="addAuthorForBook(author)" ng-repeat="author in add.authors">
-                    <a ng-click="add.addAuthorForBook(author)">{{author.firstName}} {{author.secondName}}</a>
-                  </li>
-              </ul>
-            </div>
-            <div ng-if="!(add.selectAuthors.length === 0)" align="center">
-            <br><h4>Selected authors:</h4>
+					<!-- Name -->
+					<div class="modal-body">
+						<div class="form-group"
+						     ng-class="{ 'has-error' : bookForm.name.$invalid && (add.click || !bookForm.name.$pristine)}">
+							<label>Name</label>
+							<input type="text" name="name" class="form-control" ng-model="name" ng-maxlength="256"
+							       required>
+							<p ng-show="bookForm.name.$error.maxlength" class="help-block">Name of book is too long.</p>
+							<p ng-show="bookForm.name.$error.required && (add.click || !bookForm.name.$pristine)"
+							   class="help-block">Your name of book is required.</p>
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : bookForm.isbn.$invalid && add.click}">
+							<label>ISBN</label>
+							<input type="text" name="isbn" class="form-control" ng-model="isbn"
+							       ng-pattern="/^[0-9]{3}-[0-9]-[0-9]{2}-[0-9]{6}-[0-9]/">
+							<p ng-show="bookForm.isbn.$invalid && !bookForm.isbn.$error.maxlength && add.click"
+							   class="help-block">The ISBN must be like XXX-X-XX-XXXXXX-X where "X" - number.</p>
+						</div>
+						<div class="form-group">
+							<label>Publisher</label>
+							<input type="text" name="publisher" class="form-control" ng-model="publisher"
+							       ng-maxlength="256">
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : bookForm.yearPublished.$invalid && (add.click || !bookForm.yearPublished.$pristine)}">
+							<label>Year published</label>
+							<input type="number" name="yearPublished" class="form-control" ng-model="yearPublished"
+							       ng-maxlength="4">
+							<p ng-show="bookForm.yearPublished.$invalid && !bookForm.yearPublished.$error.maxlength"
+							   class="help-block">The year published isn't correct.</p>
+							<p ng-show="bookForm.yearPublished.$error.maxlength && (add.click || !bookForm.yearPublished.$pristine)"
+							   class="help-block">Length of year published can't be more 4.</p>
+						</div>
+						<div class="btn-group" uib-dropdown is-open="status.isopen">
+							<button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle
+							        ng-disabled="disabled">
+								Select author
+							</button>
+							<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+								<li role="menuitem" ng-click="addAuthorForBook(author)"
+								    ng-repeat="author in add.authors">
+									<a ng-click="add.addAuthorForBook(author)">{{author.firstName}}
+										{{author.secondName}}</a>
+								</li>
+							</ul>
+						</div>
+						<div ng-if="!(add.selectAuthors.length === 0)" align="center">
+							<br><h4>Selected authors:</h4>
 
-              <table class="table table-striped">
-                <thead>
-                  <th>#</th>
-                  <th>Full name</th>
-                  <th>Delete</th>
-                </thead>
-                <tbody ng-repeat="author in add.selectAuthors">
-                <tr>
-                  <td>
-                    {{$index + 1}}
-                  </td>
-                  <td>
-                    {{author.firstName}} {{author.secondName}}
-                  </td>
-                  <td>
-                    <button type="button" class="btn btn-danger" ng-click="add.deleteAuthor(author)">
-                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </button>
-                  </td>
-                </tbody>
-              </table>
-            </div>
-            </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="(add.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && add.ok(name, publisher, yearPublished)">Save</button>
-            <button class="btn btn-warning" type="button" ng-click="add.cancel()">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+							<table class="table table-striped">
+								<thead>
+								<th>#</th>
+								<th>Full name</th>
+								<th>Delete</th>
+								</thead>
+								<tbody ng-repeat="author in add.selectAuthors">
+								<tr>
+									<td>
+										{{$index + 1}}
+									</td>
+									<td>
+										{{author.firstName}} {{author.secondName}}
+									</td>
+									<td>
+										<button type="button" class="btn btn-danger"
+										        ng-click="add.deleteAuthor(author)">
+											<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+										</button>
+									</td>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+						        ng-click="(add.click = true) && !bookForm.name.$invalid && !bookForm.isbn.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && add.ok(isbn, name, publisher, yearPublished)">
+							Save
+						</button>
+						<button class="btn btn-warning" type="button" ng-click="add.cancel()">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </script>
-
 
 
 <!--Dialog Add review-->
 <script type="text/ng-template" id="add-review.html">
-  <div class="modal-header" align="center">
-    <label><h3>Add new review about: {{addReview.book.name}}</h3></label>
-  </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-6">
-        <!-- FORM ============ -->
+	<div class="modal-header" align="center">
+		<label><h3>Add new review about: {{addReview.book.name}}</h3></label>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<!-- FORM ============ -->
 
-        <form name="reviewForm" novalidate>
-          <!--Comment Name -->
-          <div class="modal-body">
-            <div class="form-group" ng-class="{ 'has-error' : reviewForm.commentName.$invalid && (addReview.click || !reviewForm.commentName.$pristine)}">
-              <label>Commenter name</label>
-              <input type="text" name="commentName" class="form-control" ng-model="commentName" required>
-              <p ng-show="reviewForm.commentName.$error.required && (addReview.click || !reviewForm.commentName.$pristine)" class="help-block">Your commenter name of book is required.</p>
-            </div>
+				<form name="reviewForm" novalidate>
+					<!--Comment Name -->
+					<div class="modal-body">
+						<div class="form-group"
+						     ng-class="{ 'has-error' : reviewForm.commentName.$invalid && (addReview.click || !reviewForm.commentName.$pristine)}">
+							<label>Commenter name</label>
+							<input type="text" name="commentName" class="form-control" ng-model="commentName" required>
+							<p ng-show="reviewForm.commentName.$error.required && (addReview.click || !reviewForm.commentName.$pristine)"
+							   class="help-block">Your commenter name of book is required.</p>
+						</div>
 
-            <div class="form-group" ng-class="{ 'has-error' : reviewForm.textArea.$invalid && (addReview.click || !reviewForm.textArea.$pristine)}">
-              <label>Comment</label>
-              <textarea type="text" name="textArea" class="form-control" ng-model="textArea" required></textarea>
-              <p ng-show="reviewForm.textArea.$error.required && (addReview.click || !reviewForm.textArea.$pristine)" class="help-block">Your comment of book is required.</p>
-            </div>
-            <div class="form-group" ng-class="{ 'has-error' : reviewForm.span.$invalid && (addReview.click || !reviewForm.span.$pristine)}">
-              <span required name="span" uib-rating ng-model="ratingStars" max="addReview.max" on-leave="addReview.overStar = null" ng-model="ratingStars" aria-labelledby="addReview.defaultRating"></span>
-              <button type="button" class="btn btn-sm btn-danger" ng-click="ratingStars = null">Clear</button>
-              <p ng-show="reviewForm.span.$error.required && (addReview.click || !reviewForm.span.$pristine)" class="help-block">Your rating of book is required.</p>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="(addReview.click = true)  && !reviewForm.commentName.$invalid && !reviewForm.span.$invalid && !reviewForm.textArea.$invalid && addReview.ok(commentName, textArea, ratingStars)">Save</button>
-            <button class="btn btn-warning" type="button" ng-click="addReview.cancel()">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : reviewForm.textArea.$invalid && (addReview.click || !reviewForm.textArea.$pristine)}">
+							<label>Comment</label>
+							<textarea type="text" name="textArea" class="form-control" ng-model="textArea"
+							          required></textarea>
+							<p ng-show="reviewForm.textArea.$error.required && (addReview.click || !reviewForm.textArea.$pristine)"
+							   class="help-block">Your comment of book is required.</p>
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : reviewForm.span.$invalid && (addReview.click || !reviewForm.span.$pristine)}">
+							<span required name="span" uib-rating ng-model="ratingStars" max="addReview.max"
+							      on-leave="addReview.overStar = null" ng-model="ratingStars"
+							      aria-labelledby="addReview.defaultRating"></span>
+							<button type="button" class="btn btn-sm btn-danger" ng-click="ratingStars = null">Clear
+							</button>
+							<p ng-show="reviewForm.span.$error.required && (addReview.click || !reviewForm.span.$pristine)"
+							   class="help-block">Your rating of book is required.</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+						        ng-click="(addReview.click = true)  && !reviewForm.commentName.$invalid && !reviewForm.span.$invalid && !reviewForm.textArea.$invalid && addReview.ok(commentName, textArea, ratingStars)">
+							Save
+						</button>
+						<button class="btn btn-warning" type="button" ng-click="addReview.cancel()">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </script>
 
 
 <script type="text/ng-template" id="edit-book.html">
-  <div class="modal-header" align="center">
-    <label><h3>Edit book</h3></label>
-  </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-sm-6">
-        <!-- FORM ============ -->
+	<div class="modal-header" align="center">
+		<label><h3>Edit book</h3></label>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-6">
+				<!-- FORM ============ -->
 
-        <form name="bookForm" novalidate>
+				<form name="bookForm" novalidate>
 
-          <!-- Name -->
-          <div class="modal-body">
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.name.$invalid && (edit.click || !bookForm.name.$pristine)}">
-              <label>Name</label>
-              <input type="text" name="name" class="form-control" ng-model="name" ng-maxlength="256" required ng-value="edit.book.name">
-              <p ng-show="bookForm.name.$error.maxlength" class="help-block">Name of book is too long.</p>
-              <p ng-show="bookForm.name.$error.required && (edit.click || !bookForm.name.$pristine)" class="help-block">Your name of book is required.</p>
-            </div>
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.publisher.$invalid && (edit.click || !bookForm.publisher.$pristine) }">
-              <label>Publisher</label>
-              <input type="text" name="publisher" class="form-control" ng-model="publisher" ng-maxlength="256" required ng-value="edit.book.publisher">
-              <p ng-show="bookForm.publisher.$error.maxlength" class="help-block">Publisher of book is too long.</p>
-              <p ng-show="bookForm.publisher.$error.required && (edit.click || !bookForm.publisher.$pristine)" class="help-block">Publisher of book is required.</p>
-            </div>
-            <div class="form-group" ng-class="{ 'has-error' : bookForm.yearPublished.$invalid && (edit.click || !bookForm.yearPublished.$pristine) }">
-              <label>Year published</label>
-              <input type="number" name="yearPublished" class="form-control" ng-model="yearPublished" ng-maxlength="4" required ng-value="edit.book.yearPublished">
-              <p ng-show="bookForm.yearPublished.$error.maxlength" class="help-block">Year publisher is too long.</p>
-              <p ng-show="bookForm.yearPublished.$error.required && (edit.click || !bookForm.yearPublished.$pristine)" class="help-block">Year publisher is required.</p>
-            </div>
-            <div class="btn-group" uib-dropdown is-open="status.isopen">
-              <button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
-                Select author
-              </button>
-              <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
-                <li role="menuitem" ng-click="addAuthorForBook(author)" ng-repeat="author in edit.authors">
-                  <a ng-click="edit.addAuthorForBook(author)">{{author.firstName}} {{author.secondName}}</a>
-                </li>
-              </ul>
-            </div>
-            <div ng-if="!(edit.selectAuthors.length === 0)" align="center">
-              <br><h4>Selected authors:</h4>
+					<!-- Name -->
+					<div class="modal-body">
+						<div class="form-group"
+						     ng-class="{ 'has-error' : bookForm.name.$invalid && (edit.click || !bookForm.name.$pristine)}">
+							<label>Name</label>
+							<input type="text" name="name" class="form-control" ng-model="name" ng-maxlength="256"
+							       required ng-value="edit.book.name">
+							<p ng-show="bookForm.name.$error.maxlength" class="help-block">Name of book is too long.</p>
+							<p ng-show="bookForm.name.$error.required && (edit.click || !bookForm.name.$pristine)"
+							   class="help-block">Your name of book is required.</p>
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : bookForm.publisher.$invalid && (edit.click || !bookForm.publisher.$pristine) }">
+							<label>Publisher</label>
+							<input type="text" name="publisher" class="form-control" ng-model="publisher"
+							       ng-maxlength="256" required ng-value="edit.book.publisher">
+							<p ng-show="bookForm.publisher.$error.maxlength" class="help-block">Publisher of book is too
+								long.</p>
+							<p ng-show="bookForm.publisher.$error.required && (edit.click || !bookForm.publisher.$pristine)"
+							   class="help-block">Publisher of book is required.</p>
+						</div>
+						<div class="form-group"
+						     ng-class="{ 'has-error' : bookForm.yearPublished.$invalid && (edit.click || !bookForm.yearPublished.$pristine) }">
+							<label>Year published</label>
+							<input type="number" name="yearPublished" class="form-control" ng-model="yearPublished"
+							       ng-maxlength="4" required ng-value="edit.book.yearPublished">
+							<p ng-show="bookForm.yearPublished.$error.maxlength" class="help-block">Year publisher is
+								too long.</p>
+							<p ng-show="bookForm.yearPublished.$error.required && (edit.click || !bookForm.yearPublished.$pristine)"
+							   class="help-block">Year publisher is required.</p>
+						</div>
+						<div class="btn-group" uib-dropdown is-open="status.isopen">
+							<button id="single-button" type="button" class="btn btn-primary" uib-dropdown-toggle
+							        ng-disabled="disabled">
+								Select author
+							</button>
+							<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="single-button">
+								<li role="menuitem" ng-click="addAuthorForBook(author)"
+								    ng-repeat="author in edit.authors">
+									<a ng-click="edit.addAuthorForBook(author)">{{author.firstName}}
+										{{author.secondName}}</a>
+								</li>
+							</ul>
+						</div>
+						<div ng-if="!(edit.selectAuthors.length === 0)" align="center">
+							<br><h4>Selected authors:</h4>
 
-              <table class="table table-striped">
-                <thead>
-                <th>#</th>
-                <th>Full name</th>
-                <th>Delete</th>
-                </thead>
-                <tbody ng-repeat="author in edit.selectAuthors">
-                <tr>
-                  <td>
-                    {{$index + 1}}
-                  </td>
-                  <td>
-                    {{author.firstName}} {{author.secondName}}
-                  </td>
-                  <td>
-                    <button type="button" class="btn btn-danger" ng-click="edit.deleteAuthor(author)">
-                      <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                    </button>
-                  </td>
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" ng-click="(edit.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && edit.save(name, publisher, yearPublished)">Save</button>
-            <button class="btn btn-warning" type="button" ng-click="edit.cancel()">Cancel</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+							<table class="table table-striped">
+								<thead>
+								<th>#</th>
+								<th>Full name</th>
+								<th>Delete</th>
+								</thead>
+								<tbody ng-repeat="author in edit.selectAuthors">
+								<tr>
+									<td>
+										{{$index + 1}}
+									</td>
+									<td>
+										{{author.firstName}} {{author.secondName}}
+									</td>
+									<td>
+										<button type="button" class="btn btn-danger"
+										        ng-click="edit.deleteAuthor(author)">
+											<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+										</button>
+									</td>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-primary"
+						        ng-click="(edit.click = true) && !bookForm.name.$invalid && !bookForm.publisher.$invalid && !bookForm.yearPublished.$invalid && edit.save(name, publisher, yearPublished)">
+							Save
+						</button>
+						<button class="btn btn-warning" type="button" ng-click="edit.cancel()">Cancel</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </script>
-
 
 
 <!--&lt;!&ndash;Dialog Edit book&ndash;&gt;
@@ -350,89 +441,114 @@
 <!--Delete Dialog-->
 <script type="text/ng-template" id="delete-book.html">
 
-  <div class="modal-header" align="center">
-    <label><h3>{{deleteBook.modalOptions.headerText}}</h3></label>
-  </div>
-  <div class="modal-body">
-    <div class="form-row">
-      <div class="col" align="center">
-        <h4>{{deleteBook.modalOptions.bodyText}}</h4>
-      </div>
-    </div>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary"
-            data-ng-click="deleteBook.ok();">{{deleteBook.modalOptions.actionButtonText}}</button>
-    <button type="button" class="btn btn-warning"
-            data-ng-click="deleteBook.close()">{{deleteBook.modalOptions.closeButtonText}}</button>
-  </div>
+	<div class="modal-header" align="center">
+		<label><h3>{{deleteBook.modalOptions.headerText}}</h3></label>
+	</div>
+	<div class="modal-body">
+		<div class="form-row">
+			<div class="col" align="center">
+				<h4>{{deleteBook.modalOptions.bodyText}}</h4>
+			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+		        data-ng-click="deleteBook.ok();">{{deleteBook.modalOptions.actionButtonText}}
+		</button>
+		<button type="button" class="btn btn-warning"
+		        data-ng-click="deleteBook.close()">{{deleteBook.modalOptions.closeButtonText}}
+		</button>
+	</div>
 </script>
 
 <!--Bulk Delete Dialog-->
 <script type="text/ng-template" id="bulk-delete-book.html">
 
 
-  <div class="modal-header" align="center">
-    <label><h3>{{bulkDelete.modalOptions.headerText}}</h3></label>
-  </div>
-  <div class="modal-body">
-    <div class="form-row">
-      <div class="col" align="center">
-        <h4>{{bulkDelete.modalOptions.bodyText}}</h4>
-      </div>
-    </div>
-    <table class="table">
-      <thead>
-      <thead>
-      <tr>
-        <th class="single line">#</th>
-        <th>Name</th>
-        <th>Publisher</th>
-      </tr>
-      </thead>
-      </thead>
-      <tbody ng-repeat="book in bulkDelete.booksRemove">
-      <tr>
-        <td>
-          {{$index + 1}}
-        </td>
-        <td>
-          {{book.name}}
-        </td>
-        <td>
-          {{book.publisher}}
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn btn-primary"
-            data-ng-click="bulkDelete.ok();">{{bulkDelete.modalOptions.actionButtonText}}</button>
-    <button type="button" class="btn btn-warning"
-            data-ng-click="bulkDelete.close()">{{bulkDelete.modalOptions.closeButtonText}}</button>
-  </div>
+	<div class="modal-header" align="center">
+		<label><h3>{{bulkDelete.modalOptions.headerText}}</h3></label>
+	</div>
+	<div class="modal-body">
+		<div class="form-row">
+			<div class="col" align="center">
+				<h4>{{bulkDelete.modalOptions.bodyText}}</h4>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+			<thead>
+			<tr>
+				<th class="single line">#</th>
+				<th>Name</th>
+				<th>Publisher</th>
+			</tr>
+			</thead>
+			</thead>
+			<tbody ng-repeat="book in bulkDelete.booksRemove">
+			<tr>
+				<td>
+					{{$index + 1}}
+				</td>
+				<td>
+					{{book.name}}
+				</td>
+				<td>
+					{{book.publisher}}
+				</td>
+			</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary"
+		        data-ng-click="bulkDelete.ok();">{{bulkDelete.modalOptions.actionButtonText}}
+		</button>
+		<button type="button" class="btn btn-warning"
+		        data-ng-click="bulkDelete.close()">{{bulkDelete.modalOptions.closeButtonText}}
+		</button>
+	</div>
+</script>
+
+<!--Error Dialog-->
+<script type="text/ng-template" id="error-dialog.html">
+	<div draggable=".modal-header">
+		<div class="modal-header" align="center">
+			<h3 class="modal-title">Error!</h3>
+		</div>
+		<div class="modal-body">
+			<form>
+				<div class="form-row">
+					<div class="col" align="center">
+						<label>{{error.message}}</label>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div align="center" class="modal-footer">
+			<button class="btn btn-danger" type="button" data-ng-click="error.close()">CLOSE</button>
+		</div>
+	</div>
 </script>
 
 <!--Error Dialog-->
 <script type="text/ng-template" id="error.html">
-  <div draggable=".modal-header">
-    <div class="modal-header" align="center">
-      <h3 class="modal-title">Error!</h3>
-    </div>
-    <div class="modal-body">
-      <form>
-        <div class="form-row">
-          <div class="col" align="center">
-            <label>The rating can't be less 1</label>
-          </div>
-        </div>
-      </form>
-    </div>
-    <div align="center" class="modal-footer">
-      <button class="btn btn-danger" type="button" data-ng-click="errorDialog.close()">CLOSE</button>
-    </div>
-  </div>
+	<div draggable=".modal-header">
+		<div class="modal-header" align="center">
+			<h3 class="modal-title">Error!</h3>
+		</div>
+		<div class="modal-body">
+			<form>
+				<div class="form-row">
+					<div class="col" align="center">
+						<label>The rating can't be less 1</label>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div align="center" class="modal-footer">
+			<button class="btn btn-danger" type="button" data-ng-click="errorDialog.close()">CLOSE</button>
+		</div>
+	</div>
 </script>
 
 
